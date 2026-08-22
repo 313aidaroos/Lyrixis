@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #07060b;
+  --surface: #110e1c;
+  --line: #241f3a;
+  --ink: #edeaf6;
+  --ink-2: #b4adcd;
+  --ink-3: #7d7599;
+  --violet: #a855f7;
+  --cyan: #22d3ee;
+  --spectrum: linear-gradient(90deg, #a855f7 0%, #ec4899 38%, #4f7dfb 72%, #22d3ee 100%);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(720px 380px at 12% -8%, rgba(168, 85, 247, 0.2), transparent 65%),
+    radial-gradient(640px 360px at 88% 4%, rgba(34, 211, 238, 0.13), transparent 62%);
+}
+
+.grad-text {
+  background: var(--spectrum);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.card {
+  @apply rounded-2xl border border-line bg-surface/80 p-6 backdrop-blur;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-semibold text-[#0a0710] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50;
+  background: var(--spectrum);
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-surface px-6 py-3 font-semibold text-ink transition hover:border-violet;
+}
+
+.input {
+  @apply w-full rounded-xl border border-line bg-[#0c0a14] px-4 py-3 text-ink outline-none transition focus:border-violet;
+}
+
+.label {
+  @apply mb-2 block text-sm font-medium text-ink-2;
+}
+
+.band-high {
+  @apply rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-medium text-emerald-400;
+}
+
+.band-medium {
+  @apply rounded-full bg-amber-500/20 px-3 py-1 text-xs font-medium text-amber-400;
+}
+
+.band-review {
+  @apply rounded-full bg-rose-500/20 px-3 py-1 text-xs font-medium text-rose-400;
+}
