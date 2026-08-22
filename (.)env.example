@@ -1,0 +1,37 @@
+# Copy this file to .env.local and fill in real values.
+# NEVER commit .env.local. Add it to .gitignore.
+
+# ---------- Supabase ----------
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+
+# ---------- Stripe ----------
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+
+# ---------- Queue ----------
+REDIS_URL=
+
+# ---------- AI providers (swappable — see Brief section 2) ----------
+TRANSCRIPTION_PROVIDER=whisper_v3
+TRANSCRIPTION_API_KEY=
+ALIGNMENT_PROVIDER=
+ALIGNMENT_API_KEY=
+TRANSLATION_PROVIDER=
+TRANSLATION_API_KEY=
+AUDIO_ANALYSIS_PROVIDER=
+AUDIO_ANALYSIS_API_KEY=
+
+# ---------- Fingerprinting (duplicate detection) ----------
+ACOUSTID_API_KEY=
+
+# ---------- Storage ----------
+STORAGE_BUCKET=lyrixis-audio-private
+MAX_UPLOAD_MB=100
+MAX_DURATION_SECONDS=900
+
+# ---------- App ----------
+APP_URL=https://lyrixis.com
+SUPPORT_EMAIL=Lyrixis@Apixis.dev
