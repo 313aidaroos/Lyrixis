@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lyrixis — Music. Understood.</title>
+<meta name="description" content="Lyrixis turns any recording into synchronized lyrics, translations, metadata and structured music intelligence. Pay per song. One engine, any catalog size.">
+<meta property="og:title" content="Lyrixis — Music. Understood.">
+<meta property="og:description" content="Synchronized lyrics, translation, structure and metadata for one song or one million.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2307060B'/><path d='M12 7v13.5' stroke='%23A855F7' stroke-width='3' stroke-linecap='round'/><path d='M12 20.5h9' stroke='%2322D3EE' stroke-width='3' stroke-linecap='round'/><circle cx='9.5' cy='21.5' r='3.5' fill='%23E040A0'/></svg>">
+<style>
+:root{
+  --bg:#07060B;
+  --bg-2:#0C0A14;
+  --surface:#110E1C;
+  --surface-2:#171327;
+  --line:#241F3A;
+  --line-soft:#1B1729;
+  --ink:#EDEAF6;
+  --ink-2:#B4ADCD;
+  --ink-3:#7D7599;
+  --violet:#A855F7;
+  --magenta:#EC4899;
+  --cyan:#22D3EE;
+  --blue:#4F7DFB;
+  --gold:#E6B450;
+  --spectrum:linear-gradient(90deg,var(--violet) 0%,var(--magenta) 38%,var(--blue) 72%,var(--cyan) 100%);
+  --display:"Familjen Grotesk",system-ui,sans-serif;
+  --body:"Inter",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  --arabic:"IBM Plex Sans Arabic","Familjen Grotesk",sans-serif;
+  --r:14px;
+  --maxw:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(720px 380px at 12% -8%, rgba(168,85,247,.20), transparent 65%),
+    radial-gradient(640px 360px at 88% 4%, rgba(34,211,238,.13), transparent 62%),
+    radial-gradient(900px 500px at 50% 108%, rgba(236,72,153,.10), transparent 70%);
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:6px}
+
+h1,h2,h3,h4{font-family:var(--display);font-weight:700;letter-spacing:-.025em;line-height:1.06;margin:0}
+h1{font-size:clamp(3rem,8.5vw,6.2rem)}
+h2{font-size:clamp(2rem,4.4vw,3.1rem)}
+h3{font-size:1.28rem;letter-spacing:-.015em}
+p{margin:0}
+.lede{color:var(--ink-2);font-size:clamp(1.02rem,1.9vw,1.22rem);line-height:1.55;max-width:56ch}
+.eyebrow{
+  font-family:var(--mono);font-size:.7rem;font-weight:500;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+.grad{background:var(--spectrum);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ---------- nav ---------- */
+header{
+  position:sticky;top:0;z-index:50;backdrop-filter:blur(18px);
+  background:rgba(7,6,11,.78);border-bottom:1px solid var(--line-soft);
+}
+.nav{display:flex;align-items:center;gap:28px;height:66px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:1.16rem;letter-spacing:.01em}
+.brand svg{width:26px;height:26px;flex:none}
+.tabs{display:flex;gap:4px;margin-left:auto}
+.tab{
+  font-size:.88rem;color:var(--ink-3);padding:7px 13px;border-radius:9px;
+  border:1px solid transparent;transition:.16s;font-weight:500;cursor:pointer;
+  background:none;font-family:var(--body);
+}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--ink);background:var(--surface);border-color:var(--line)}
+.navcta{
+  font-size:.86rem;font-weight:600;padding:9px 16px;border-radius:10px;
+  background:var(--spectrum);color:#0A0710;white-space:nowrap;
+}
+.burger{display:none;margin-left:auto;background:none;border:1px solid var(--line);color:var(--ink);
+  border-radius:9px;padding:8px 11px;font-size:.85rem;cursor:pointer}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:9px;padding:14px 24px;border-radius:12px;
+  font-weight:600;font-size:.95rem;border:1px solid transparent;cursor:pointer;
+  font-family:var(--body);transition:.18s;
+}
+.btn-p{background:var(--spectrum);color:#0A0710}
+.btn-p:hover{filter:brightness(1.12)}
+.btn-s{border-color:var(--line);color:var(--ink);background:var(--surface)}
+.btn-s:hover{border-color:var(--violet);background:var(--surface-2)}
+
+/* ---------- sections ---------- */
+.page{display:none;padding:74px 0 40px}
+.page.on{display:block;animation:fade .34s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sec{padding:76px 0;border-top:1px solid var(--line-soft)}
+.sec:first-child{border-top:none}
+.sec-head{max-width:60ch;margin-bottom:44px}
+.sec-head h2{margin:12px 0 16px}
+
+/* ---------- hero ---------- */
+.hero{padding:56px 0 20px}
+.hero h1{margin:20px 0 22px}
+.hero .lede{margin-bottom:32px}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap}
+.trust{
+  display:flex;gap:26px;flex-wrap:wrap;margin-top:34px;padding-top:26px;
+  border-top:1px solid var(--line-soft);font-family:var(--mono);font-size:.74rem;
+  color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;
+}
+
+/* ---------- signature: player ---------- */
+.player{
+  margin-top:52px;border:1px solid var(--line);border-radius:20px;overflow:hidden;
+  background:linear-gradient(170deg,var(--surface) 0%,#0A0812 100%);
+  box-shadow:0 40px 90px -50px rgba(168,85,247,.55);
+}
+.player-bar{height:2px;background:var(--spectrum)}
+.player-top{
+  display:flex;align-items:center;gap:16px;padding:18px 22px;border-bottom:1px solid var(--line-soft);
+  flex-wrap:wrap;
+}
+.art{
+  width:46px;height:46px;border-radius:10px;flex:none;
+  background:conic-gradient(from 210deg,var(--violet),var(--magenta),var(--blue),var(--cyan),var(--violet));
+  opacity:.9;
+}
+.trackmeta strong{display:block;font-family:var(--display);font-size:1.02rem;font-weight:600;letter-spacing:-.01em}
+.trackmeta span{font-size:.82rem;color:var(--ink-3)}
+.badge{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:5px 10px;border-radius:999px;border:1px solid var(--line);color:var(--ink-3);
+}
+.badge.live{color:var(--cyan);border-color:rgba(34,211,238,.35);background:rgba(34,211,238,.07)}
+.player-body{display:grid;grid-template-columns:1fr 290px}
+.stage{padding:34px 26px 26px;min-height:290px;display:flex;flex-direction:column;justify-content:center;gap:22px}
+.section-tag{
+  align-self:flex-start;font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--magenta);
+}
+.lyric{transition:opacity .3s;opacity:.26}
+.lyric.active{opacity:1}
+.lyric .ar{font-family:var(--arabic);font-size:clamp(1.5rem,3.6vw,2.15rem);direction:rtl;text-align:right;line-height:1.65;font-weight:600}
+.lyric .en{font-family:var(--display);font-size:clamp(1.35rem,3vw,1.9rem);font-weight:600;letter-spacing:-.02em}
+.lyric .sub{font-family:var(--mono);font-size:.76rem;color:var(--ink-3);margin-top:6px;letter-spacing:.02em}
+.lyric[dir="rtl"] .sub{text-align:right}
+.w{transition:color .12s,text-shadow .12s;color:var(--ink-2)}
+.w.lit{color:#fff;text-shadow:0 0 22px rgba(168,85,247,.75)}
+.w.low{border-bottom:2px dotted var(--gold)}
+.side{border-left:1px solid var(--line-soft);padding:22px;background:rgba(255,255,255,.012)}
+.stat{margin-bottom:17px}
+.stat-k{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:flex;justify-content:space-between;margin-bottom:7px}
+.stat-v{font-size:.92rem;font-weight:600;margin-bottom:6px}
+.meter{height:3px;background:var(--line);border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--spectrum);border-radius:3px}
+.meter.warn i{background:var(--gold)}
+.player-foot{
+  display:flex;align-items:center;gap:16px;padding:16px 22px;border-top:1px solid var(--line-soft);
+}
+.play{
+  width:42px;height:42px;border-radius:50%;border:none;flex:none;cursor:pointer;
+  background:var(--spectrum);color:#0A0710;font-size:.95rem;display:grid;place-items:center;
+}
+.scrub{flex:1;height:4px;background:var(--line);border-radius:4px;overflow:hidden;cursor:pointer}
+.scrub i{display:block;height:100%;width:0;background:var(--spectrum)}
+.time{font-family:var(--mono);font-size:.76rem;color:var(--ink-3);white-space:nowrap}
+.demo-note{
+  font-family:var(--mono);font-size:.68rem;color:var(--ink-3);text-align:center;
+  padding:10px;border-top:1px solid var(--line-soft);letter-spacing:.05em;
+}
+
+/* ---------- generic cards ---------- */
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.card{
+  background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);
+  padding:24px;transition:.18s;
+}
+.card:hover{border-color:var(--line);background:var(--surface-2)}
+.card h3{margin-bottom:9px}
+.card p{color:var(--ink-2);font-size:.92rem}
+.card .num{font-family:var(--mono);font-size:.72rem;color:var(--violet);letter-spacing:.14em;display:block;margin-bottom:14px}
+
+/* ---------- pill list ---------- */
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.pill{
+  font-family:var(--mono);font-size:.74rem;padding:7px 12px;border-radius:999px;
+  border:1px solid var(--line);color:var(--ink-2);background:var(--surface);
+}
+.pill.hot{border-color:rgba(168,85,247,.4);color:var(--violet);background:rgba(168,85,247,.07)}
+
+/* ---------- pricing ---------- */
+.ptable{width:100%;border-collapse:collapse;font-size:.95rem}
+.ptable th{
+  text-align:left;font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:500;padding:0 0 14px;border-bottom:1px solid var(--line);
+}
+.ptable td{padding:16px 0;border-bottom:1px solid var(--line-soft)}
+.ptable td:first-child{font-family:var(--mono);color:var(--ink-2)}
+.ptable td:last-child{text-align:right;font-family:var(--display);font-weight:600;font-size:1.12rem}
+.ptable tr:hover td{color:var(--ink)}
+.calc{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:30px}
+.calc label{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:12px}
+.calc input[type=range]{width:100%;accent-color:var(--violet);margin:6px 0 4px}
+.calc-out{display:flex;gap:14px;flex-wrap:wrap;margin-top:26px}
+.calc-box{flex:1;min-width:130px;background:var(--bg-2);border:1px solid var(--line-soft);border-radius:12px;padding:16px}
+.calc-box span{font-family:var(--mono);font-size:.64rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:8px}
+.calc-box strong{font-family:var(--display);font-size:1.7rem;font-weight:700;letter-spacing:-.02em}
+.songcount{font-family:var(--mono);font-size:1.5rem;color:var(--ink);font-weight:700}
+
+/* ---------- code ---------- */
+.code{
+  background:#0A0812;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  font-family:var(--mono);font-size:.8rem;line-height:1.75;
+}
+.code-top{
+  padding:11px 16px;border-bottom:1px solid var(--line-soft);color:var(--ink-3);
+  font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;display:flex;gap:8px;align-items:center;
+}
+.code pre{margin:0;padding:18px 16px;overflow-x:auto;color:var(--ink-2)}
+.k{color:var(--violet)}.s{color:var(--cyan)}.n{color:var(--gold)}.c{color:#5C557A}
+.verb{font-family:var(--mono);font-size:.66rem;font-weight:700;padding:3px 8px;border-radius:5px;letter-spacing:.06em}
+.verb.post{background:rgba(168,85,247,.16);color:var(--violet)}
+.verb.get{background:rgba(34,211,238,.14);color:var(--cyan)}
+.ep{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line-soft);flex-wrap:wrap}
+.ep code{font-family:var(--mono);font-size:.86rem;color:var(--ink)}
+.ep small{color:var(--ink-3);margin-left:auto;font-size:.8rem}
+
+/* ---------- form ---------- */
+.form{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:30px}
+.field{margin-bottom:18px}
+.field label{font-family:var(--mono);font-size:.67rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:8px}
+.field input,.field select,.field textarea{
+  width:100%;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;
+  padding:12px 14px;color:var(--ink);font-family:var(--body);font-size:.94rem;
+}
+.field input:focus,.field select,.field textarea:focus{border-color:var(--violet);outline:none}
+.field textarea{min-height:110px;resize:vertical}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* ---------- faq ---------- */
+.faq{border-bottom:1px solid var(--line-soft)}
+.faq summary{
+  cursor:pointer;padding:22px 0;font-family:var(--display);font-size:1.08rem;font-weight:600;
+  letter-spacing:-.012em;list-style:none;display:flex;justify-content:space-between;gap:20px;
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--violet);font-size:1.4rem;line-height:1;flex:none}
+.faq[open] summary::after{content:"−"}
+.faq p{color:var(--ink-2);font-size:.94rem;padding:0 0 22px;max-width:72ch}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line-soft);padding:52px 0 40px;margin-top:60px;position:relative;z-index:1}
+.foot{display:flex;justify-content:space-between;gap:36px;flex-wrap:wrap}
+.foot-links{display:flex;gap:40px;flex-wrap:wrap}
+.foot-col h4{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:500;margin-bottom:12px}
+.foot-col a,.foot-col p{display:block;font-size:.88rem;color:var(--ink-2);margin-bottom:8px}
+.foot-col a:hover{color:var(--violet)}
+.legal{margin-top:40px;padding-top:22px;border-top:1px solid var(--line-soft);font-size:.78rem;color:var(--ink-3);display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+
+.note{
+  border-left:2px solid var(--gold);padding:14px 18px;background:rgba(230,180,80,.05);
+  border-radius:0 10px 10px 0;font-size:.88rem;color:var(--ink-2);
+}
+
+/* ---------- responsive ---------- */
+@media(max-width:900px){
+  .player-body{grid-template-columns:1fr}
+  .side{border-left:none;border-top:1px solid var(--line-soft);display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
+  .g4,.g3{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:720px){
+  .tabs{
+    display:none;position:absolute;top:66px;left:0;right:0;flex-direction:column;gap:0;
+    background:var(--bg-2);border-bottom:1px solid var(--line);padding:10px;
+  }
+  .tabs.open{display:flex}
+  .tab{padding:13px;border-radius:8px;text-align:left}
+  .burger{display:block}
+  .navcta{display:none}
+  .g4,.g3,.g2,.f2{grid-template-columns:1fr}
+  .sec{padding:56px 0}
+  .page{padding:44px 0 20px}
+  .side{grid-template-columns:1fr}
+  .foot-links{gap:28px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="wrap nav">
+  <a class="brand" href="#home" data-go="home">
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M12 6.5v13.5" stroke="#A855F7" stroke-width="3.2" stroke-linecap="round"/>
+      <path d="M12 20.5h9.5" stroke="#22D3EE" stroke-width="3.2" stroke-linecap="round"/>
+      <circle cx="9" cy="21.8" r="3.6" fill="#EC4899"/>
+    </svg>
+    LYRIXIS
+  </a>
+  <button class="burger" id="burger" aria-label="Menu">Menu</button>
+  <nav class="tabs" id="tabs">
+    <button class="tab on" data-go="home">Home</button>
+    <button class="tab" data-go="pricing">Pricing</button>
+    <button class="tab" data-go="api">API</button>
+    <button class="tab" data-go="enterprise">Enterprise</button>
+    <button class="tab" data-go="faq">FAQ</button>
+  </nav>
+  <a class="navcta" href="mailto:Lyrixis@Apixis.dev?subject=Lyrixis%20catalog%20pilot">Talk to Lyrixis</a>
+</div>
+</header>
+
+<main>
+
+<!-- ============ HOME ============ -->
+<section class="page on" id="p-home">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">Music intelligence · Pay per song</div>
+    <h1>Music.<br><span class="grad">Understood.</span></h1>
+    <p class="lede">Turn any recording into synchronized lyrics, translations, metadata and structured music intelligence. One song or a million — the same engine, the same price list.</p>
+    <div class="cta-row">
+      <a class="btn btn-p" href="mailto:Lyrixis@Apixis.dev?subject=Lyrixis%20early%20access&body=Number%20of%20tracks%3A%0ALanguages%3A%0AWhat%20you%20need%3A%0A">Request early access</a>
+      <button class="btn btn-s" data-go="api">Explore the API</button>
+    </div>
+    <div class="trust">
+      <span>Word-level timing</span>
+      <span>40+ languages</span>
+      <span>Dialect detection</span>
+      <span>TTML · LRC · SRT · JSON</span>
+    </div>
+  </div>
+
+  <!-- SIGNATURE -->
+  <div class="player">
+    <div class="player-bar"></div>
+    <div class="player-top">
+      <div class="art"></div>
+      <div class="trackmeta">
+        <strong>Untitled Demo Track</strong>
+        <span>3:42 · Arabic (Yemeni) + English · trx_demo_001</span>
+      </div>
+      <span class="badge live" style="margin-left:auto">Completed</span>
+      <span class="badge">98.2% confidence</span>
+    </div>
+    <div class="player-body">
+      <div class="stage">
+        <div class="section-tag" id="sectionTag">Verse 1</div>
+        <div id="lyricStage"></div>
+      </div>
+      <aside class="side">
+        <div class="stat">
+          <div class="stat-k"><span>Transcription</span><span id="c1">98.2%</span></div>
+          <div class="stat-v">Word-level aligned</div>
+          <div class="meter"><i style="width:98.2%"></i></div>
+        </div>
+        <div class="stat">
+          <div class="stat-k"><span>Language</span><span>99.1%</span></div>
+          <div class="stat-v">Arabic · <span style="color:var(--cyan)">ar</span></div>
+          <div class="meter"><i style="width:99.1%"></i></div>
+        </div>
+        <div class="stat">
+          <div class="stat-k"><span>Dialect</span><span style="color:var(--gold)">82.5%</span></div>
+          <div class="stat-v">Yemeni Arabic <small style="color:var(--gold);font-family:var(--mono);font-size:.66rem">· review</small></div>
+          <div class="meter warn"><i style="width:82.5%"></i></div>
+        </div>
+        <div class="stat">
+          <div class="stat-k"><span>Explicit</span><span>96.0%</span></div>
+          <div class="stat-v">Clean</div>
+          <div class="meter"><i style="width:96%"></i></div>
+        </div>
+      </aside>
+    </div>
+    <div class="player-foot">
+      <button class="play" id="playBtn" aria-label="Play preview">▶</button>
+      <div class="scrub" id="scrub"><i id="scrubFill"></i></div>
+      <span class="time" id="timeLbl">0:00 / 0:12</span>
+    </div>
+    <div class="demo-note">Simulated preview — no audio plays. Illustrates the synced lyric view. Gold underline = low-confidence word flagged for review.</div>
+  </div>
+
+  <!-- PROCESS -->
+  <div class="sec">
+    <div class="sec-head">
+      <div class="eyebrow">How it works</div>
+      <h2>Four steps. No pipeline to build.</h2>
+    </div>
+    <div class="grid g4">
+      <div class="card"><span class="num">01</span><h3>Upload</h3><p>Drop in MP3, WAV, M4A or FLAC — one file or ten thousand. Drag, drop, or POST to the API.</p></div>
+      <div class="card"><span class="num">02</span><h3>Analyze</h3><p>Transcription, forced alignment, language and dialect ID, section detection, explicit screening.</p></div>
+      <div class="card"><span class="num">03</span><h3>Understand</h3><p>Review the synced view, correct anything the model got wrong. Every edit autosaves and is versioned.</p></div>
+      <div class="card"><span class="num">04</span><h3>Export</h3><p>TTML, LRC, SRT, VTT, JSON, CSV, TXT — or pull it straight from the API into your own systems.</p></div>
+    </div>
+  </div>
+
+  <!-- LAYERS -->
+  <div class="sec">
+    <div class="sec-head">
+      <div class="eyebrow">Output</div>
+      <h2>One upload. Every layer.</h2>
+      <p class="lede" style="margin-top:14px">A single track returns a complete intelligence package — not just a transcript.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card"><h3>Lyrics &amp; timing</h3><p>Full transcription, line separation, word-level and line-level timestamps, per-line confidence scores.</p></div>
+      <div class="card"><h3>Song structure</h3><p>Intro, verse, pre-chorus, chorus, bridge, outro and instrumental sections with start and end times.</p></div>
+      <div class="card"><h3>Language &amp; dialect</h3><p>Primary language, additional languages, and dialect where confidence supports it. Never asserted when it isn't.</p></div>
+      <div class="card"><h3>Translation</h3><p>Line-aligned translation into supported languages, keeping timing intact for subtitle and lyric workflows.</p></div>
+      <div class="card"><h3>Transliteration</h3><p>Arabic script to Latin, Hangul to romanization, and other scripts where a standard mapping exists.</p></div>
+      <div class="card"><h3>Explicit screening</h3><p>Clean, explicit or possibly explicit — with the specific words and lines highlighted for your review.</p></div>
+      <div class="card"><h3>Vocal map</h3><p>Vocal, instrumental and silent regions. Voice changes flagged for duets and featured sections.</p></div>
+      <div class="card"><h3>Metadata</h3><p>Title, artist, album, ISRC, label, publisher, writers and credits — carried through every export.</p></div>
+      <div class="card"><h3>Corrections</h3><p>Edit any line. Every version is preserved, so your catalog only ever gets more accurate over time.</p></div>
+    </div>
+    <div class="note" style="margin-top:26px"><strong>On credits:</strong> Lyrixis never claims songwriter, publisher or ownership information inferred from audio is authoritative. Authoritative credits come from your metadata, your distributor, or a verified rights-holder integration.</div>
+  </div>
+
+  <!-- WEDGE -->
+  <div class="sec">
+    <div class="sec-head">
+      <div class="eyebrow">Where we're deepest</div>
+      <h2>The catalogs everyone else gets wrong.</h2>
+      <p class="lede" style="margin-top:14px">Most lyric infrastructure was built English-first and bolted the rest on. Lyrixis is being built by people who care about the repertoires that get treated as an afterthought — starting with Arabic.</p>
+    </div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Dialect-aware Arabic</h3>
+        <p>Yemeni, Gulf, Egyptian, Levantine and Modern Standard handled as distinct varieties — with an honest confidence score attached, not a guess presented as fact.</p>
+        <div class="pills">
+          <span class="pill hot">Yemeni</span><span class="pill hot">Gulf</span><span class="pill hot">Egyptian</span>
+          <span class="pill">Levantine</span><span class="pill">MSA</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Script and romanization</h3>
+        <p>Arabic script output plus Latin transliteration in the same package, so search indexing, subtitle workflows and Western-market metadata all work from one job.</p>
+        <div class="pills">
+          <span class="pill">Arabic → Latin</span><span class="pill">Hangul → Romaja</span>
+          <span class="pill">Hindi</span><span class="pill">Urdu</span><span class="pill">Turkish</span><span class="pill">Spanish</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USE CASES -->
+  <div class="sec">
+    <div class="sec-head">
+      <div class="eyebrow">Who it's for</div>
+      <h2>Same engine, whatever the scale.</h2>
+    </div>
+    <div class="grid g4">
+      <div class="card"><h3>Artists</h3><p>Get synced lyrics and clean metadata for a release without hiring anyone. One song, $2.99.</p></div>
+      <div class="card"><h3>Catalog owners</h3><p>Enrich a back catalog that has never had timed lyrics, translations or structure data attached.</p></div>
+      <div class="card"><h3>Music companies</h3><p>Labels, distributors and publishers processing releases in bulk with QA and confidence reporting.</p></div>
+      <div class="card"><h3>Developers</h3><p>One REST API. Upload a track, poll a job, pull structured JSON into your own product.</p></div>
+    </div>
+    <div class="cta-row" style="margin-top:34px">
+      <a class="btn btn-p" href="mailto:Lyrixis@Apixis.dev?subject=Lyrixis%20catalog%20pilot&body=Company%3A%0ANumber%20of%20tracks%3A%0ALanguages%3A%0AUse%20case%3A%0A">Start a catalog pilot</a>
+      <button class="btn btn-s" data-go="pricing">See pricing</button>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="page" id="p-pricing">
+<div class="wrap">
+  <div class="sec-head" style="padding-top:20px">
+    <div class="eyebrow">Pricing</div>
+    <h2>Pay for what you process.</h2>
+    <p class="lede" style="margin-top:14px">No subscription. No seat licences. No separate plan because you're a label instead of an artist. The rate drops as volume rises.</p>
+  </div>
+
+  <div class="grid g2" style="align-items:start;gap:40px">
+    <div>
+      <table class="ptable">
+        <thead><tr><th>Songs processed</th><th style="text-align:right">Per song</th></tr></thead>
+        <tbody>
+          <tr><td>1 – 99</td><td>$2.99</td></tr>
+          <tr><td>100 – 999</td><td>$1.49</td></tr>
+          <tr><td>1,000 – 9,999</td><td>$0.75</td></tr>
+          <tr><td>10,000 – 99,999</td><td>$0.40</td></tr>
+          <tr><td>100,000 – 999,999</td><td>$0.20</td></tr>
+          <tr><td>1,000,000+</td><td style="font-size:.95rem;color:var(--cyan)">Custom</td></tr>
+        </tbody>
+      </table>
+      <p style="color:var(--ink-3);font-size:.85rem;margin-top:18px">Processing millions of songs? <a href="mailto:Lyrixis@Apixis.dev?subject=Lyrixis%20enterprise%20pricing" style="color:var(--violet)">Contact Enterprise →</a></p>
+      <div class="note" style="margin-top:26px">Introductory rates for early customers. Pricing is confirmed in writing before any catalog job runs.</div>
+    </div>
+
+    <div class="calc">
+      <label for="songs">Estimate your cost</label>
+      <div class="songcount" id="songDisplay">10,000 songs</div>
+      <input type="range" id="songs" min="0" max="100" value="62" step="1" aria-label="Number of songs">
+      <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:.68rem;color:var(--ink-3)">
+        <span>1</span><span>1M+</span>
+      </div>
+      <div class="calc-out">
+        <div class="calc-box"><span>Rate</span><strong id="outRate">$0.40</strong></div>
+        <div class="calc-box"><span>Estimated total</span><strong class="grad" id="outTotal">$4,000</strong></div>
+      </div>
+      <p style="color:var(--ink-3);font-size:.8rem;margin-top:18px">Estimate only. Final pricing is calculated server-side at checkout. Add-ons such as translation and human verification are priced separately.</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head">
+      <div class="eyebrow">Add-ons</div>
+      <h2>Only pay for the layers you need.</h2>
+    </div>
+    <div class="grid g3">
+      <div class="card"><h3>Translation</h3><p>Line-aligned translation, priced per track per target language.</p></div>
+      <div class="card"><h3>Human verification</h3><p>Optional human review pass. Status upgrades from AI Generated to Human Verified.</p></div>
+      <div class="card"><h3>Priority processing</h3><p>Front-of-queue placement for time-sensitive releases and deadlines.</p></div>
+    </div>
+    <p style="color:var(--ink-3);font-size:.85rem;margin-top:20px">Add-on pricing is set per account during onboarding while we validate real processing costs.</p>
+  </div>
+</div>
+</section>
+
+<!-- ============ API ============ -->
+<section class="page" id="p-api">
+<div class="wrap">
+  <div class="sec-head" style="padding-top:20px">
+    <div class="eyebrow">Developers</div>
+    <h2>Music intelligence through one API.</h2>
+    <p class="lede" style="margin-top:14px">Upload a track, get an ID, poll for the package. Asynchronous by design — no request ever waits on a model.</p>
+  </div>
+
+  <div class="grid g2" style="gap:24px;align-items:start">
+    <div class="code">
+      <div class="code-top"><span class="verb post">POST</span> /v1/tracks</div>
+<pre><span class="c"># upload audio, receive a track id immediately</span>
+curl -X POST https://api.lyrixis.com/v1/tracks \
+  -H <span class="s">"Authorization: Bearer $LYRIXIS_API_KEY"</span> \
+  -F <span class="s">"audio=@track.wav"</span> \
+  -F <span class="s">"title=Untitled"</span> \
+  -F <span class="s">"rights_confirmed=true"</span>
+
+<span class="c">→</span> { <span class="s">"track_id"</span>: <span class="s">"trx_123"</span>, <span class="s">"status"</span>: <span class="s">"queued"</span> }</pre>
+    </div>
+
+    <div class="code">
+      <div class="code-top"><span class="verb get">GET</span> /v1/tracks/trx_123</div>
+<pre>{
+  <span class="s">"track_id"</span>: <span class="s">"trx_123"</span>,
+  <span class="s">"status"</span>: <span class="s">"completed"</span>,
+  <span class="s">"language"</span>: <span class="s">"ar"</span>,
+  <span class="s">"dialect"</span>: <span class="s">"Yemeni Arabic"</span>,
+  <span class="s">"dialect_confidence"</span>: <span class="n">0.825</span>,
+  <span class="s">"transcription_confidence"</span>: <span class="n">0.982</span>,
+  <span class="s">"explicit"</span>: <span class="k">false</span>,
+  <span class="s">"lyrics"</span>: [ ... ],
+  <span class="s">"timestamps"</span>: [ ... ],
+  <span class="s">"structure"</span>: [ ... ],
+  <span class="s">"verification"</span>: <span class="s">"ai_generated"</span>
+}</pre>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head"><div class="eyebrow">Endpoints</div><h2>The whole surface.</h2></div>
+    <div class="ep"><span class="verb post">POST</span><code>/v1/tracks</code><small>Upload a single track</small></div>
+    <div class="ep"><span class="verb post">POST</span><code>/v1/tracks/batch</code><small>Submit a catalog job</small></div>
+    <div class="ep"><span class="verb get">GET</span><code>/v1/tracks/{id}</code><small>Retrieve the intelligence package</small></div>
+    <div class="ep"><span class="verb get">GET</span><code>/v1/tracks/{id}/exports</code><small>TTML, LRC, SRT, VTT, JSON, CSV, TXT</small></div>
+    <div class="ep"><span class="verb post">POST</span><code>/v1/translations</code><small>Request a translation layer</small></div>
+    <div class="ep"><span class="verb get">GET</span><code>/v1/usage</code><small>Volume, spend and current tier</small></div>
+    <div class="ep"><span class="verb post">POST</span><code>/v1/webhooks</code><small>Signed callbacks on job completion</small></div>
+  </div>
+
+  <div class="sec">
+    <div class="grid g3">
+      <div class="card"><h3>API keys</h3><p>Generate, rename and revoke keys. See last used and per-key usage. The full key is shown once at creation and never again.</p></div>
+      <div class="card"><h3>Webhooks</h3><p>Signed callbacks when a job completes or fails, so you never have to poll a large batch.</p></div>
+      <div class="card"><h3>Batch jobs</h3><p>Submit thousands of tracks in one call. Track completed, processing, queued and failed counts, and retry failures individually.</p></div>
+    </div>
+    <div class="note" style="margin-top:26px">The API is in private preview. Email <a href="mailto:Lyrixis@Apixis.dev?subject=Lyrixis%20API%20access" style="color:var(--violet)">Lyrixis@Apixis.dev</a> for a key and we'll onboard you directly.</div>
+  </div>
+</div>
+</section>
+
+<!-- ============ ENTERPRISE ============ -->
+<section class="page" id="p-enterprise">
+<div class="wrap">
+  <div class="sec-head" style="padding-top:20px">
+    <div class="eyebrow">Enterprise</div>
+    <h2>Process catalogs at scale.</h2>
+    <p class="lede" style="margin-top:14px">Lyrixis processes 1 song, 1,000 songs, or 1,000,000 songs through the same engine. Enterprise adds throughput, integration and support — not a different product.</p>
+  </div>
+
+  <div class="grid g3" style="margin-bottom:56px">
+    <div class="card"><h3>Catalog enrichment</h3><p>Attach lyrics, structure and language data to back catalogue that has never had it.</p></div>
+    <div class="card"><h3>Lyric synchronization</h3><p>Word-timed TTML and LRC built for time-synchronized lyric delivery workflows.</p></div>
+    <div class="card"><h3>Localization</h3><p>Translation and transliteration across your repertoire, timing preserved.</p></div>
+    <div class="card"><h3>Search indexing</h3><p>Make a catalog searchable by what is actually sung in it, in script and in romanization.</p></div>
+    <div class="card"><h3>Content classification</h3><p>Explicit screening and language tagging across every release, with confidence reporting.</p></div>
+    <div class="card"><h3>Catalog QA</h3><p>Flag low-confidence tracks so human review goes only where it's actually needed.</p></div>
+  </div>
+
+  <div class="grid g2" style="gap:40px;align-items:start">
+    <div>
+      <h2 style="font-size:1.9rem;margin-bottom:16px">Talk to Lyrixis</h2>
+      <p style="color:var(--ink-2);font-size:.95rem;margin-bottom:22px">Tell us the size of the catalog and the languages in it. We'll come back with a processing plan, a price, and a sample run on your tracks.</p>
+      <div class="pills">
+        <span class="pill">Custom pricing</span><span class="pill">Bulk upload</span><span class="pill">Priority queue</span>
+        <span class="pill">SLA</span><span class="pill">Dedicated support</span><span class="pill">Custom integrations</span>
+      </div>
+      <div class="note" style="margin-top:28px">Direct line: <a href="mailto:Lyrixis@Apixis.dev" style="color:var(--violet)">Lyrixis@Apixis.dev</a></div>
+    </div>
+
+    <div class="form">
+      <div class="f2">
+        <div class="field"><label for="f-name">Name</label><input id="f-name" type="text"></div>
+        <div class="field"><label for="f-co">Company</label><input id="f-co" type="text"></div>
+      </div>
+      <div class="field"><label for="f-email">Work email</label><input id="f-email" type="email"></div>
+      <div class="f2">
+        <div class="field"><label for="f-tracks">Number of tracks</label>
+          <select id="f-tracks"><option>Under 100</option><option>100 – 999</option><option>1,000 – 9,999</option><option>10,000 – 99,999</option><option>100,000+</option></select>
+        </div>
+        <div class="field"><label for="f-int">Desired integration</label>
+          <select id="f-int"><option>Dashboard only</option><option>REST API</option><option>Batch / SFTP delivery</option><option>Not sure yet</option></select>
+        </div>
+      </div>
+      <div class="field"><label for="f-use">Use case</label><input id="f-use" type="text" placeholder="Catalog enrichment, sync, localization…"></div>
+      <div class="field"><label for="f-msg">Message</label><textarea id="f-msg" placeholder="Languages in the catalog, timeline, anything else."></textarea></div>
+      <button class="btn btn-p" id="sendLead" style="width:100%;justify-content:center">Send to Lyrixis</button>
+      <p style="color:var(--ink-3);font-size:.76rem;margin-top:14px;text-align:center">Opens your email client addressed to Lyrixis@Apixis.dev</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="page" id="p-faq">
+<div class="wrap">
+  <div class="sec-head" style="padding-top:20px">
+    <div class="eyebrow">FAQ</div>
+    <h2>Straight answers.</h2>
+  </div>
+
+  <details class="faq" open><summary>What exactly do I get for one song?</summary><p>A full transcription with word-level and line-level timestamps, detected song structure, language and dialect identification, explicit content screening, a vocal/instrumental map, your metadata carried through, and exports in TXT, JSON, CSV, SRT, LRC, VTT and TTML. Every automated result carries a confidence score.</p></details>
+
+  <details class="faq"><summary>Do I need a subscription?</summary><p>No. Lyrixis is pay-per-song. Process one track for $2.99 without any commitment, or preload a balance if you're processing regularly. Volume rates apply automatically as your count grows.</p></details>
+
+  <details class="faq"><summary>Is there a different plan for labels?</summary><p>No. Labels, artists, distributors and developers all use the same engine and the same volume price list. Enterprise agreements add throughput, SLA, integration support and negotiated rates above a million tracks — not a different product.</p></details>
+
+  <details class="faq"><summary>How accurate is it on sung vocals?</summary><p>Music transcription is genuinely harder than speech. That's why Lyrixis is built around confidence scoring and correction rather than pretending the first result is final. Low-confidence lines are flagged so you know exactly where to look, and every correction you make is saved and versioned.</p></details>
+
+  <details class="faq"><summary>Which languages and dialects are supported?</summary><p>Arabic (including Yemeni, Gulf, Egyptian and Levantine varieties), English, Spanish, French, Turkish, Urdu, Hindi, Korean and more. Dialect is only reported when confidence supports it — if we aren't sure, we say so rather than guessing.</p></details>
+
+  <details class="faq"><summary>Can I correct mistakes?</summary><p>Yes. Every line and word is editable in the synced view, and edits autosave. Previous versions are preserved so nothing is ever lost.</p></details>
+
+  <details class="faq"><summary>What formats can I export?</summary><p>TXT, JSON, CSV, SRT, LRC, VTT and TTML. TTML is built for professional time-synchronized lyric workflows. More formats can be added on request.</p></details>
+
+  <details class="faq"><summary>Who owns the output?</summary><p>You do. Lyrixis processes recordings you own or are authorized to process, and the resulting data belongs to you. Full terms are being finalized with counsel before general availability.</p></details>
+
+  <details class="faq"><summary>Can I use Lyrixis on songs I don't own?</summary><p>No. Every upload requires confirmation that you own, control, or have permission to process the recording. Lyrixis is not a tool for pulling audio from streaming services, and accounts doing so will be terminated.</p></details>
+
+  <details class="faq"><summary>How is my audio stored?</summary><p>In private storage with signed, expiring access URLs. Audio is never publicly accessible. Enterprise customers can request defined retention periods and secure deletion on completion.</p></details>
+
+  <details class="faq"><summary>What is "human verified"?</summary><p>A planned optional service. Results are labelled by verification level — AI Generated, AI Reviewed, Human Verified, or Verified by Rights Holder — so you always know the provenance of a line. Human review is not yet available.</p></details>
+
+  <details class="faq"><summary>Can I process a whole catalog?</summary><p>Yes. Drag in thousands of files or submit a batch job through the API. You'll see live completed, processing, queued and failed counts, and can retry failures individually.</p></details>
+
+  <details class="faq"><summary>What stage is Lyrixis at?</summary><p>Early access. The engine and pricing are live for pilot customers and the self-serve dashboard and public API are rolling out to onboarded accounts first. Email <a href="mailto:Lyrixis@Apixis.dev" style="color:var(--violet)">Lyrixis@Apixis.dev</a> and we'll run a sample of your tracks.</p></details>
+</div>
+</section>
+
+</main>
+
+<footer>
+<div class="wrap">
+  <div class="foot">
+    <div style="max-width:290px">
+      <a class="brand" href="#home" data-go="home" style="margin-bottom:14px">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M12 6.5v13.5" stroke="#A855F7" stroke-width="3.2" stroke-linecap="round"/>
+          <path d="M12 20.5h9.5" stroke="#22D3EE" stroke-width="3.2" stroke-linecap="round"/>
+          <circle cx="9" cy="21.8" r="3.6" fill="#EC4899"/>
+        </svg> LYRIXIS
+      </a>
+      <p style="color:var(--ink-3);font-size:.86rem">One song. Every layer of intelligence.</p>
+    </div>
+    <div class="foot-links">
+      <div class="foot-col">
+        <h4>Product</h4>
+        <a href="#pricing" data-go="pricing">Pricing</a>
+        <a href="#api" data-go="api">API</a>
+        <a href="#enterprise" data-go="enterprise">Enterprise</a>
+        <a href="#faq" data-go="faq">FAQ</a>
+      </div>
+      <div class="foot-col">
+        <h4>Contact</h4>
+        <a href="mailto:Lyrixis@Apixis.dev">Lyrixis@Apixis.dev</a>
+        <a href="mailto:Lyrixis@Apixis.dev?subject=Lyrixis%20enterprise">Enterprise sales</a>
+        <a href="mailto:Lyrixis@Apixis.dev?subject=Lyrixis%20API%20access">API access</a>
+      </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <a href="mailto:Lyrixis@Apixis.dev?subject=Terms%20request">Terms of Service</a>
+        <a href="mailto:Lyrixis@Apixis.dev?subject=Privacy%20request">Privacy Policy</a>
+        <a href="mailto:Lyrixis@Apixis.dev?subject=DMCA%20notice">Copyright / DMCA</a>
+      </div>
+    </div>
+  </div>
+  <div class="legal">
+    <span>© 2026 Lyrixis — a product of Apixis Dev LLC, Illinois.</span>
+    <span>Legal documents pending attorney review.</span>
+  </div>
+</div>
+</footer>
+
+<script>
+/* ---------- routing ---------- */
+const pages=["home","pricing","api","enterprise","faq"];
+function go(id){
+  if(!pages.includes(id))id="home";
+  pages.forEach(p=>document.getElementById("p-"+p).classList.toggle("on",p===id));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.go===id));
+  history.replaceState(null,"","#"+id);
+  window.scrollTo({top:0,behavior:"instant"});
+  document.getElementById("tabs").classList.remove("open");
+}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-go]");
+  if(t){e.preventDefault();go(t.dataset.go);}
+});
+document.getElementById("burger").onclick=()=>document.getElementById("tabs").classList.toggle("open");
+go((location.hash||"#home").slice(1));
+
+/* ---------- pricing calculator ---------- */
+const TIERS=[
+  {min:1,max:99,rate:2.99},
+  {min:100,max:999,rate:1.49},
+  {min:1000,max:9999,rate:0.75},
+  {min:10000,max:99999,rate:0.40},
+  {min:100000,max:999999,rate:0.20},
+  {min:1000000,max:Infinity,rate:null}
+];
+const rateFor=n=>TIERS.find(t=>n>=t.min&&n<=t.max);
+const slider=document.getElementById("songs");
+function songsFromSlider(v){
+  // log scale 1 -> 1,000,000
+  const n=Math.round(Math.pow(10,(v/100)*6));
+  if(n<10)return n;
+  const mag=Math.pow(10,Math.floor(Math.log10(n))-1);
+  return Math.round(n/mag)*mag;
+}
+function updateCalc(){
+  const n=Math.max(1,songsFromSlider(+slider.value));
+  const t=rateFor(n);
+  document.getElementById("songDisplay").textContent=n.toLocaleString()+" song"+(n===1?"":"s");
+  if(t.rate===null){
+    document.getElementById("outRate").textContent="Custom";
+    document.getElementById("outTotal").textContent="Contact us";
+  }else{
+    document.getElementById("outRate").textContent="$"+t.rate.toFixed(2);
+    document.getElementById("outTotal").textContent="$"+(n*t.rate).toLocaleString(undefined,{maximumFractionDigits:0});
+  }
+}
+slider.addEventListener("input",updateCalc);updateCalc();
+
+/* ---------- enterprise lead -> mailto ---------- */
+document.getElementById("sendLead").onclick=()=>{
+  const v=id=>document.getElementById(id).value.trim();
+  const body=[
+    "Name: "+v("f-name"),
+    "Company: "+v("f-co"),
+    "Work email: "+v("f-email"),
+    "Number of tracks: "+v("f-tracks"),
+    "Desired integration: "+v("f-int"),
+    "Use case: "+v("f-use"),
+    "",
+    v("f-msg")
+  ].join("\n");
+  location.href="mailto:Lyrixis@Apixis.dev?subject="+
+    encodeURIComponent("Lyrixis enterprise enquiry — "+(v("f-co")||"new lead"))+
+    "&body="+encodeURIComponent(body);
+};
+
+/* ---------- signature synced-lyric preview ---------- */
+const LYRICS=[
+  {dir:"rtl",cls:"ar",sub:"ʿalā al-darb al-ṭawīl nughannī  ·  “On the long road, we sing”",
+   words:[["على",0.0,0.5],["الدرب",0.5,1.15],["الطويل",1.15,1.95],["نغني",1.95,2.85]]},
+  {dir:"rtl",cls:"ar",sub:"wa-l-qamar yasmaʿunā  ·  “and the moon is listening”",
+   words:[["والقمر",3.2,4.05],["يسمعنا",4.05,5.10,true]]},
+  {dir:"ltr",cls:"en",sub:"featured vocal · language switch detected → en",
+   words:[["we",5.9,6.2],["carry",6.2,6.7],["the",6.7,6.95],["night",6.95,7.6],["in",7.6,7.85],["our",7.85,8.2],["hands",8.2,9.1]]}
+];
+const SECTIONS=[[0,5.4,"Verse 1"],[5.4,9.4,"Pre-Chorus"],[9.4,12,"Chorus"]];
+const DUR=12;
+const stage=document.getElementById("lyricStage");
+stage.innerHTML=LYRICS.map((l,i)=>
+  `<div class="lyric" data-i="${i}" dir="${l.dir}" style="margin-bottom:18px">
+     <div class="${l.cls}">${l.words.map((w,j)=>`<span class="w${w[3]?" low":""}" data-l="${i}" data-w="${j}">${w[0]}</span>`).join(" ")}</div>
+     <div class="sub">${l.sub}</div>
+   </div>`).join("");
+
+let t=0,playing=false,last=0;
+const fill=document.getElementById("scrubFill"),lbl=document.getElementById("timeLbl"),
+      btn=document.getElementById("playBtn"),tag=document.getElementById("sectionTag");
+const fmt=s=>"0:"+String(Math.floor(s)).padStart(2,"0");
+
+function render(){
+  fill.style.width=(t/DUR*100)+"%";
+  lbl.textContent=fmt(t)+" / 0:12";
+  const sec=SECTIONS.find(s=>t>=s[0]&&t<s[1]);
+  if(sec)tag.textContent=sec[2];
+  LYRICS.forEach((l,i)=>{
+    const start=l.words[0][1],end=l.words[l.words.length-1][2];
+    stage.querySelector(`.lyric[data-i="${i}"]`).classList.toggle("active",t>=start-0.5&&t<=end+0.9);
+    l.words.forEach((w,j)=>{
+      stage.querySelector(`.w[data-l="${i}"][data-w="${j}"]`).classList.toggle("lit",t>=w[1]&&t<w[2]);
+    });
+  });
+  document.getElementById("c1").textContent=(t>0&&t<DUR)?"live":"98.2%";
+}
+function loop(ts){
+  if(!playing)return;
+  if(!last)last=ts;
+  t+=(ts-last)/1000;last=ts;
+  if(t>=DUR){t=0;}
+  render();requestAnimationFrame(loop);
+}
+btn.onclick=()=>{
+  playing=!playing;btn.textContent=playing?"❚❚":"▶";last=0;
+  if(playing)requestAnimationFrame(loop);
+};
+document.getElementById("scrub").onclick=e=>{
+  const r=e.currentTarget.getBoundingClientRect();
+  t=Math.max(0,Math.min(DUR,(e.clientX-r.left)/r.width*DUR));render();
+};
+render();
+</script>
+</body>
+</html>
