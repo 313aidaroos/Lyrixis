@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Nav() {
   return (
-    <header className="sticky top-0 z-50 border-b border-line/50 bg-bg/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-line/50 bg-[#07060b]/92 shadow-lg shadow-black/30 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold">
           <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden>

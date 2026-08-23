@@ -27,15 +27,15 @@ export default async function TrackPage({
     <div className="mx-auto max-w-6xl px-6 py-12">
       {isProcessing && <TrackStatusPoller publicId={id} />}
 
-      <div className="flex flex-wrap items-start justify-between gap-4">
+      <div className="page-panel mb-8 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="font-mono text-xs text-ink-3">{track.publicId}</p>
-          <h1 className="mt-2 font-display text-4xl font-bold">{track.title}</h1>
-          <p className="mt-1 text-xl text-ink-2">{track.artist}</p>
+          <p className="font-mono text-xs text-ink-2">{track.publicId}</p>
+          <h1 className="text-hero mt-2 font-display text-4xl font-bold">{track.title}</h1>
+          <p className="text-hero mt-1 text-xl text-ink">{track.artist}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           {isDone && <ConfidenceBadge band={track.confidenceBand} />}
-          <span className="rounded-full bg-surface px-3 py-1 text-sm capitalize text-ink-2">
+          <span className="rounded-full bg-[#110e1c]/90 px-3 py-1 text-sm capitalize text-ink">
             {track.accountType}
           </span>
         </div>

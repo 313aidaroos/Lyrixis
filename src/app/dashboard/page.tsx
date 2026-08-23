@@ -8,17 +8,19 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-12">
+      <div className="page-panel mb-10">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-4xl font-bold">Dashboard</h1>
-          <p className="mt-2 text-ink-2">All processed tracks</p>
+          <h1 className="text-hero font-display text-4xl font-bold">Dashboard</h1>
+          <p className="text-hero mt-2 text-ink">All processed tracks</p>
         </div>
         <Link href="/upload" className="btn-primary">
           New upload
         </Link>
       </div>
+      </div>
 
-      <div className="card mt-10 overflow-hidden !p-0">
+      <div className="card mt-0 overflow-hidden !p-0">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-line bg-[#0c0a14] text-ink-3">
             <tr>

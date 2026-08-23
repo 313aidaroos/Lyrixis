@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Familjen_Grotesk } from "next/font/google";
 import "./globals.css";
+import { LivingBackground } from "@/components/LivingBackground";
 import { Nav } from "@/components/Nav";
 
 const display = Familjen_Grotesk({
@@ -32,6 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <body className="font-body antialiased">
+        <LivingBackground />
         <Nav />
         <main className="relative z-10">{children}</main>
       </body>

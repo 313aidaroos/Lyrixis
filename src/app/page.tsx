@@ -3,16 +3,16 @@ import Link from "next/link";
 export default function HomePage() {
   return (
     <div className="mx-auto max-w-6xl px-6 py-16">
-      <section className="py-12 text-center">
-        <p className="font-mono text-xs uppercase tracking-widest text-ink-3">
+      <section className="page-panel py-12 text-center">
+        <p className="font-mono text-xs uppercase tracking-widest text-ink-2">
           Music intelligence platform
         </p>
-        <h1 className="mt-4 font-display text-5xl font-bold leading-tight md:text-6xl">
+        <h1 className="text-hero mt-4 font-display text-5xl font-bold leading-tight md:text-6xl">
           Upload a song.
           <br />
           <span className="grad-text">Get intelligence back.</span>
         </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-lg text-ink-2">
+        <p className="text-hero mx-auto mt-6 max-w-2xl text-lg text-ink">
           Artists, labels, distributors, and DDEX catalogs — drop in audio or an ERN
           feed and Lyrixis returns synchronized lyrics, structure, metadata, and
           export-ready files.

@@ -24,15 +24,99 @@ body {
   min-height: 100vh;
 }
 
+body {
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* Remove old gradient — replaced by LivingBackground component */
 body::before {
-  content: "";
+  content: none;
+}
+
+/* ---------- Animated lifestyle background ---------- */
+.living-bg {
   position: fixed;
   inset: 0;
-  pointer-events: none;
   z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.living-bg__track {
+  position: absolute;
+  inset: -8%;
+  width: 116%;
+  height: 116%;
+}
+
+.living-bg__slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  filter: blur(1.5px) saturate(0.85) brightness(0.62);
+  transform: scale(1.04);
+  animation: living-bg-fade var(--total-duration, 144s) ease-in-out infinite,
+    living-bg-drift calc(var(--slide-duration, 18s) * 1.4) ease-in-out infinite;
+}
+
+/* Scrim balances atmosphere + readability — images visible but never dominant */
+.living-bg__scrim {
+  position: absolute;
+  inset: 0;
   background:
-    radial-gradient(720px 380px at 12% -8%, rgba(168, 85, 247, 0.2), transparent 65%),
-    radial-gradient(640px 360px at 88% 4%, rgba(34, 211, 238, 0.13), transparent 62%);
+    linear-gradient(180deg, rgba(7, 6, 11, 0.88) 0%, rgba(7, 6, 11, 0.72) 45%, rgba(7, 6, 11, 0.85) 100%),
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(168, 85, 247, 0.1), transparent 70%),
+    radial-gradient(ellipse 70% 50% at 80% 100%, rgba(34, 211, 238, 0.07), transparent 65%);
+}
+
+.living-bg__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 35%, rgba(7, 6, 11, 0.45) 100%);
+}
+
+@keyframes living-bg-fade {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  1% {
+    opacity: 0.38;
+  }
+  11% {
+    opacity: 0.38;
+  }
+  12.5% {
+    opacity: 0;
+  }
+}
+
+@keyframes living-bg-drift {
+  0% {
+    transform: scale(1.04) translate(0, 0);
+  }
+  50% {
+    transform: scale(1.09) translate(-1%, -0.5%);
+  }
+  100% {
+    transform: scale(1.04) translate(0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .living-bg__slide {
+    animation: none;
+    opacity: 0;
+    filter: blur(3px) saturate(0.6) brightness(0.5);
+  }
+
+  .living-bg__slide:first-child {
+    opacity: 0.32;
+  }
 }
 
 .grad-text {
@@ -40,10 +124,22 @@ body::before {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  filter: drop-shadow(0 2px 12px rgba(7, 6, 11, 0.95));
+}
+
+/* Readable hero copy over any background */
+.text-hero {
+  text-shadow: 0 2px 24px rgba(7, 6, 11, 0.9), 0 1px 3px rgba(7, 6, 11, 0.8);
 }
 
 .card {
-  @apply rounded-2xl border border-line bg-surface/80 p-6 backdrop-blur;
+  @apply rounded-2xl border border-line/80 p-6 shadow-lg shadow-black/30 backdrop-blur-md;
+  background-color: rgba(17, 14, 28, 0.92);
+}
+
+.page-panel {
+  @apply rounded-2xl border border-line/60 p-8 shadow-xl shadow-black/40 backdrop-blur-md;
+  background-color: rgba(12, 10, 20, 0.88);
 }
 
 .btn-primary {
@@ -56,11 +152,17 @@ body::before {
 }
 
 .input {
-  @apply w-full rounded-xl border border-line bg-[#0c0a14] px-4 py-3 text-ink outline-none transition focus:border-violet;
+  @apply w-full rounded-xl border border-line px-4 py-3 text-ink shadow-inner shadow-black/20 outline-none backdrop-blur-sm transition focus:border-violet;
+  background-color: rgba(12, 10, 20, 0.95);
+}
+
+.input::placeholder {
+  color: #9b93b8;
+  opacity: 1;
 }
 
 .label {
-  @apply mb-2 block text-sm font-medium text-ink-2;
+  @apply mb-2 block text-sm font-medium text-ink;
 }
 
 .band-high {

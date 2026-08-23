@@ -62,8 +62,9 @@ export default function UploadPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-12">
-      <h1 className="font-display text-4xl font-bold">Process a song</h1>
-      <p className="mt-3 text-ink-2">
+      <div className="page-panel">
+      <h1 className="text-hero font-display text-4xl font-bold">Process a song</h1>
+      <p className="text-hero mt-3 text-ink">
         Upload audio. Lyrixis analyzes it and sends back synced lyrics, structure,
         metadata, and exports.
       </p>
@@ -146,7 +147,9 @@ export default function UploadPage() {
             onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
             required
           />
-          <p className="mt-2 text-sm text-ink-3">MP3, WAV, FLAC, or M4A — up to 100MB</p>
+          <p className="mt-2 text-sm text-ink-2">
+            MP3, WAV, FLAC, or M4A — up to 100MB
+          </p>
         </div>
 
         {accountType === "ddex" && (
@@ -190,6 +193,7 @@ export default function UploadPage() {
           {loading ? "Uploading…" : "Upload & process"}
         </button>
       </form>
+      </div>
     </div>
   );
 }
