@@ -14,6 +14,7 @@ export function TrackView({ publicId }: { publicId: string }) {
   const [checkoutNotice, setCheckoutNotice] = useState<string | null>(null);
   const [paying, setPaying] = useState(false);
   const [tab, setTab] = useState<"synced" | "edit" | "exports">("synced");
+  const [quoteLabel, setQuoteLabel] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const response = await fetch(`/api/tracks/${publicId}`);
@@ -35,6 +36,15 @@ export function TrackView({ publicId }: { publicId: string }) {
         if (audio.ok) {
           const payload = (await audio.json()) as { url?: string };
           if (payload.url && !cancelled) setAudioUrl(payload.url);
+        }
+        if (!current.paid && (current.status === "completed" || current.status === "manual_review")) {
+          const quoteRes = await fetch("/api/quote?songs=1");
+          if (quoteRes.ok) {
+            const quote = (await quoteRes.json()) as { amountCents?: number };
+            if (typeof quote.amountCents === "number" && !cancelled) {
+              setQuoteLabel(`$${(quote.amountCents / 100).toFixed(2)}`);
+            }
+          }
         }
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : "Load failed.");
@@ -157,7 +167,9 @@ export function TrackView({ publicId }: { publicId: string }) {
         {error && <p className="mt-4 text-sm text-rose-300">{error}</p>}
         {ready && !track.paid && (
           <button className="btn-primary mt-6" type="button" disabled={paying} onClick={() => void pay()}>
-            {paying ? "Redirecting…" : "Unlock full lyrics — pay $2.99"}
+            {paying
+              ? "Redirecting…"
+              : `Unlock full lyrics — pay ${quoteLabel ?? "the listed price"}`}
           </button>
         )}
       </header>

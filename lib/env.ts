@@ -53,6 +53,10 @@ export function getStripeWebhookSecret(): string {
   return required("STRIPE_WEBHOOK_SECRET");
 }
 
+export function getStripePriceSingleTrack(): string {
+  return required("STRIPE_PRICE_SINGLE_TRACK");
+}
+
 export function getTranscriptionProviderName(): string {
   return optional("TRANSCRIPTION_PROVIDER") ?? "whisper_v3";
 }

@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { HttpError } from "@/lib/errors";
-import { getAppUrl } from "@/lib/env";
+import { getAppUrl, getStripePriceSingleTrack } from "@/lib/env";
 import { writeAudit } from "@/lib/audit";
 import { getStripe, randomIntegrationSuffix } from "@/lib/stripe";
 import { quote } from "@/services/pricing";
@@ -22,6 +22,22 @@ export async function createSingleTrackCheckout(input: {
 
   const priced = await quote(input.user.id, 1);
   const stripe = getStripe();
+  const priceId = getStripePriceSingleTrack();
+  const stripePrice = await stripe.prices.retrieve(priceId);
+  if (!stripePrice.active) {
+    throw new HttpError(
+      500,
+      "inactive_price",
+      `Stripe price ${priceId} is not active. Check STRIPE_PRICE_SINGLE_TRACK.`
+    );
+  }
+  if (stripePrice.unit_amount !== priced.amountCents) {
+    throw new HttpError(
+      500,
+      "price_mismatch",
+      `Stripe price ${priceId} is ${stripePrice.unit_amount ?? "null"} cents but pricing_tiers quoted ${priced.amountCents} cents. They must match before checkout.`
+    );
+  }
   const admin = createAdminClient();
 
   let customerId = input.user.stripeCustomerId;
@@ -40,15 +56,8 @@ export async function createSingleTrackCheckout(input: {
     client_reference_id: track.id,
     line_items: [
       {
+        price: priceId,
         quantity: 1,
-        price_data: {
-          currency: "usd",
-          unit_amount: priced.amountCents,
-          product_data: {
-            name: `Lyrixis single track — ${track.title ?? track.public_id}`,
-            description: "Unlock full lyrics, word-level sync, and TXT/SRT/LRC/JSON exports.",
-          },
-        },
       },
     ],
     metadata: {
@@ -56,6 +65,8 @@ export async function createSingleTrackCheckout(input: {
       public_id: track.public_id,
       user_id: input.user.id,
       kind: "single_track",
+      stripe_price_id: priceId,
+      quoted_amount_cents: String(priced.amountCents),
     },
     success_url: `${getAppUrl()}/tracks/${track.public_id}?checkout=success`,
     cancel_url: `${getAppUrl()}/tracks/${track.public_id}?checkout=cancelled`,
@@ -75,7 +86,11 @@ export async function createSingleTrackCheckout(input: {
     action: "checkout_created",
     entityType: "track",
     entityId: track.id,
-    metadata: { amount_cents: priced.amountCents, session_id: session.id },
+    metadata: {
+      amount_cents: priced.amountCents,
+      session_id: session.id,
+      stripe_price_id: priceId,
+    },
   });
 
   return { url: session.url };

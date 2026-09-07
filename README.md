@@ -50,10 +50,12 @@ Run Redis locally (`redis-server` or Docker) and set `REDIS_URL=redis://127.0.0.
 
 ### 4. Stripe
 
-1. Use test keys.
-2. `stripe listen --forward-to localhost:3000/api/webhooks/stripe`
-3. Put the webhook signing secret in `STRIPE_WEBHOOK_SECRET`.
-4. Never mark a track paid from the client. Unlock happens only in the verified webhook.
+1. Use test keys (`sk_test_…`).
+2. `STRIPE_PRICE_SINGLE_TRACK` is the TEST Price ID for **Lyrixis Single Track Unlock** (`prod_VDM9sVq3P1cxel`, $2.99). Checkout uses this Price; the server still quotes `pricing_tiers` and refuses to start Checkout if Stripe's amount does not match the DB.
+3. `stripe listen --forward-to localhost:3000/api/webhooks/stripe`
+4. Put the webhook signing secret in `STRIPE_WEBHOOK_SECRET`. Never commit `STRIPE_SECRET_KEY` or the webhook secret.
+5. Never mark a track paid from the client. Unlock happens only in the verified webhook.
+6. Swap `STRIPE_PRICE_SINGLE_TRACK` to the live Price ID before production. Balance top-ups are deferred.
 
 ### 5. Transcription provider
 
@@ -98,8 +100,9 @@ Nothing in this repo talks to live vendors without keys. Before a paying-custome
 | `NEXT_PUBLIC_SUPABASE_URL` | Auth, DB, Storage |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Browser + SSR auth |
 | `SUPABASE_SERVICE_ROLE_KEY` | Worker + privileged API (never expose to the browser) |
-| `STRIPE_SECRET_KEY` | Checkout Sessions |
-| `STRIPE_WEBHOOK_SECRET` | Signed webhook verification |
+| `STRIPE_SECRET_KEY` | Checkout Sessions (never commit) |
+| `STRIPE_WEBHOOK_SECRET` | Signed webhook verification (never commit) |
+| `STRIPE_PRICE_SINGLE_TRACK` | Catalog Price ID for single-track unlock |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Optional Stripe.js; hosted Checkout does not require it |
 | `REDIS_URL` | Queue + upload rate limit |
 | `TRANSCRIPTION_API_KEY` | Whisper (or OpenAI-compatible) transcription |
