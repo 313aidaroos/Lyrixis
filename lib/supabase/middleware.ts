@@ -5,7 +5,19 @@ export async function updateSession(request: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
+  const path = request.nextUrl.pathname;
+  const isProtected =
+    path.startsWith("/dashboard") ||
+    path.startsWith("/upload") ||
+    path.startsWith("/tracks");
+
   if (!url || !anonKey) {
+    if (isProtected) {
+      const redirect = request.nextUrl.clone();
+      redirect.pathname = "/login";
+      redirect.searchParams.set("next", path);
+      return NextResponse.redirect(redirect);
+    }
     return NextResponse.next({ request });
   }
 
@@ -29,12 +41,6 @@ export async function updateSession(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  const path = request.nextUrl.pathname;
-  const isProtected =
-    path.startsWith("/dashboard") ||
-    path.startsWith("/upload") ||
-    path.startsWith("/tracks");
 
   if (!user && isProtected) {
     const redirect = request.nextUrl.clone();
