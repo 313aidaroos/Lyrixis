@@ -39,7 +39,7 @@ Install **ffmpeg** on the machine that runs the worker (`ffmpeg -version`).
 ### 2. Supabase
 
 1. Create a project.
-2. Run `database/migrations/0001_init.sql` in the SQL editor (creates tables, seeds `pricing_tiers`, RLS, auth → `public.users` trigger, private bucket `lyrixis-audio-private`).
+2. Run `database/migrations/0001_init.sql` in the SQL editor (creates tables, seeds `pricing_tiers`, RLS, auth → `public.users` trigger, private bucket `lyrixis-audio-private`). Then run `database/migrations/0002_enterprise_leads_source.sql` (adds `enterprise_leads.source` for the marketing waitlist).
 3. Auth → enable Email and Google. Add redirect URL `{APP_URL}/auth/callback`.
 4. Copy project URL, anon key, and **service role** key into `.env.local`.
 5. Confirm Storage bucket `lyrixis-audio-private` is **private**.
@@ -85,6 +85,20 @@ npm run worker       # BullMQ consumer
 
 Then: Sign in → Upload → wait for status → preview → Pay → exports.
 
+## Marketing waitlist
+
+The enterprise / early-access form on `public/index.html` posts JSON to `POST /api/waitlist`. The route validates that **work email is required**, rate-limits lightly by IP, and inserts a row into `enterprise_leads` with the service role (`source = waitlist`). Secrets stay on the server; the static page only calls `/api/waitlist`.
+
+Hero **Request early access**, **Start a catalog pilot**, **Talk to Lyrixis**, and footer **Enterprise sales** jump to that form. Other `mailto:` links (direct line, API access, legal) are unchanged.
+
+Query new leads in Supabase:
+
+```sql
+select id, name, company, work_email, track_count, use_case, source, created_at
+from enterprise_leads
+order by created_at desc;
+```
+
 ### Quality checks
 
 ```bash
@@ -120,4 +134,5 @@ Deploy the Next.js app to Vercel. Deploy `npm run worker` on a VM/container plat
 | `LYRIXIS_DEVELOPER_BRIEF.md` | Build spec (source of truth) |
 | `LYRIXIS_ARCHITECTURE_REVIEW.md` | Strategy; do not expand MVP past brief §8 |
 | `schema.sql` | Original schema; applied as `database/migrations/0001_init.sql` |
+| `database/migrations/0002_enterprise_leads_source.sql` | Additive `enterprise_leads.source` for waitlist |
 | `public/index.html` | Marketing site (Cursor-built look preserved) |
