@@ -323,7 +323,7 @@ footer{border-top:1px solid var(--line-soft);padding:52px 0 40px;margin-top:60px
     <button class="tab" data-go="faq">FAQ</button>
     <a class="tab" href="/login">Sign in</a>
   </nav>
-  <a class="navcta" href="mailto:Lyrixis@Apixis.dev?subject=Lyrixis%20catalog%20pilot">Talk to Lyrixis</a>
+  <a class="navcta" href="#enterprise" data-go="enterprise">Talk to Lyrixis</a>
 </div>
 </header>
 
@@ -338,7 +338,7 @@ footer{border-top:1px solid var(--line-soft);padding:52px 0 40px;margin-top:60px
     <h1>Music.<br><span class="grad">Understood.</span></h1>
     <p class="lede">Turn any recording into synchronized lyrics, translations, metadata and structured music intelligence. One song or a million — the same engine, the same price list.</p>
     <div class="cta-row">
-      <a class="btn btn-p" href="mailto:Lyrixis@Apixis.dev?subject=Lyrixis%20early%20access&body=Number%20of%20tracks%3A%0ALanguages%3A%0AWhat%20you%20need%3A%0A">Request early access</a>
+      <a class="btn btn-p" href="#enterprise" data-go="enterprise">Request early access</a>
       <button class="btn btn-s" data-go="api">Explore the API</button>
     </div>
     <div class="trust">
@@ -472,7 +472,7 @@ footer{border-top:1px solid var(--line-soft);padding:52px 0 40px;margin-top:60px
       <div class="card"><h3>Developers</h3><p>One REST API. Upload a track, poll a job, pull structured JSON into your own product.</p></div>
     </div>
     <div class="cta-row" style="margin-top:34px">
-      <a class="btn btn-p" href="mailto:Lyrixis@Apixis.dev?subject=Lyrixis%20catalog%20pilot&body=Company%3A%0ANumber%20of%20tracks%3A%0ALanguages%3A%0AUse%20case%3A%0A">Start a catalog pilot</a>
+      <a class="btn btn-p" href="#enterprise" data-go="enterprise">Start a catalog pilot</a>
       <button class="btn btn-s" data-go="pricing">See pricing</button>
     </div>
   </div>
@@ -627,25 +627,25 @@ curl -X POST https://api.lyrixis.com/v1/tracks \
       <div class="note" style="margin-top:28px">Direct line: <a href="mailto:Lyrixis@Apixis.dev" style="color:var(--violet)">Lyrixis@Apixis.dev</a></div>
     </div>
 
-    <div class="form">
+    <form class="form" id="leadForm" novalidate>
       <div class="f2">
-        <div class="field"><label for="f-name">Name</label><input id="f-name" type="text"></div>
-        <div class="field"><label for="f-co">Company</label><input id="f-co" type="text"></div>
+        <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" type="text"></div>
+        <div class="field"><label for="f-co">Company</label><input id="f-co" name="company" type="text"></div>
       </div>
-      <div class="field"><label for="f-email">Work email</label><input id="f-email" type="email"></div>
+      <div class="field"><label for="f-email">Work email</label><input id="f-email" name="email" type="email" required></div>
       <div class="f2">
         <div class="field"><label for="f-tracks">Number of tracks</label>
-          <select id="f-tracks"><option>Under 100</option><option>100 – 999</option><option>1,000 – 9,999</option><option>10,000 – 99,999</option><option>100,000+</option></select>
+          <select id="f-tracks" name="tracks"><option>Under 100</option><option>100 – 999</option><option>1,000 – 9,999</option><option>10,000 – 99,999</option><option>100,000+</option></select>
         </div>
         <div class="field"><label for="f-int">Desired integration</label>
-          <select id="f-int"><option>Dashboard only</option><option>REST API</option><option>Batch / SFTP delivery</option><option>Not sure yet</option></select>
+          <select id="f-int" name="integration"><option>Dashboard only</option><option>REST API</option><option>Batch / SFTP delivery</option><option>Not sure yet</option></select>
         </div>
       </div>
-      <div class="field"><label for="f-use">Use case</label><input id="f-use" type="text" placeholder="Catalog enrichment, sync, localization…"></div>
-      <div class="field"><label for="f-msg">Message</label><textarea id="f-msg" placeholder="Languages in the catalog, timeline, anything else."></textarea></div>
-      <button class="btn btn-p" id="sendLead" style="width:100%;justify-content:center">Send to Lyrixis</button>
-      <p style="color:var(--ink-3);font-size:.76rem;margin-top:14px;text-align:center">Opens your email client addressed to Lyrixis@Apixis.dev</p>
-    </div>
+      <div class="field"><label for="f-use">Use case</label><input id="f-use" name="use_case" type="text" placeholder="Catalog enrichment, sync, localization…"></div>
+      <div class="field"><label for="f-msg">Message</label><textarea id="f-msg" name="message" placeholder="Languages in the catalog, timeline, anything else."></textarea></div>
+      <button class="btn btn-p" id="sendLead" type="submit" style="width:100%;justify-content:center">Send to Lyrixis</button>
+      <p id="leadStatus" style="color:var(--ink-3);font-size:.76rem;margin-top:14px;text-align:center">We'll save your request and follow up from Lyrixis@Apixis.dev</p>
+    </form>
   </div>
 </div>
 </section>
@@ -712,7 +712,7 @@ curl -X POST https://api.lyrixis.com/v1/tracks \
       <div class="foot-col">
         <h4>Contact</h4>
         <a href="mailto:Lyrixis@Apixis.dev">Lyrixis@Apixis.dev</a>
-        <a href="mailto:Lyrixis@Apixis.dev?subject=Lyrixis%20enterprise">Enterprise sales</a>
+        <a href="#enterprise" data-go="enterprise">Enterprise sales</a>
         <a href="mailto:Lyrixis@Apixis.dev?subject=Lyrixis%20API%20access">API access</a>
       </div>
       <div class="foot-col">
@@ -780,23 +780,50 @@ function updateCalc(){
 }
 slider.addEventListener("input",updateCalc);updateCalc();
 
-/* ---------- enterprise lead -> mailto ---------- */
-document.getElementById("sendLead").onclick=()=>{
+/* ---------- enterprise lead -> POST /api/waitlist ---------- */
+document.getElementById("leadForm").addEventListener("submit",async(e)=>{
+  e.preventDefault();
+  const btn=document.getElementById("sendLead");
+  const status=document.getElementById("leadStatus");
   const v=id=>document.getElementById(id).value.trim();
-  const body=[
-    "Name: "+v("f-name"),
-    "Company: "+v("f-co"),
-    "Work email: "+v("f-email"),
-    "Number of tracks: "+v("f-tracks"),
-    "Desired integration: "+v("f-int"),
-    "Use case: "+v("f-use"),
-    "",
-    v("f-msg")
-  ].join("\n");
-  location.href="mailto:Lyrixis@Apixis.dev?subject="+
-    encodeURIComponent("Lyrixis enterprise enquiry — "+(v("f-co")||"new lead"))+
-    "&body="+encodeURIComponent(body);
-};
+  const email=v("f-email");
+  const setStatus=(msg,tone)=>{
+    status.textContent=msg;
+    status.style.color=tone==="ok"?"var(--cyan)":tone==="err"?"var(--magenta)":"var(--ink-3)";
+  };
+  if(!email){
+    setStatus("Work email is required.", "err");
+    document.getElementById("f-email").focus();
+    return;
+  }
+  btn.disabled=true;
+  setStatus("Sending…","info");
+  try{
+    const res=await fetch("/api/waitlist",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        name:v("f-name"),
+        company:v("f-co"),
+        email,
+        tracks:v("f-tracks"),
+        integration:v("f-int"),
+        use_case:v("f-use"),
+        message:v("f-msg")
+      })
+    });
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok){
+      setStatus((data.error&&data.error.message)||"Could not send. Try again.","err");
+      btn.disabled=false;
+      return;
+    }
+    setStatus("Received. We'll follow up at "+email+".","ok");
+  }catch(_){
+    setStatus("Could not send. Check your connection and try again.","err");
+    btn.disabled=false;
+  }
+});
 
 /* ---------- signature synced-lyric preview ---------- */
 const LYRICS=[
