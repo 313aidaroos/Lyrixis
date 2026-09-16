@@ -25,7 +25,7 @@ export default function CixyPage() {
       <main className="mx-auto max-w-6xl px-6 py-12">
         <div className="grid gap-8 lg:grid-cols-[1fr_1.4fr]">
           <div>
-            <p className="font-mono text-xs uppercase tracking-[0.28em] text-cyan">
+            <p className="font-mono text-xs uppercase tracking-[0.28em] text-violet">
               <span className="grad-text">◈</span> A Apixis Company
             </p>
             <h1 className="mt-3 font-display text-5xl font-bold leading-tight">
@@ -50,7 +50,7 @@ export default function CixyPage() {
             </p>
           </div>
           <div className="card flex flex-col overflow-hidden p-0">
-            <div className="border-b border-white/10 px-4 py-3">
+            <div className="border-b border-line px-4 py-3">
               <p className="font-display text-sm font-semibold">
                 <span className="grad-text">◈</span> Cixy
               </p>

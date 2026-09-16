@@ -3,17 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --bg: #05050a;
-  --surface: #0c0c16;
-  --line: #1c1c2e;
-  --ink: #ffffff;
-  --ink-2: #b4b4c8;
-  --ink-3: #7a7a92;
+  --bg: #fbfaff;
+  --surface: #ffffff;
+  --line: #e6e4f2;
+  --ink: #15122b;
+  --ink-2: #57537a;
+  --ink-3: #8d89ab;
   --violet: #6366f1;
   --magenta: #ec4899;
-  --cyan: #22d3ee;
+  --cyan: #06b6d4;
   --gold: #c4a35a;
-  --spectrum: linear-gradient(90deg, #6366f1 0%, #a855f7 42%, #22d3ee 100%);
+  --spectrum: linear-gradient(90deg, #6366f1 0%, #a855f7 42%, #06b6d4 100%);
 }
 
 html {
@@ -26,16 +26,27 @@ body {
   min-height: 100vh;
 }
 
+/* Light, airy stage: soft color washes that drift slowly. */
 .site-stage {
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(900px 480px at 12% -10%, rgba(99, 102, 241, 0.22), transparent 60%),
-    radial-gradient(800px 420px at 92% 8%, rgba(34, 211, 238, 0.14), transparent 62%),
-    radial-gradient(700px 500px at 50% 110%, rgba(236, 72, 153, 0.1), transparent 65%),
-    #05050a;
+    radial-gradient(900px 520px at 10% -10%, rgba(99, 102, 241, 0.18), transparent 60%),
+    radial-gradient(800px 460px at 95% 5%, rgba(6, 182, 212, 0.16), transparent 62%),
+    radial-gradient(760px 520px at 50% 115%, rgba(236, 72, 153, 0.14), transparent 65%),
+    #fbfaff;
+  animation: stage-drift 22s ease-in-out infinite alternate;
+}
+
+@keyframes stage-drift {
+  from {
+    background-position: 0 0, 0 0, 0 0, 0 0;
+  }
+  to {
+    background-position: 60px 30px, -50px 40px, 0 -60px, 0 0;
+  }
 }
 
 .grad-text {
@@ -47,25 +58,26 @@ body {
 
 .card {
   @apply rounded-2xl border border-line p-6;
-  background: rgba(12, 12, 22, 0.72);
-  backdrop-filter: blur(16px);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03), 0 20px 50px rgba(0, 0, 0, 0.35);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 18px 46px rgba(99, 102, 241, 0.08);
 }
 
 .page-panel {
   @apply rounded-2xl border border-line p-8;
-  background: rgba(12, 12, 22, 0.82);
-  backdrop-filter: blur(18px);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 24px 60px rgba(99, 102, 241, 0.1);
 }
 
 .btn-primary {
   @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-50;
   background: var(--spectrum);
-  box-shadow: 0 0 24px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 10px 26px rgba(99, 102, 241, 0.3);
 }
 
 .btn-primary:hover {
-  filter: brightness(1.08);
+  filter: brightness(1.06);
   transform: translateY(-1px);
 }
 
@@ -80,24 +92,23 @@ body {
 @keyframes cta-pulse {
   0%,
   100% {
-    box-shadow: 0 0 18px rgba(99, 102, 241, 0.28);
+    box-shadow: 0 10px 22px rgba(99, 102, 241, 0.26);
   }
   50% {
-    box-shadow: 0 0 32px rgba(34, 211, 238, 0.45);
+    box-shadow: 0 14px 34px rgba(6, 182, 212, 0.38);
   }
 }
 
 .btn-secondary {
-  @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3 font-semibold text-ink backdrop-blur transition hover:border-cyan/50 hover:bg-white/10;
+  @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-white px-6 py-3 font-semibold text-ink transition hover:border-violet hover:shadow-md;
 }
 
 .input {
-  @apply w-full rounded-xl border border-line px-4 py-3 text-ink outline-none transition focus:border-violet;
-  background: rgba(8, 8, 16, 0.9);
+  @apply w-full rounded-xl border border-line bg-white px-4 py-3 text-ink outline-none transition focus:border-violet focus:ring-4 focus:ring-violet/10;
 }
 
 .input::placeholder {
-  color: #8a8aa3;
+  color: #9a96b8;
   opacity: 1;
 }
 
@@ -111,17 +122,102 @@ body {
 
 .glass-lift:hover {
   transform: translateY(-4px);
-  box-shadow: 0 0 32px rgba(99, 102, 241, 0.22);
+  box-shadow: 0 22px 50px rgba(99, 102, 241, 0.16);
 }
 
 .band-high {
-  @apply rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-medium text-emerald-300;
+  @apply rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-medium text-emerald-700;
 }
 
 .band-medium {
-  @apply rounded-full bg-amber-500/20 px-3 py-1 text-xs font-medium text-amber-300;
+  @apply rounded-full bg-amber-500/15 px-3 py-1 text-xs font-medium text-amber-700;
 }
 
 .band-review {
-  @apply rounded-full bg-rose-500/20 px-3 py-1 text-xs font-medium text-rose-300;
+  @apply rounded-full bg-rose-500/15 px-3 py-1 text-xs font-medium text-rose-700;
+}
+
+/* Hero wordmark */
+.wordmark {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  line-height: 0.95;
+  font-size: clamp(3.5rem, 12vw, 9.5rem);
+  background: var(--spectrum);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: wordmark-rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes wordmark-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.rise-2 {
+  animation: rise 0.8s 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.rise-3 {
+  animation: rise 0.8s 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Floating musical notes in the hero */
+.note {
+  position: absolute;
+  font-size: 1.4rem;
+  opacity: 0;
+  animation: note-float 9s linear infinite;
+}
+
+@keyframes note-float {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) rotate(-6deg);
+  }
+  15% {
+    opacity: 0.55;
+  }
+  85% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-260px) rotate(8deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-stage,
+  .wordmark,
+  .rise,
+  .rise-2,
+  .rise-3,
+  .note,
+  .btn-pulse {
+    animation: none !important;
+  }
 }

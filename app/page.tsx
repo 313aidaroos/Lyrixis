@@ -15,7 +15,16 @@ const FEATURES = [
   ["Bulk ingest", "CSV or API-shaped batches. Public-domain or original lyrics only."],
   ["License path", "Commercial lyrics stay licensed. The catalog does not scrape the web."],
   ["Search", "Title, artist, writer, year, and the IDs that actually match recordings."],
-  ["Scale", "One track tonight. A million when the pipeline is on."],
+  ["Cixy", "A native AI that knows mixing, mastering, metadata, and your catalog."],
+];
+
+const NOTES = [
+  { left: "6%", delay: "0s", glyph: "♪" },
+  { left: "18%", delay: "2.2s", glyph: "♫" },
+  { left: "31%", delay: "4.4s", glyph: "♪" },
+  { left: "68%", delay: "1.1s", glyph: "♬" },
+  { left: "81%", delay: "3.3s", glyph: "♪" },
+  { left: "92%", delay: "5.5s", glyph: "♫" },
 ];
 
 export default async function HomePage() {
@@ -24,26 +33,56 @@ export default async function HomePage() {
   return (
     <div>
       <SiteNav />
+
       <section className="relative overflow-hidden">
         <Wavefield />
-        <div className="relative mx-auto max-w-6xl px-6 pb-20 pt-16 lg:pt-24">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-cyan">Lyrixis</p>
-          <h1 className="mt-4 max-w-4xl font-display text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
+        {NOTES.map((note, index) => (
+          <span
+            key={index}
+            aria-hidden="true"
+            className="note grad-text"
+            style={{ left: note.left, bottom: "8%", animationDelay: note.delay }}
+          >
+            {note.glyph}
+          </span>
+        ))}
+        <div className="relative mx-auto flex max-w-6xl flex-col items-center px-6 pb-20 pt-20 text-center lg:pt-28">
+          <p className="rise font-mono text-xs uppercase tracking-[0.34em] text-ink-3">Music. Understood.</p>
+          <h1 className="wordmark mt-6">LYRIXIS</h1>
+          <p className="rise-2 mt-8 max-w-3xl font-display text-2xl font-semibold text-ink sm:text-3xl">
             The intelligence layer for <span className="grad-text">music catalogs</span>
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg text-ink-2">
-            Upload one track or a million. Get lyrics, sync, structure, metadata, translations, and
-            distribution-ready exports in minutes.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/waitlist" className="btn-primary btn-pulse">
-              Join the waitlist
+          <p className="rise-2 mt-4 max-w-2xl text-lg text-ink-2">
+            Search any song. Get lyrics, metadata, structure, and distribution-ready exports — one track
+            or a million.
+          </p>
+
+          <form
+            action="/catalog"
+            method="get"
+            className="rise-3 mt-10 flex w-full max-w-2xl flex-col gap-3 sm:flex-row"
+          >
+            <input
+              className="input py-4 text-base shadow-lg shadow-violet/10"
+              type="search"
+              name="q"
+              placeholder="Try “Amazing Grace”, an artist, or an ISRC…"
+              aria-label="Search the catalog"
+            />
+            <button className="btn-primary btn-pulse sm:w-48" type="submit">
+              Search the catalog
+            </button>
+          </form>
+          <div className="rise-3 mt-5 flex flex-wrap items-center justify-center gap-4 text-sm">
+            <Link href="/waitlist" className="text-violet hover:underline">
+              Join the waitlist →
             </Link>
-            <a href="#preview" className="btn-secondary">
-              Watch demo
-            </a>
+            <span className="text-ink-3">·</span>
+            <Link href="/cixy" className="text-ink-2 hover:text-ink">
+              <span className="grad-text">◈</span> Ask Cixy anything about music
+            </Link>
           </div>
-          <p className="mt-5 text-sm text-ink-3">Built for artists, labels, distributors & DSPs</p>
+          <p className="mt-8 text-sm text-ink-3">Built for artists, labels, distributors, DSPs — and anyone who sings along.</p>
         </div>
       </section>
 
@@ -63,9 +102,9 @@ export default async function HomePage() {
               </thead>
               <tbody>
                 {preview.map((row) => (
-                  <tr key={row.id} className="border-t border-line/80">
+                  <tr key={row.id} className="border-t border-line transition hover:bg-violet/5">
                     <td className="py-3">
-                      <Link className="hover:text-cyan" href={`/catalog/${row.publicId}`}>
+                      <Link className="font-medium hover:text-violet" href={`/catalog/${row.publicId}`}>
                         {row.title}
                       </Link>
                     </td>
@@ -77,14 +116,14 @@ export default async function HomePage() {
               </tbody>
             </table>
           </div>
-          <Link href="/catalog" className="mt-6 inline-flex text-sm text-cyan hover:underline">
+          <Link href="/catalog" className="mt-6 inline-flex text-sm text-violet hover:underline">
             Open the full catalog →
           </Link>
         </div>
       </section>
 
       <section id="how" className="mx-auto mt-20 max-w-6xl px-6">
-        <h2 className="font-display text-3xl font-bold">How it works</h2>
+        <h2 className="text-center font-display text-3xl font-bold">How it works</h2>
         <div className="mt-8 grid gap-4 md:grid-cols-4">
           {[
             ["01", "Ingest", "Drop a track or a CSV. Confirm rights. We never scrape commercial lyrics."],
@@ -93,7 +132,7 @@ export default async function HomePage() {
             ["04", "Deliver", "Search, view, export. One song or the whole catalog."],
           ].map(([n, title, copy]) => (
             <div key={n} className="card glass-lift">
-              <p className="font-mono text-xs text-cyan">{n}</p>
+              <p className="font-mono text-xs text-violet">{n}</p>
               <h3 className="mt-2 font-display text-xl">{title}</h3>
               <p className="mt-2 text-sm text-ink-2">{copy}</p>
             </div>
@@ -102,7 +141,7 @@ export default async function HomePage() {
       </section>
 
       <section className="mx-auto mt-20 max-w-6xl px-6">
-        <h2 className="font-display text-3xl font-bold">What you get</h2>
+        <h2 className="text-center font-display text-3xl font-bold">What you get</h2>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map(([title, copy]) => (
             <div key={title} className="card glass-lift">
@@ -119,18 +158,18 @@ export default async function HomePage() {
           <p className="mx-auto mt-4 max-w-2xl text-ink-2">
             Start with a single recording. When you are ready, bulk ingest and API access scale with you.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-10 font-display text-4xl">
+          <div className="mt-8 flex flex-wrap justify-center gap-10 font-display text-5xl font-bold">
             <div>
               <p className="grad-text">1</p>
-              <p className="mt-1 text-sm text-ink-3">track</p>
+              <p className="mt-1 text-sm font-normal text-ink-3">track</p>
             </div>
             <div>
               <p className="grad-text">25</p>
-              <p className="mt-1 text-sm text-ink-3">CSV rows / batch</p>
+              <p className="mt-1 text-sm font-normal text-ink-3">CSV rows / batch</p>
             </div>
             <div>
               <p className="grad-text">∞</p>
-              <p className="mt-1 text-sm text-ink-3">catalog size</p>
+              <p className="mt-1 text-sm font-normal text-ink-3">catalog size</p>
             </div>
           </div>
         </div>

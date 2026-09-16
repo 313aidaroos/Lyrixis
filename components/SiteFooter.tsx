@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-20 border-t border-white/10">
+    <footer className="mt-20 border-t border-line bg-white/60">
       <div className="mx-auto grid max-w-6xl gap-8 px-6 py-12 sm:grid-cols-3">
         <div>
           <p className="font-display text-sm tracking-[0.22em]">LYRIXIS</p>

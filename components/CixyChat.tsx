@@ -86,7 +86,7 @@ export function CixyChat({ tall = false }: { tall?: boolean }) {
                   key={starter}
                   type="button"
                   onClick={() => void send(starter)}
-                  className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-left text-xs text-ink-2 transition hover:border-cyan/50 hover:text-white"
+                  className="rounded-full border border-line bg-white px-3 py-1.5 text-left text-xs text-ink-2 transition hover:border-violet hover:text-ink"
                 >
                   {starter}
                 </button>
@@ -99,8 +99,8 @@ export function CixyChat({ tall = false }: { tall?: boolean }) {
             key={index}
             className={`max-w-[92%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm leading-relaxed ${
               message.role === "user"
-                ? "ml-auto bg-gradient-to-r from-violet to-cyan text-white"
-                : "border border-white/10 bg-white/5 text-ink"
+                ? "ml-auto bg-gradient-to-r from-violet to-cyan text-white shadow-md shadow-violet/20"
+                : "border border-line bg-white text-ink shadow-sm"
             }`}
           >
             {message.content}
@@ -120,7 +120,7 @@ export function CixyChat({ tall = false }: { tall?: boolean }) {
         {error && <p className="text-sm text-rose-400">{error}</p>}
         <div ref={endRef} />
       </div>
-      <form onSubmit={onSubmit} className="flex gap-2 border-t border-white/10 p-3">
+      <form onSubmit={onSubmit} className="flex gap-2 border-t border-line bg-white/70 p-3">
         <input
           className="input py-2 text-sm"
           value={input}

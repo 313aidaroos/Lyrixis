@@ -58,7 +58,7 @@ export function CatalogTable({
       </div>
       <div className="overflow-x-auto rounded-2xl border border-line">
         <table className="w-full text-left text-sm">
-          <thead className="bg-white/5 text-ink-3">
+          <thead className="bg-violet/5 text-ink-3">
             <tr>
               <th className="px-4 py-3 font-medium">Title</th>
               <th className="px-4 py-3 font-medium">Artist</th>
@@ -87,7 +87,7 @@ export function CatalogTable({
                     <td className="px-4 py-3 text-ink-2">{formatDuration(row.durationSeconds)}</td>
                   </tr>
                   {open && (
-                    <tr key={`${row.id}-preview`} className="border-t border-line/60 bg-white/5">
+                    <tr key={`${row.id}-preview`} className="border-t border-line/60 bg-violet/5">
                       <td colSpan={5} className="px-4 py-4">
                         <p className="text-xs uppercase tracking-widest text-ink-3">Intelligence preview</p>
                         <p className="mt-2 text-ink-2">

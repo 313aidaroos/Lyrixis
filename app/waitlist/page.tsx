@@ -24,7 +24,7 @@ export default async function WaitlistPage() {
     <div>
       <SiteNav />
       <main className="mx-auto max-w-lg px-6 py-16">
-        <p className="font-mono text-xs uppercase tracking-[0.22em] text-cyan">Early access</p>
+        <p className="font-mono text-xs uppercase tracking-[0.22em] text-violet">Early access</p>
         <h1 className="mt-3 font-display text-4xl font-bold">Be first in line for music intelligence</h1>
         <p className="mt-3 text-ink-2">
           Work email required. We onboard catalogs — not scraped lyric sites.
@@ -37,7 +37,7 @@ export default async function WaitlistPage() {
         </div>
         <p className="mt-8 text-sm text-ink-3">
           Already have access?{" "}
-          <Link href="/login" className="text-cyan hover:underline">
+          <Link href="/login" className="text-violet hover:underline">
             Sign in
           </Link>
         </p>

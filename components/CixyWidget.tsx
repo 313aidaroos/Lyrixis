@@ -18,9 +18,9 @@ export function CixyWidget() {
         <div
           role="dialog"
           aria-label="Cixy — Lyrixis native AI"
-          className="fixed bottom-24 right-4 z-50 flex h-[560px] w-[min(400px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#0a0a12]/95 shadow-2xl shadow-violet/30 backdrop-blur-xl"
+          className="fixed bottom-24 right-4 z-50 flex h-[560px] w-[min(400px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-line bg-white/95 shadow-2xl shadow-violet/20 backdrop-blur-xl"
         >
-          <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+          <div className="flex items-center justify-between border-b border-line px-4 py-3">
             <div>
               <p className="font-display text-sm font-semibold tracking-wide">
                 <span className="grad-text">◈</span> Cixy
@@ -28,13 +28,13 @@ export function CixyWidget() {
               <p className="text-[11px] text-ink-3">Lyrixis native AI · A Apixis Company</p>
             </div>
             <div className="flex items-center gap-3 text-xs">
-              <Link href="/cixy" className="text-ink-2 hover:text-white" onClick={() => setOpen(false)}>
+              <Link href="/cixy" className="text-ink-2 hover:text-ink" onClick={() => setOpen(false)}>
                 Open full
               </Link>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="rounded-md px-2 py-1 text-ink-2 hover:bg-white/10 hover:text-white"
+                className="rounded-md px-2 py-1 text-ink-2 hover:bg-violet/10 hover:text-ink"
                 aria-label="Close Cixy"
               >
                 ✕

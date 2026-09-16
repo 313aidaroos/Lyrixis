@@ -24,7 +24,7 @@ export default async function CatalogPage({
     <div>
       <SiteNav />
       <main className="mx-auto max-w-6xl px-6 py-10">
-        <p className="rounded-xl border border-cyan/30 bg-cyan/10 px-4 py-2 text-sm text-cyan">
+        <p className="rounded-xl border border-violet/20 bg-violet/5 px-4 py-2 text-sm text-ink-2">
           Public seed catalog — {results.length} recording{results.length === 1 ? "" : "s"} shown
           {q ? ` for “${q}”` : ""}. Commercial tracks stay licensed.
         </p>

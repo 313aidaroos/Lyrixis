@@ -8,15 +8,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: "#05050A",
-        surface: "#0C0C16",
-        line: "#1C1C2E",
-        ink: "#FFFFFF",
-        "ink-2": "#B4B4C8",
-        "ink-3": "#7A7A92",
+        bg: "#FBFAFF",
+        surface: "#FFFFFF",
+        line: "#E6E4F2",
+        ink: "#15122B",
+        "ink-2": "#57537A",
+        "ink-3": "#8D89AB",
         violet: "#6366F1",
         magenta: "#EC4899",
-        cyan: "#22D3EE",
+        cyan: "#06B6D4",
         gold: "#C4A35A",
       },
       fontFamily: {
