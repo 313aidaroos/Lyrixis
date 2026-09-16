@@ -8,7 +8,7 @@ This repository contains the static marketing site and the MVP web app + worker 
 
 A person can sign up, upload one song (with rights confirmation), watch it process, preview the first 30 seconds of synced lyrics, pay $2.99, correct a line (versioned), and download TXT / SRT / LRC / JSON.
 
-The live homepage is a **public catalog**: search recordings (`?q=` filters title, artist, writers, year, ISRC/ISWC), open metadata, and view lyrics that persist in Supabase (`catalog_recordings`, `catalog_lyrics`). Add a recording at `/add` or bulk CSV at the same page (public-domain or original lyrics only). ISRC/ISWC/UPC are normalized and unique. Enterprise marketing lives at `/enterprise`.
+The live homepage is a **public catalog**: search recordings (`?q=` filters title, artist, writers, year, ISRC/ISWC/UPC), open metadata, and view lyrics that persist in Supabase (`catalog_recordings`, `catalog_lyrics`). Add a recording at `/add` or bulk CSV at the same page (public-domain or original lyrics only). ISRC/ISWC/UPC are normalized and unique. Extra ID-backed public-domain rows: `database/seeds/public-domain-id-backed.json` and `database/migrations/0005_id_backed_public_domain.sql`. Enterprise marketing lives at `/enterprise`.
 
 Deferred (schema only): public API keys UI, batch upload, org admin, translation, TTML/VTT/CSV, balance top-ups.
 
