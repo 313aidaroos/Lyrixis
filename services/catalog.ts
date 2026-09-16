@@ -1,4 +1,6 @@
+import { randomBytes } from "crypto";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { HttpError } from "@/lib/errors";
 
 export interface CatalogRecording {
@@ -24,6 +26,23 @@ export interface CatalogRecordingDetail extends CatalogRecording {
     licenseNote: string | null;
     fullText: string;
   } | null;
+}
+
+export interface CatalogIngestInput {
+  title: string;
+  artist: string;
+  album?: string | null;
+  isrc?: string | null;
+  iswc?: string | null;
+  upc?: string | null;
+  year?: number | null;
+  language?: string | null;
+  label?: string | null;
+  writers?: string[];
+  durationSeconds?: number | null;
+  license: "public_domain" | "original";
+  licenseNote?: string | null;
+  lyrics: string;
 }
 
 interface RecordingRow {
@@ -100,35 +119,53 @@ export function sanitizeCatalogQuery(raw: string | null | undefined): string {
     .trim();
 }
 
+function haystack(row: CatalogRecording): string {
+  return [
+    row.publicId,
+    row.title,
+    row.artist,
+    row.album,
+    row.isrc,
+    row.iswc,
+    row.upc,
+    row.language,
+    row.label,
+    row.source,
+    row.year != null ? String(row.year) : null,
+    ...row.writers,
+  ]
+    .filter((value): value is string => Boolean(value && value.length > 0))
+    .join(" ")
+    .toLowerCase();
+}
+
+export function recordingMatchesQuery(row: CatalogRecording, rawQuery: string): boolean {
+  const q = sanitizeCatalogQuery(rawQuery);
+  if (!q) return true;
+  const hay = haystack(row);
+  return q
+    .toLowerCase()
+    .split(" ")
+    .filter(Boolean)
+    .every((token) => hay.includes(token));
+}
+
 export async function searchCatalog(rawQuery: string | null | undefined): Promise<CatalogRecording[]> {
   const supabase = createAnonClient();
-  const q = sanitizeCatalogQuery(rawQuery);
-
-  let request = supabase
+  const { data, error } = await supabase
     .from("catalog_recordings")
     .select(SELECT_FIELDS)
     .order("title", { ascending: true })
-    .limit(50);
+    .limit(200);
 
-  if (q) {
-    const like = `"%${q}%"`;
-    request = request.or(
-      [
-        `title.ilike.${like}`,
-        `artist.ilike.${like}`,
-        `album.ilike.${like}`,
-        `isrc.ilike.${like}`,
-        `iswc.ilike.${like}`,
-        `upc.ilike.${like}`,
-      ].join(",")
-    );
-  }
-
-  const { data, error } = await request;
   if (error) {
     throw new HttpError(500, "catalog_search_failed", "Could not search the catalog.");
   }
-  return ((data ?? []) as RecordingRow[]).map(mapRecording);
+
+  const rows = ((data ?? []) as RecordingRow[]).map(mapRecording);
+  const q = sanitizeCatalogQuery(rawQuery);
+  if (!q) return rows;
+  return rows.filter((row) => recordingMatchesQuery(row, q));
 }
 
 export async function getCatalogRecording(publicId: string): Promise<CatalogRecordingDetail | null> {
@@ -160,5 +197,83 @@ export async function getCatalogRecording(publicId: string): Promise<CatalogReco
           fullText: lyric.full_text,
         }
       : null,
+  };
+}
+
+function slugPublicId(title: string): string {
+  const slug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 40);
+  return `rec_${slug || "untitled"}`;
+}
+
+async function uniquePublicId(admin: SupabaseClient, title: string): Promise<string> {
+  const base = slugPublicId(title);
+  const { data } = await admin.from("catalog_recordings").select("public_id").eq("public_id", base).maybeSingle();
+  if (!data) return base;
+  return `${base}_${randomBytes(3).toString("hex")}`;
+}
+
+export async function ingestCatalogRecording(input: CatalogIngestInput): Promise<CatalogRecordingDetail> {
+  if (input.license !== "public_domain" && input.license !== "original") {
+    throw new HttpError(400, "license_not_allowed", "Only public-domain or original lyrics can be added here.");
+  }
+
+  let admin: SupabaseClient;
+  try {
+    admin = createAdminClient();
+  } catch {
+    throw new HttpError(503, "catalog_unconfigured", "Catalog ingest is not connected to Supabase yet.");
+  }
+
+  const publicId = await uniquePublicId(admin, input.title);
+  const source = input.license;
+
+  const { data: recording, error: recError } = await admin
+    .from("catalog_recordings")
+    .insert({
+      public_id: publicId,
+      title: input.title,
+      artist: input.artist,
+      album: input.album ?? null,
+      isrc: input.isrc ?? null,
+      iswc: input.iswc ?? null,
+      upc: input.upc ?? null,
+      year: input.year ?? null,
+      language: input.language ?? "en",
+      label: input.label ?? null,
+      writers: input.writers ?? [],
+      duration_seconds: input.durationSeconds ?? null,
+      source,
+    })
+    .select(SELECT_FIELDS)
+    .single();
+
+  if (recError || !recording) {
+    throw new HttpError(500, "catalog_ingest_failed", "Could not save that recording.");
+  }
+
+  const row = recording as RecordingRow;
+  const { error: lyricError } = await admin.from("catalog_lyrics").insert({
+    recording_id: row.id,
+    license: input.license,
+    license_note: input.licenseNote ?? null,
+    full_text: input.lyrics,
+  });
+
+  if (lyricError) {
+    await admin.from("catalog_recordings").delete().eq("id", row.id);
+    throw new HttpError(500, "catalog_ingest_failed", "Could not save lyrics for that recording.");
+  }
+
+  return {
+    ...mapRecording(row),
+    lyrics: {
+      license: input.license,
+      licenseNote: input.licenseNote ?? null,
+      fullText: input.lyrics,
+    },
   };
 }

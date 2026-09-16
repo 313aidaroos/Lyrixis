@@ -43,6 +43,44 @@ export async function assertUploadRateLimit(userId: string): Promise<void> {
   }
 }
 
+const INGEST_WINDOW_SEC = 10 * 60;
+const INGEST_MAX = 6;
+const ingestHits = new Map<string, { count: number; resetAt: number }>();
+
+function throwIngestLimited(): never {
+  throw new HttpError(429, "rate_limited", "Too many catalog adds. Try again in a few minutes.");
+}
+
+function assertMemoryIngestLimit(ip: string): void {
+  const now = Date.now();
+  const current = ingestHits.get(ip);
+  if (!current || current.resetAt <= now) {
+    ingestHits.set(ip, { count: 1, resetAt: now + INGEST_WINDOW_SEC * 1000 });
+    return;
+  }
+  current.count += 1;
+  if (current.count > INGEST_MAX) throwIngestLimited();
+}
+
+export async function assertCatalogIngestRateLimit(ip: string): Promise<void> {
+  const identity = ip || "unknown";
+  if (!process.env.REDIS_URL) {
+    assertMemoryIngestLimit(identity);
+    return;
+  }
+  try {
+    const key = `rl:catalog-ingest:${identity}`;
+    const count = await getRedis().incr(key);
+    if (count === 1) {
+      await getRedis().expire(key, INGEST_WINDOW_SEC);
+    }
+    if (count > INGEST_MAX) throwIngestLimited();
+  } catch (error) {
+    if (error instanceof HttpError) throw error;
+    assertMemoryIngestLimit(identity);
+  }
+}
+
 /** Light public limiter. Uses Redis when REDIS_URL is set; otherwise per-instance memory. */
 export async function assertWaitlistRateLimit(ip: string): Promise<void> {
   const identity = ip || "unknown";

@@ -46,13 +46,21 @@ export default async function CatalogHome({
             type="search"
             name="q"
             defaultValue={q}
-            placeholder="Amazing Grace, Traditional, ISRC…"
+            placeholder="Title, artist, writer, year, ISRC, ISWC…"
             aria-label="Search catalog"
           />
           <button className="btn-primary sm:w-40" type="submit">
             Search
           </button>
         </form>
+
+        {!errorMessage && (
+          <p className="mt-4 text-sm text-ink-3">
+            {q
+              ? `${results.length} match${results.length === 1 ? "" : "es"} for “${q}”`
+              : `${results.length} recording${results.length === 1 ? "" : "s"} in the catalog`}
+          </p>
+        )}
 
         {errorMessage ? (
           <div className="card mt-10">

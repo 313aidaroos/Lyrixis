@@ -11,6 +11,9 @@ export function CatalogNav() {
           <Link href="/" className="text-sm text-ink">
             Catalog
           </Link>
+          <Link href="/add" className="text-sm text-ink-2 hover:text-ink">
+            Add
+          </Link>
           <Link href="/enterprise" className="text-sm text-ink-2 hover:text-ink">
             Enterprise
           </Link>
