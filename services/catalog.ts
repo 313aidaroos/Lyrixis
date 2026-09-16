@@ -2,6 +2,7 @@ import { randomBytes } from "crypto";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { HttpError } from "@/lib/errors";
+import { normalizeIsrc, normalizeIswc, normalizeUpc, formatIsrc, formatIswc } from "@/lib/music-ids";
 
 export interface CatalogRecording {
   id: string;
@@ -42,7 +43,7 @@ export interface CatalogIngestInput {
   durationSeconds?: number | null;
   license: "public_domain" | "original";
   licenseNote?: string | null;
-  lyrics: string;
+  lyrics?: string | null;
 }
 
 interface RecordingRow {
@@ -126,7 +127,9 @@ function haystack(row: CatalogRecording): string {
     row.artist,
     row.album,
     row.isrc,
+    formatIsrc(row.isrc),
     row.iswc,
+    formatIswc(row.iswc),
     row.upc,
     row.language,
     row.label,
@@ -216,9 +219,30 @@ async function uniquePublicId(admin: SupabaseClient, title: string): Promise<str
   return `${base}_${randomBytes(3).toString("hex")}`;
 }
 
+function isUniqueViolation(error: { code?: string; message?: string } | null): boolean {
+  const message = (error?.message ?? "").toLowerCase();
+  return error?.code === "23505" || message.includes("duplicate") || message.includes("unique");
+}
+
 export async function ingestCatalogRecording(input: CatalogIngestInput): Promise<CatalogRecordingDetail> {
   if (input.license !== "public_domain" && input.license !== "original") {
     throw new HttpError(400, "license_not_allowed", "Only public-domain or original lyrics can be added here.");
+  }
+
+  const lyrics = input.lyrics?.trim() || null;
+  const isrc = normalizeIsrc(input.isrc);
+  const iswc = normalizeIswc(input.iswc);
+  const upc = normalizeUpc(input.upc);
+
+  if (!lyrics && !isrc && !iswc && !upc) {
+    throw new HttpError(
+      400,
+      "insufficient_catalog_data",
+      "Add lyrics or at least one of ISRC, ISWC, or UPC."
+    );
+  }
+  if (lyrics && lyrics.length < 8) {
+    throw new HttpError(400, "lyrics_too_short", "Lyrics need at least 8 characters.");
   }
 
   let admin: SupabaseClient;
@@ -238,9 +262,9 @@ export async function ingestCatalogRecording(input: CatalogIngestInput): Promise
       title: input.title,
       artist: input.artist,
       album: input.album ?? null,
-      isrc: input.isrc ?? null,
-      iswc: input.iswc ?? null,
-      upc: input.upc ?? null,
+      isrc,
+      iswc,
+      upc,
       year: input.year ?? null,
       language: input.language ?? "en",
       label: input.label ?? null,
@@ -252,28 +276,71 @@ export async function ingestCatalogRecording(input: CatalogIngestInput): Promise
     .single();
 
   if (recError || !recording) {
+    if (isUniqueViolation(recError)) {
+      throw new HttpError(409, "id_conflict", "That ISRC, ISWC, or UPC is already in the catalog.");
+    }
     throw new HttpError(500, "catalog_ingest_failed", "Could not save that recording.");
   }
 
   const row = recording as RecordingRow;
-  const { error: lyricError } = await admin.from("catalog_lyrics").insert({
-    recording_id: row.id,
-    license: input.license,
-    license_note: input.licenseNote ?? null,
-    full_text: input.lyrics,
-  });
 
-  if (lyricError) {
-    await admin.from("catalog_recordings").delete().eq("id", row.id);
-    throw new HttpError(500, "catalog_ingest_failed", "Could not save lyrics for that recording.");
+  if (lyrics) {
+    const { error: lyricError } = await admin.from("catalog_lyrics").insert({
+      recording_id: row.id,
+      license: input.license,
+      license_note: input.licenseNote ?? null,
+      full_text: lyrics,
+    });
+
+    if (lyricError) {
+      await admin.from("catalog_recordings").delete().eq("id", row.id);
+      throw new HttpError(500, "catalog_ingest_failed", "Could not save lyrics for that recording.");
+    }
   }
 
   return {
     ...mapRecording(row),
-    lyrics: {
-      license: input.license,
-      licenseNote: input.licenseNote ?? null,
-      fullText: input.lyrics,
-    },
+    lyrics: lyrics
+      ? {
+          license: input.license,
+          licenseNote: input.licenseNote ?? null,
+          fullText: lyrics,
+        }
+      : null,
   };
+}
+
+export interface CatalogIngestFailure {
+  index: number;
+  title: string | null;
+  message: string;
+}
+
+export async function ingestCatalogBatch(
+  inputs: CatalogIngestInput[]
+): Promise<{ created: CatalogRecordingDetail[]; errors: CatalogIngestFailure[] }> {
+  if (inputs.length === 0) {
+    throw new HttpError(400, "empty_batch", "Paste at least one recording.");
+  }
+  if (inputs.length > 25) {
+    throw new HttpError(400, "batch_too_large", "Bulk ingest is capped at 25 recordings.");
+  }
+
+  const created: CatalogRecordingDetail[] = [];
+  const errors: CatalogIngestFailure[] = [];
+
+  for (let index = 0; index < inputs.length; index += 1) {
+    const input = inputs[index];
+    try {
+      created.push(await ingestCatalogRecording(input));
+    } catch (error) {
+      errors.push({
+        index,
+        title: input.title || null,
+        message: error instanceof HttpError ? error.message : "Could not save that recording.",
+      });
+    }
+  }
+
+  return { created, errors };
 }

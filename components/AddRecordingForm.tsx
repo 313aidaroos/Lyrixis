@@ -20,6 +20,7 @@ export function AddRecordingForm() {
       year: String(form.get("year") ?? ""),
       isrc: String(form.get("isrc") ?? ""),
       iswc: String(form.get("iswc") ?? ""),
+      upc: String(form.get("upc") ?? ""),
       writers: String(form.get("writers") ?? ""),
       license: String(form.get("license") ?? ""),
       license_note: String(form.get("license_note") ?? ""),
@@ -69,14 +70,18 @@ export function AddRecordingForm() {
           <input className="input" name="year" inputMode="numeric" maxLength={4} />
         </label>
       </div>
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-3">
         <label className="block">
           <span className="label">ISRC</span>
-          <input className="input font-mono text-sm" name="isrc" maxLength={20} />
+          <input className="input font-mono text-sm" name="isrc" maxLength={20} placeholder="CC-XXX-YY-NNNNN" />
         </label>
         <label className="block">
           <span className="label">ISWC</span>
-          <input className="input font-mono text-sm" name="iswc" maxLength={20} />
+          <input className="input font-mono text-sm" name="iswc" maxLength={20} placeholder="T-000.000.001-0" />
+        </label>
+        <label className="block">
+          <span className="label">UPC</span>
+          <input className="input font-mono text-sm" name="upc" maxLength={14} />
         </label>
       </div>
       <label className="block">

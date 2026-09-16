@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { formatIsrc, formatIswc } from "@/lib/music-ids";
 import { CatalogNav } from "@/components/CatalogNav";
 import { getCatalogRecording } from "@/services/catalog";
 
@@ -36,8 +37,8 @@ export default async function CatalogRecordingPage({
           <Meta label="Album" value={recording.album} />
           <Meta label="Year" value={recording.year ? String(recording.year) : null} />
           <Meta label="Language" value={recording.language} />
-          <Meta label="ISRC" value={recording.isrc} />
-          <Meta label="ISWC" value={recording.iswc} />
+          <Meta label="ISRC" value={formatIsrc(recording.isrc) ?? recording.isrc} />
+          <Meta label="ISWC" value={formatIswc(recording.iswc) ?? recording.iswc} />
           <Meta label="UPC" value={recording.upc} />
           <Meta label="Label" value={recording.label} />
           <Meta label="Writers" value={writers} />
