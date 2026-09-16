@@ -8,16 +8,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: "#FFF8F2",
-        surface: "#FFFFFF",
-        line: "#EADFD4",
-        ink: "#1C1730",
-        "ink-2": "#5A5470",
-        "ink-3": "#8A8499",
-        violet: "#A855F7",
+        bg: "#05050A",
+        surface: "#0C0C16",
+        line: "#1C1C2E",
+        ink: "#FFFFFF",
+        "ink-2": "#B4B4C8",
+        "ink-3": "#7A7A92",
+        violet: "#6366F1",
         magenta: "#EC4899",
-        cyan: "#0891B2",
-        gold: "#B8892D",
+        cyan: "#22D3EE",
+        gold: "#C4A35A",
       },
       fontFamily: {
         display: ["var(--font-display)", "system-ui", "sans-serif"],

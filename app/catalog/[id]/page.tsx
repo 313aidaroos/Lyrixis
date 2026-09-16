@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { formatIsrc, formatIswc } from "@/lib/music-ids";
-import { CatalogNav } from "@/components/CatalogNav";
+import { SiteNav } from "@/components/SiteNav";
 import { getCatalogRecording } from "@/services/catalog";
 
 export const dynamic = "force-dynamic";
@@ -27,7 +27,7 @@ export default async function CatalogRecordingPage({
 
   return (
     <div>
-      <CatalogNav />
+      <SiteNav />
       <main className="mx-auto max-w-3xl px-6 py-10">
         <p className="font-mono text-xs uppercase tracking-widest text-ink-2">Recording</p>
         <h1 className="mt-2 font-display text-4xl font-bold">{recording.title}</h1>

@@ -3,16 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --bg: #fff8f2;
-  --surface: #ffffff;
-  --line: #eadfd4;
-  --ink: #1c1730;
-  --ink-2: #5a5470;
-  --ink-3: #8a8499;
-  --violet: #a855f7;
-  --cyan: #0891b2;
-  --gold: #b8892d;
-  --spectrum: linear-gradient(90deg, #a855f7 0%, #ec4899 38%, #4f7dfb 72%, #22d3ee 100%);
+  --bg: #05050a;
+  --surface: #0c0c16;
+  --line: #1c1c2e;
+  --ink: #ffffff;
+  --ink-2: #b4b4c8;
+  --ink-3: #7a7a92;
+  --violet: #6366f1;
+  --magenta: #ec4899;
+  --cyan: #22d3ee;
+  --gold: #c4a35a;
+  --spectrum: linear-gradient(90deg, #6366f1 0%, #a855f7 42%, #22d3ee 100%);
 }
 
 html {
@@ -30,16 +31,11 @@ body {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image:
-    linear-gradient(
-      180deg,
-      rgba(255, 250, 245, 0.84) 0%,
-      rgba(255, 248, 252, 0.9) 48%,
-      rgba(248, 244, 255, 0.94) 100%
-    ),
-    url("/karaoke-bg.jpg");
-  background-size: cover;
-  background-position: center 28%;
+  background:
+    radial-gradient(900px 480px at 12% -10%, rgba(99, 102, 241, 0.22), transparent 60%),
+    radial-gradient(800px 420px at 92% 8%, rgba(34, 211, 238, 0.14), transparent 62%),
+    radial-gradient(700px 500px at 50% 110%, rgba(236, 72, 153, 0.1), transparent 65%),
+    #05050a;
 }
 
 .grad-text {
@@ -50,30 +46,58 @@ body {
 }
 
 .card {
-  @apply rounded-2xl border border-line p-6 shadow-md shadow-violet/5;
-  background-color: rgba(255, 255, 255, 0.92);
+  @apply rounded-2xl border border-line p-6;
+  background: rgba(12, 12, 22, 0.72);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03), 0 20px 50px rgba(0, 0, 0, 0.35);
 }
 
 .page-panel {
-  @apply rounded-2xl border border-line p-8 shadow-lg shadow-violet/10;
-  background-color: rgba(255, 255, 255, 0.94);
+  @apply rounded-2xl border border-line p-8;
+  background: rgba(12, 12, 22, 0.82);
+  backdrop-filter: blur(18px);
 }
 
 .btn-primary {
-  @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50;
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-50;
   background: var(--spectrum);
+  box-shadow: 0 0 24px rgba(99, 102, 241, 0.35);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+.btn-pulse {
+  animation: cta-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes cta-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 18px rgba(99, 102, 241, 0.28);
+  }
+  50% {
+    box-shadow: 0 0 32px rgba(34, 211, 238, 0.45);
+  }
 }
 
 .btn-secondary {
-  @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-white px-6 py-3 font-semibold text-ink transition hover:border-violet;
+  @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3 font-semibold text-ink backdrop-blur transition hover:border-cyan/50 hover:bg-white/10;
 }
 
 .input {
-  @apply w-full rounded-xl border border-line bg-white px-4 py-3 text-ink outline-none transition focus:border-violet;
+  @apply w-full rounded-xl border border-line px-4 py-3 text-ink outline-none transition focus:border-violet;
+  background: rgba(8, 8, 16, 0.9);
 }
 
 .input::placeholder {
-  color: #8a8499;
+  color: #8a8aa3;
   opacity: 1;
 }
 
@@ -81,27 +105,23 @@ body {
   @apply mb-2 block text-sm font-medium text-ink;
 }
 
+.glass-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 32px rgba(99, 102, 241, 0.22);
+}
+
 .band-high {
-  @apply rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-medium text-emerald-700;
+  @apply rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-medium text-emerald-300;
 }
 
 .band-medium {
-  @apply rounded-full bg-amber-500/15 px-3 py-1 text-xs font-medium text-amber-700;
+  @apply rounded-full bg-amber-500/20 px-3 py-1 text-xs font-medium text-amber-300;
 }
 
 .band-review {
-  @apply rounded-full bg-rose-500/15 px-3 py-1 text-xs font-medium text-rose-700;
-}
-
-.tab-pill {
-  @apply rounded-full px-4 py-2 text-sm font-medium transition;
-}
-
-.tab-pill-on {
-  color: white;
-  background: var(--spectrum);
-}
-
-.tab-pill-off {
-  @apply text-ink-2 hover:text-ink hover:bg-white/80;
+  @apply rounded-full bg-rose-500/20 px-3 py-1 text-xs font-medium text-rose-300;
 }

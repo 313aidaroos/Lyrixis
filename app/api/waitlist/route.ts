@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { jsonError, HttpError } from "@/lib/errors";
 import { assertWaitlistRateLimit } from "@/lib/rate-limit";
-import { createWaitlistLead } from "@/services/leads";
+import { countWaitlistLeads, createWaitlistLead } from "@/services/leads";
 
 export const runtime = "nodejs";
 
@@ -32,6 +32,11 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function clientIp(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
   return forwarded?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "unknown";
+}
+
+export async function GET() {
+  const count = await countWaitlistLeads();
+  return Response.json({ count });
 }
 
 export async function POST(request: Request) {

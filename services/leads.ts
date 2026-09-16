@@ -70,3 +70,16 @@ export async function createWaitlistLead(input: WaitlistLeadInput): Promise<{ id
 
   throw new HttpError(500, "lead_insert_failed", "Could not save your request. Try again.");
 }
+
+export async function countWaitlistLeads(): Promise<number> {
+  try {
+    const admin = createAdminClient();
+    const { count, error } = await admin
+      .from("enterprise_leads")
+      .select("id", { count: "exact", head: true });
+    if (error || count == null) return 0;
+    return count;
+  } catch {
+    return 0;
+  }
+}

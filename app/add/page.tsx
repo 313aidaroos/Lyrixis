@@ -1,11 +1,11 @@
 import { AddRecordingForm } from "@/components/AddRecordingForm";
 import { BulkIngestForm } from "@/components/BulkIngestForm";
-import { CatalogNav } from "@/components/CatalogNav";
+import { SiteNav } from "@/components/SiteNav";
 
 export default function AddRecordingPage() {
   return (
     <div>
-      <CatalogNav />
+      <SiteNav />
       <main className="mx-auto max-w-2xl px-6 py-10">
         <p className="font-mono text-xs uppercase tracking-widest text-ink-2">Ingest</p>
         <h1 className="mt-2 font-display text-4xl font-bold">Add a recording</h1>

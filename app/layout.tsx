@@ -19,9 +19,15 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lyrixis",
-  description: "Search music metadata and lyrics. Catalog intelligence at scale.",
+  title: "Lyrixis — The intelligence layer for music catalogs",
+  description:
+    "Lyrixis turns music into structured, synchronized, distribution-ready intelligence — one song or millions at a time.",
   icons: { icon: "/favicon.png" },
+  openGraph: {
+    title: "Lyrixis — Music. Understood.",
+    description: "Search lyrics, metadata, ISRC/ISWC, and synced intelligence for any catalog.",
+    images: ["/lyrixis-logo.png"],
+  },
 };
 
 export default function RootLayout({
