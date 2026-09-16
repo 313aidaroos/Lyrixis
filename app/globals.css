@@ -3,14 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --bg: #07060b;
-  --surface: #110e1c;
-  --line: #241f3a;
-  --ink: #edeaf6;
-  --ink-2: #b4adcd;
-  --ink-3: #7d7599;
+  --bg: #fff8f2;
+  --surface: #ffffff;
+  --line: #eadfd4;
+  --ink: #1c1730;
+  --ink-2: #5a5470;
+  --ink-3: #8a8499;
   --violet: #a855f7;
-  --cyan: #22d3ee;
+  --cyan: #0891b2;
+  --gold: #b8892d;
   --spectrum: linear-gradient(90deg, #a855f7 0%, #ec4899 38%, #4f7dfb 72%, #22d3ee 100%);
 }
 
@@ -24,6 +25,23 @@ body {
   min-height: 100vh;
 }
 
+.site-stage {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(255, 250, 245, 0.84) 0%,
+      rgba(255, 248, 252, 0.9) 48%,
+      rgba(248, 244, 255, 0.94) 100%
+    ),
+    url("/karaoke-bg.jpg");
+  background-size: cover;
+  background-position: center 28%;
+}
+
 .grad-text {
   background: var(--spectrum);
   -webkit-background-clip: text;
@@ -32,31 +50,30 @@ body {
 }
 
 .card {
-  @apply rounded-2xl border border-line/80 p-6 shadow-lg shadow-black/30;
-  background-color: rgba(17, 14, 28, 0.92);
+  @apply rounded-2xl border border-line p-6 shadow-md shadow-violet/5;
+  background-color: rgba(255, 255, 255, 0.92);
 }
 
 .page-panel {
-  @apply rounded-2xl border border-line/60 p-8 shadow-xl shadow-black/40;
-  background-color: rgba(12, 10, 20, 0.88);
+  @apply rounded-2xl border border-line p-8 shadow-lg shadow-violet/10;
+  background-color: rgba(255, 255, 255, 0.94);
 }
 
 .btn-primary {
-  @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-semibold text-[#0a0710] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50;
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50;
   background: var(--spectrum);
 }
 
 .btn-secondary {
-  @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-surface px-6 py-3 font-semibold text-ink transition hover:border-violet;
+  @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-white px-6 py-3 font-semibold text-ink transition hover:border-violet;
 }
 
 .input {
-  @apply w-full rounded-xl border border-line px-4 py-3 text-ink shadow-inner shadow-black/20 outline-none transition focus:border-violet;
-  background-color: rgba(12, 10, 20, 0.95);
+  @apply w-full rounded-xl border border-line bg-white px-4 py-3 text-ink outline-none transition focus:border-violet;
 }
 
 .input::placeholder {
-  color: #9b93b8;
+  color: #8a8499;
   opacity: 1;
 }
 
@@ -65,13 +82,26 @@ body {
 }
 
 .band-high {
-  @apply rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-medium text-emerald-400;
+  @apply rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-medium text-emerald-700;
 }
 
 .band-medium {
-  @apply rounded-full bg-amber-500/20 px-3 py-1 text-xs font-medium text-amber-400;
+  @apply rounded-full bg-amber-500/15 px-3 py-1 text-xs font-medium text-amber-700;
 }
 
 .band-review {
-  @apply rounded-full bg-rose-500/20 px-3 py-1 text-xs font-medium text-rose-400;
+  @apply rounded-full bg-rose-500/15 px-3 py-1 text-xs font-medium text-rose-700;
+}
+
+.tab-pill {
+  @apply rounded-full px-4 py-2 text-sm font-medium transition;
+}
+
+.tab-pill-on {
+  color: white;
+  background: var(--spectrum);
+}
+
+.tab-pill-off {
+  @apply text-ink-2 hover:text-ink hover:bg-white/80;
 }

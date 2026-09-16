@@ -96,8 +96,8 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
               onChange={(event) => setPassword(event.target.value)}
             />
           </div>
-          {error && <p className="text-sm text-rose-300">{error}</p>}
-          {notice && <p className="text-sm text-cyan-300">{notice}</p>}
+          {error && <p className="text-sm text-rose-600">{error}</p>}
+          {notice && <p className="text-sm text-cyan">{notice}</p>}
           <button className="btn-primary w-full" type="submit" disabled={pending}>
             {pending ? "Please wait…" : mode === "login" ? "Sign in" : "Sign up"}
           </button>

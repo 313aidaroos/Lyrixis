@@ -1,23 +1,27 @@
 import Link from "next/link";
+import { BrandMark } from "@/components/BrandMark";
 
-export function CatalogNav() {
+export function CatalogNav({ tab = "catalog" }: { tab?: string }) {
+  const pill = (id: string) => `tab-pill ${tab === id ? "tab-pill-on" : "tab-pill-off"}`;
+
   return (
-    <header className="border-b border-line/80 bg-[#0c0a14]/90">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="font-display text-lg font-semibold tracking-wide">
-          LYRIXIS
-        </Link>
-        <nav className="flex items-center gap-6">
-          <Link href="/" className="text-sm text-ink">
+    <header className="border-b border-line/80 bg-white/75 backdrop-blur-md">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-3">
+        <BrandMark />
+        <nav className="flex flex-wrap items-center gap-2">
+          <Link href="/" className={pill("catalog")}>
             Catalog
           </Link>
-          <Link href="/add" className="text-sm text-ink-2 hover:text-ink">
+          <Link href="/?tab=vision" className={pill("vision")}>
+            Our vision
+          </Link>
+          <Link href="/?tab=faq" className={pill("faq")}>
+            FAQ
+          </Link>
+          <Link href="/add" className="tab-pill tab-pill-off">
             Add
           </Link>
-          <Link href="/enterprise" className="text-sm text-ink-2 hover:text-ink">
-            Enterprise
-          </Link>
-          <Link href="/login" className="text-sm text-ink-2 hover:text-ink">
+          <Link href="/login" className="tab-pill tab-pill-off">
             Sign in
           </Link>
         </nav>

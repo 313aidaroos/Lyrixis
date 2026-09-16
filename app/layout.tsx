@@ -21,6 +21,7 @@ const mono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Lyrixis",
   description: "Search music metadata and lyrics. Catalog intelligence at scale.",
+  icons: { icon: "/favicon.png" },
 };
 
 export default function RootLayout({
@@ -31,6 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${display.variable} ${body.variable} ${mono.variable} font-body antialiased`}>
+        <div className="site-stage" aria-hidden="true" />
         {children}
       </body>
     </html>

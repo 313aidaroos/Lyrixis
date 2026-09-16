@@ -53,7 +53,7 @@ export function SyncedLyrics({ lines, audioUrl, preview, previewMs, editable, on
           PREVIEW — first 30 seconds of lyrics, watermarked. Pay to unlock the full result and exports.
         </p>
       )}
-      <div className="max-h-[520px] space-y-3 overflow-y-auto rounded-xl border border-line bg-[#0c0a14] p-4">
+      <div className="max-h-[520px] space-y-3 overflow-y-auto rounded-xl border border-line bg-white/90 p-4">
         {lines.length === 0 ? (
           <p className="text-ink-3">Lyrics appear when processing completes.</p>
         ) : (

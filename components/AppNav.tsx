@@ -19,10 +19,11 @@ export function AppNav({ email }: { email?: string | null }) {
     `text-sm ${pathname === href ? "text-ink" : "text-ink-2 hover:text-ink"}`;
 
   return (
-    <header className="border-b border-line/80 bg-[#0c0a14]/90">
+    <header className="border-b border-line/80 bg-white/75 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="font-display text-lg font-semibold tracking-wide">
-          LYRIXIS
+        <Link href="/" className="flex items-center gap-3">
+          <img src="/lyrixis-mark.png" alt="" className="h-11 w-11 rounded-xl object-cover ring-1 ring-black/10" />
+          <span className="font-display text-lg font-semibold tracking-[0.18em]">LYRIXIS</span>
         </Link>
         <nav className="flex items-center gap-6">
           <Link href="/" className={linkClass("/")}>
