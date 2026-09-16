@@ -19,10 +19,22 @@ export function SiteFooter() {
           <Link href="/updates">Updates</Link>
         </div>
         <div className="flex flex-col gap-2 text-sm text-ink-2">
-          <a href="mailto:Lyrixis@Apixis.dev">Lyrixis@Apixis.dev</a>
-          <a href="mailto:Lyrixis@Apixis.dev?subject=Terms%20request">Terms</a>
-          <a href="mailto:Lyrixis@Apixis.dev?subject=Privacy%20request">Privacy</a>
-          <a href="mailto:Lyrixis@Apixis.dev?subject=DMCA%20notice">Copyright / DMCA</a>
+          <a href="mailto:lyrixis@apixis.dev?subject=Terms%20request">Terms</a>
+          <a href="mailto:lyrixis@apixis.dev?subject=Privacy%20request">Privacy</a>
+          <a href="mailto:lyrixis@apixis.dev?subject=DMCA%20notice">Copyright / DMCA</a>
+        </div>
+      </div>
+      <div className="border-t border-line">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 py-5 text-sm sm:flex-row">
+          <p className="text-ink-3">
+            Contact:{" "}
+            <a href="mailto:lyrixis@apixis.dev" className="font-medium text-violet hover:underline">
+              lyrixis@apixis.dev
+            </a>
+          </p>
+          <p className="text-xs uppercase tracking-[0.22em] text-ink-3">
+            <span className="grad-text">◈</span> An Apixis Company
+          </p>
         </div>
       </div>
     </footer>

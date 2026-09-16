@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LiveDemo } from "@/components/LiveDemo";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteNav } from "@/components/SiteNav";
 import { WaitlistForm } from "@/components/WaitlistForm";
@@ -48,7 +49,12 @@ export default async function HomePage() {
         ))}
         <div className="relative mx-auto flex max-w-6xl flex-col items-center px-6 pb-20 pt-20 text-center lg:pt-28">
           <p className="rise font-mono text-xs uppercase tracking-[0.34em] text-ink-3">Music. Understood.</p>
-          <h1 className="wordmark mt-6">LYRIXIS</h1>
+          <img
+            src="/lyrixis-logo.png"
+            alt="Lyrixis logo"
+            className="rise mt-6 h-40 w-40 object-contain drop-shadow-[0_18px_40px_rgba(99,102,241,0.28)] sm:h-52 sm:w-52 lg:h-60 lg:w-60"
+          />
+          <h1 className="wordmark mt-4">LYRIXIS</h1>
           <p className="rise-2 mt-8 max-w-3xl font-display text-2xl font-semibold text-ink sm:text-3xl">
             The intelligence layer for <span className="grad-text">music catalogs</span>
           </p>
@@ -74,6 +80,10 @@ export default async function HomePage() {
             </button>
           </form>
           <div className="rise-3 mt-5 flex flex-wrap items-center justify-center gap-4 text-sm">
+            <a href="#demo" className="text-ink-2 hover:text-ink">
+              ▶ Watch the demo
+            </a>
+            <span className="text-ink-3">·</span>
             <Link href="/waitlist" className="text-violet hover:underline">
               Join the waitlist →
             </Link>
@@ -86,7 +96,17 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="preview" className="mx-auto max-w-6xl px-6">
+      <section id="demo" className="mx-auto max-w-6xl px-6">
+        <h2 className="text-center font-display text-3xl font-bold">See what Lyrixis does</h2>
+        <p className="mx-auto mt-2 max-w-2xl text-center text-ink-2">
+          One recording in. Synced lyrics, structure, identifiers, and exports out.
+        </p>
+        <div className="mt-8">
+          <LiveDemo />
+        </div>
+      </section>
+
+      <section id="preview" className="mx-auto mt-16 max-w-6xl px-6">
         <div className="card">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-ink-3">Live catalog preview</p>
           <h2 className="mt-2 font-display text-2xl font-semibold">Public seed recordings</h2>
