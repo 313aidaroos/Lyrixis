@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Familjen_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { CixyWidget } from "@/components/CixyWidget";
 
 const display = Familjen_Grotesk({
   subsets: ["latin"],
@@ -40,6 +41,7 @@ export default function RootLayout({
       <body className={`${display.variable} ${body.variable} ${mono.variable} font-body antialiased`}>
         <div className="site-stage" aria-hidden="true" />
         {children}
+        <CixyWidget />
       </body>
     </html>
   );

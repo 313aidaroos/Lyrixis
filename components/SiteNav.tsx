@@ -61,6 +61,9 @@ export function SiteNav() {
           <Link href="/vision" className={on("/vision")}>
             Vision
           </Link>
+          <Link href="/cixy" className={on("/cixy")}>
+            <span className="grad-text">◈</span> Cixy
+          </Link>
           {email ? (
             <>
               <Link href="/dashboard" className={on("/dashboard")}>
@@ -99,6 +102,7 @@ export function SiteNav() {
           <Link href="/catalog">Catalog</Link>
           <Link href="/pricing">Pricing</Link>
           <Link href="/vision">Vision</Link>
+          <Link href="/cixy">◈ Cixy</Link>
           <Link href="/waitlist">Waitlist</Link>
           <Link href="/login">Sign in</Link>
         </div>
