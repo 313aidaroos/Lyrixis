@@ -98,7 +98,6 @@ async function callAnthropic(
       model,
       system: CIXY_SYSTEM_PROMPT,
       max_tokens: 1100,
-      temperature: 0.6,
       tools: [CATALOG_TOOL],
       messages,
     }),
