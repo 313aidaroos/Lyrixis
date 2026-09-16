@@ -1,5 +1,13 @@
+// Env values pasted into dashboards sometimes carry trailing whitespace or a
+// literal "\n" sequence. Normalize so secrets/IDs never reach Stripe malformed.
+function clean(raw: string | undefined): string | undefined {
+  if (raw === undefined) return undefined;
+  const value = raw.replace(/(\\n|\\r)+$/g, "").trim();
+  return value.length > 0 ? value : undefined;
+}
+
 function required(name: string): string {
-  const value = process.env[name];
+  const value = clean(process.env[name]);
   if (!value) {
     throw new Error(`${name} is not set. Copy .env.example to .env.local and fill in real credentials.`);
   }
@@ -7,8 +15,7 @@ function required(name: string): string {
 }
 
 function optional(name: string): string | undefined {
-  const value = process.env[name];
-  return value && value.length > 0 ? value : undefined;
+  return clean(process.env[name]);
 }
 
 export function getAppUrl(): string {
