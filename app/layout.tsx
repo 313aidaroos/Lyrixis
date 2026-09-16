@@ -20,7 +20,7 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Lyrixis",
-  description: "Pay-per-song music intelligence. Synchronized lyrics from one track.",
+  description: "Search music metadata and lyrics. Catalog intelligence at scale.",
 };
 
 export default function RootLayout({

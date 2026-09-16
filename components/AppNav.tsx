@@ -21,18 +21,21 @@ export function AppNav({ email }: { email?: string | null }) {
   return (
     <header className="border-b border-line/80 bg-[#0c0a14]/90">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/dashboard" className="font-display text-lg font-semibold tracking-wide">
+        <Link href="/" className="font-display text-lg font-semibold tracking-wide">
           LYRIXIS
         </Link>
         <nav className="flex items-center gap-6">
+          <Link href="/" className={linkClass("/")}>
+            Catalog
+          </Link>
           <Link href="/dashboard" className={linkClass("/dashboard")}>
             Dashboard
           </Link>
           <Link href="/upload" className={linkClass("/upload")}>
             Upload
           </Link>
-          <a href="/" className="text-sm text-ink-2 hover:text-ink">
-            Marketing
+          <a href="/enterprise" className="text-sm text-ink-2 hover:text-ink">
+            Enterprise
           </a>
           {email && <span className="hidden text-xs text-ink-3 sm:inline">{email}</span>}
           <button type="button" onClick={() => void signOut()} className="text-sm text-ink-2 hover:text-ink">
