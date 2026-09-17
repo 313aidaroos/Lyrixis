@@ -276,6 +276,38 @@ create table track_costs (
 --   revenue - total_cost  AS gross_profit
 --   (revenue - total_cost) / nullif(revenue,0) AS gross_margin
 
+-- ---------- auth / support ----------
+create table magic_links (
+  id uuid primary key default uuid_generate_v4(),
+  email text not null,
+  token text unique not null,
+  expires_at timestamptz not null,
+  used boolean not null default false,
+  created_at timestamptz not null default now()
+);
+create index on magic_links (token);
+create index on magic_links (email, expires_at);
+
+create type support_ticket_status as enum ('open','in_progress','resolved','closed');
+create type support_category as enum ('bug','feature_request','billing','general');
+
+create table support_tickets (
+  id uuid primary key default uuid_generate_v4(),
+  user_email text not null,
+  subject text,
+  message text not null,
+  category support_category not null default 'general',
+  status support_ticket_status not null default 'open',
+  routed_to text default 'awad@apixis.dev',
+  response text,
+  closed_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create index on support_tickets (user_email, created_at desc);
+create index on support_tickets (status, created_at desc);
+create index on support_tickets (routed_to, created_at desc);
+
 -- ---------- api ----------
 create table api_keys (
   id uuid primary key default uuid_generate_v4(),
