@@ -2,33 +2,41 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-20 border-t border-line bg-white/60">
-      <div className="mx-auto grid max-w-6xl gap-8 px-6 py-12 sm:grid-cols-3">
-        <div>
-          <p className="font-display text-sm tracking-[0.22em]">LYRIXIS</p>
-          <p className="mt-3 max-w-xs text-sm text-ink-3">
-            The intelligence layer for music catalogs. Built with care for music.
+    <footer className="mt-24">
+      <div className="seam" />
+      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 sm:grid-cols-4">
+        <div className="sm:col-span-2">
+          <div className="flex items-center gap-2.5">
+            <img src="/lyrixis-mark.png" alt="" className="mark-glow h-8 w-8 object-contain" />
+            <p className="font-display text-sm tracking-[0.24em]">LYRIXIS</p>
+          </div>
+          <p className="mt-4 max-w-sm text-sm text-ink-3">
+            The intelligence layer for music catalogs. Music. Understood.
           </p>
         </div>
         <div className="flex flex-col gap-2 text-sm text-ink-2">
-          <Link href="/catalog">Catalog</Link>
-          <Link href="/pricing">Pricing</Link>
-          <Link href="/vision">Vision</Link>
-          <Link href="/cixy">◈ Cixy</Link>
-          <Link href="/waitlist">Waitlist</Link>
-          <Link href="/updates">Updates</Link>
+          <p className="mb-1 font-mono text-[11px] uppercase tracking-widest text-ink-3">Product</p>
+          <Link href="/catalog" className="hover:text-ink">Catalog</Link>
+          <Link href="/#demo" className="hover:text-ink">Live demo</Link>
+          <Link href="/#api" className="hover:text-ink">API</Link>
+          <Link href="/pricing" className="hover:text-ink">Pricing</Link>
+          <Link href="/cixy" className="hover:text-ink">◈ Cixy</Link>
         </div>
         <div className="flex flex-col gap-2 text-sm text-ink-2">
-          <a href="mailto:lyrixis@apixis.dev?subject=Terms%20request">Terms</a>
-          <a href="mailto:lyrixis@apixis.dev?subject=Privacy%20request">Privacy</a>
-          <a href="mailto:lyrixis@apixis.dev?subject=DMCA%20notice">Copyright / DMCA</a>
+          <p className="mb-1 font-mono text-[11px] uppercase tracking-widest text-ink-3">Company</p>
+          <Link href="/vision" className="hover:text-ink">Vision & FAQ</Link>
+          <Link href="/updates" className="hover:text-ink">Updates</Link>
+          <Link href="/waitlist" className="hover:text-ink">Early access</Link>
+          <a href="mailto:lyrixis@apixis.dev?subject=Terms%20request" className="hover:text-ink">Terms</a>
+          <a href="mailto:lyrixis@apixis.dev?subject=Privacy%20request" className="hover:text-ink">Privacy</a>
+          <a href="mailto:lyrixis@apixis.dev?subject=DMCA%20notice" className="hover:text-ink">Copyright / DMCA</a>
         </div>
       </div>
       <div className="border-t border-line">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 py-5 text-sm sm:flex-row">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-6 py-5 text-sm sm:flex-row">
           <p className="text-ink-3">
             Contact:{" "}
-            <a href="mailto:lyrixis@apixis.dev" className="font-medium text-violet hover:underline">
+            <a href="mailto:lyrixis@apixis.dev" className="font-medium text-cyan hover:underline">
               lyrixis@apixis.dev
             </a>
           </p>
