@@ -24,6 +24,10 @@ html {
   scroll-behavior: smooth;
 }
 
+body, body * {
+  font-family: 'Special Elite', monospace !important;
+}
+
 body {
   background: var(--bg);
   color: var(--ink);

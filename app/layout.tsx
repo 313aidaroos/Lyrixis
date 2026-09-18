@@ -1,22 +1,12 @@
 import type { Metadata } from "next";
-import { Familjen_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import { Special_Elite } from "next/font/google";
 import "./globals.css";
 import { CixyWidget } from "@/components/CixyWidget";
 
-const display = Familjen_Grotesk({
+const specialElite = Special_Elite({
   subsets: ["latin"],
-  variable: "--font-display",
-  weight: ["400", "500", "600", "700"],
-});
-
-const body = Inter({
-  subsets: ["latin"],
-  variable: "--font-body",
-});
-
-const mono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
+  weight: ["400"],
+  variable: "--font-special-elite",
 });
 
 export const metadata: Metadata = {
@@ -31,6 +21,10 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport = {
+  themeColor: "#07061a",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${display.variable} ${body.variable} ${mono.variable} font-body antialiased`}>
+      <body className={`${specialElite.variable} font-special-elite antialiased`}>
         <div className="site-stage" aria-hidden="true" />
         {children}
         <CixyWidget />
