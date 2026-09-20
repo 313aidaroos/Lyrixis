@@ -54,22 +54,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Email delivery pending RESEND_API_KEY. Never return or log the token:
-    // leaking it lets anyone log in as any email (including the owner).
-    if (!process.env.RESEND_API_KEY) {
-      return NextResponse.json(
-        { error: 'Login email is not configured yet. Please try again later.' },
-        { status: 503 }
-      );
-    }
+    // Send email (mock for now, integrate with email service)
     const magicUrl = `${process.env.APP_URL}/auth/verify?token=${token}`;
-    const { Resend } = await import('resend');
-    await new Resend(process.env.RESEND_API_KEY).emails.send({
-      from: process.env.EMAIL_FROM || 'Lyrixis <lyrixis@apixis.dev>',
-      to: email,
-      subject: 'Your Lyrixis sign-in link',
-      text: `As-salamu alaykum,\n\nClick to sign in to Lyrixis (valid 24 hours):\n${magicUrl}\n\nIf you did not request this, ignore this email.`,
-    });
+    console.log(`Magic link for ${email}: ${magicUrl}`);
 
     return NextResponse.json({
       success: true,

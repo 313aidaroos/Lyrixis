@@ -8,6 +8,10 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
+    // NOTE: Stripe checkout disabled for Lyrixis as of family-wide Ixis transition.
+    // This webhook remains for legacy payments only. New purchases use Apixis Wallet.
+    // See LYRIXIS_SKUS.md for Ixis pricing and catalog integration.
+    
     const signature = request.headers.get("stripe-signature");
     if (!signature) {
       throw new HttpError(400, "missing_signature", "Stripe-Signature header is required.");

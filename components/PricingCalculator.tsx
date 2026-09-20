@@ -6,16 +6,17 @@ import { useEffect, useMemo, useState } from "react";
 interface Tier {
   min_songs: number;
   max_songs: number | null;
-  rate_cents: number;
+  rate_ixis: number;
 }
 
+// 100 Ixis = $1
 const DEFAULT_TIERS: Tier[] = [
-  { min_songs: 1, max_songs: 99, rate_cents: 299 },
-  { min_songs: 100, max_songs: 999, rate_cents: 149 },
-  { min_songs: 1000, max_songs: 9999, rate_cents: 75 },
-  { min_songs: 10000, max_songs: 99999, rate_cents: 40 },
-  { min_songs: 100000, max_songs: 999999, rate_cents: 20 },
-  { min_songs: 1000000, max_songs: null, rate_cents: 20 },
+  { min_songs: 1, max_songs: 99, rate_ixis: 300 }, // $2.99 → 300 Ixis
+  { min_songs: 100, max_songs: 999, rate_ixis: 150 }, // $1.49 → 150 Ixis
+  { min_songs: 1000, max_songs: 9999, rate_ixis: 75 }, // $0.75 → 75 Ixis
+  { min_songs: 10000, max_songs: 99999, rate_ixis: 40 }, // $0.40 → 40 Ixis
+  { min_songs: 100000, max_songs: 999999, rate_ixis: 20 }, // $0.20 → 20 Ixis
+  { min_songs: 1000000, max_songs: null, rate_ixis: 20 }, // Enterprise: $0.20 → 20 Ixis
 ];
 
 export function PricingCalculator() {
@@ -42,17 +43,18 @@ export function PricingCalculator() {
       (t) => count >= t.min_songs && (t.max_songs === null || count <= t.max_songs)
     ) || tiers[tiers.length - 1];
 
-    const rateCents = tier.rate_cents;
-    const totalDollars = (count * rateCents) / 100;
+    const rateIxis = tier.rate_ixis;
+    const totalIxis = count * rateIxis;
+    const totalDollars = totalIxis / 100;
     const isEnterprise = count >= 1000000;
 
     return {
       tier,
-      rateCents,
-      rateFormatted: `$${(rateCents / 100).toFixed(2)}`,
+      rateIxis,
+      rateFormatted: `${rateIxis.toLocaleString()} Ixis · $${(rateIxis / 100).toFixed(2)}`,
       totalFormatted: isEnterprise
         ? "Custom Enterprise"
-        : `$${Math.round(totalDollars).toLocaleString()}`,
+        : `${Math.round(totalIxis).toLocaleString()} Ixis · $${Math.round(totalDollars).toLocaleString()}`,
       isEnterprise,
     };
   }, [tiers, count]);
@@ -109,10 +111,10 @@ export function PricingCalculator() {
         />
 
         <div className="flex justify-between font-mono text-[11px] text-ink-3">
-          <span>1 song ($2.99)</span>
-          <span>1k ($0.75)</span>
-          <span>10k ($0.40)</span>
-          <span>100k+ ($0.20)</span>
+          <span>1 song (300 Ixis · $3)</span>
+          <span>1k (75 Ixis · $0.75)</span>
+          <span>10k (40 Ixis · $0.40)</span>
+          <span>100k+ (20 Ixis · $0.20)</span>
         </div>
       </div>
 
@@ -134,14 +136,19 @@ export function PricingCalculator() {
       </div>
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3 pt-2">
-        <p className="text-xs text-ink-3">
-          Single songs can be processed instantly in test mode. High-volume runs use API or batch CSV.
-        </p>
+        <div>
+          <p className="text-xs text-ink-3 mb-1">
+            Lyrixis uses <span className="font-semibold text-cyan">Ixis points</span>. 100 Ixis = $1. Paid Ixis never expires.
+          </p>
+          <p className="text-xs text-ink-3">
+            Single songs can be processed instantly. High-volume runs use API or batch CSV.
+          </p>
+        </div>
         <Link
           href={quote.isEnterprise ? "/waitlist" : "/add"}
           className="btn-primary px-5 py-2.5 text-sm"
         >
-          {quote.isEnterprise ? "Talk to Enterprise" : "Process songs now"} <span className="arrow">→</span>
+          {quote.isEnterprise ? "Talk to Enterprise" : "Redeem Ixis"} <span className="arrow">→</span>
         </Link>
       </div>
     </div>
