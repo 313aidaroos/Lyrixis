@@ -4,7 +4,7 @@ import { useState } from "react";
 import { LISTEN_SHELF } from "@/lib/listenShelf";
 
 export function ListenDesk() {
-  const [id, setId] = useState(LISTEN_SHELF[0].id);
+  const [id, setId] = useState<string>(LISTEN_SHELF[0].id);
   const book = LISTEN_SHELF.find((b) => b.id === id) ?? LISTEN_SHELF[0];
   const [busy, setBusy] = useState(false);
 
