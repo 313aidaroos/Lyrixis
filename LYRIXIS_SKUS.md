@@ -16,25 +16,25 @@
 - **Description:** Unlock full synced lyrics, metadata, and export formats for one track.
 - **Entitlement:** Access to one track's complete intelligence layer (lyrics, timecodes, translations, exports).
 
-### 2. 100-Track Monthly Batch
-- **SKU:** `lyrixis_batch_100_monthly`
-- **Cost:** 15,000 Ixis ($150/month)
+### 2. Starter Monthly (100 tracks)
+- **SKU:** `lyrixis_starter_monthly`
+- **Cost:** 10,000 Ixis ($100/month)
 - **Type:** Recurring monthly subscription
-- **Description:** Process up to 100 tracks per month with full intelligence layer.
+- **Description:** Starter tier: process up to 100 tracks per month.
 - **Entitlement:** 100 track credits renew monthly; unused credits do not roll over.
 
-### 3. 1,000-Track Monthly Batch (Volume Discount)
-- **SKU:** `lyrixis_batch_1000_monthly`
-- **Cost:** 7,500 Ixis ($75/month)
+### 3. Pro Monthly (1,000 tracks)
+- **SKU:** `lyrixis_pro_monthly`
+- **Cost:** 20,000 Ixis ($200/month)
 - **Type:** Recurring monthly subscription
-- **Description:** Process up to 1,000 tracks per month with volume discount (50% savings per track).
+- **Description:** Pro tier: process up to 1,000 tracks per month with volume discount.
 - **Entitlement:** 1,000 track credits renew monthly; unused credits do not roll over.
 
-### 4. 10,000-Track Enterprise Monthly
-- **SKU:** `lyrixis_enterprise_10k_monthly`
-- **Cost:** 40,000 Ixis ($400/month)
+### 4. Enterprise Monthly (10,000 tracks)
+- **SKU:** `lyrixis_enterprise_monthly`
+- **Cost:** 30,000 Ixis ($300/month)
 - **Type:** Recurring monthly subscription
-- **Description:** Enterprise-tier processing for labels and distributors (10,000 tracks/month).
+- **Description:** Enterprise tier: process up to 10,000 tracks per month with priority processing.
 - **Entitlement:** 10,000 track credits renew monthly; priority processing queue.
 
 ### 5. Custom Export (Per Track)
