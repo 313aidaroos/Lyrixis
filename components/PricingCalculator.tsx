@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { WALLET_BUY_URL } from "@/lib/wallet";
 
 interface Tier {
   min_songs: number;
@@ -144,12 +145,17 @@ export function PricingCalculator() {
             Single songs can be processed instantly. High-volume runs use API or batch CSV.
           </p>
         </div>
-        <Link
-          href={quote.isEnterprise ? "/waitlist" : "/add"}
-          className="btn-primary px-5 py-2.5 text-sm"
-        >
-          {quote.isEnterprise ? "Talk to Enterprise" : "Redeem Ixis"} <span className="arrow">→</span>
-        </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          <a href={WALLET_BUY_URL} className="btn-secondary px-5 py-2.5 text-sm">
+            Buy Ixis
+          </a>
+          <Link
+            href={quote.isEnterprise ? "/waitlist" : "/add"}
+            className="btn-primary px-5 py-2.5 text-sm"
+          >
+            {quote.isEnterprise ? "Talk to Enterprise" : "Redeem Ixis"} <span className="arrow">→</span>
+          </Link>
+        </div>
       </div>
     </div>
   );
