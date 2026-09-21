@@ -89,10 +89,10 @@ describe('Admin Setup', () => {
     });
 
     it('should prevent non-admins from user management', async () => {
-      const userRole: 'user' | 'admin' = 'user';
-      expect(() => {
-        if (userRole !== 'admin') throw new Error('Unauthorized');
-      }).toThrow('Unauthorized');
+      const assertAdmin = (role: string) => {
+        if (role !== 'admin') throw new Error('Unauthorized');
+      };
+      expect(() => assertAdmin('user')).toThrow('Unauthorized');
     });
 
     it('should create owner org entry for awad@apixis.dev', async () => {

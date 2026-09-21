@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { WALLET_BUY_URL } from "@/lib/wallet";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 export function AppNav({ email }: { email?: string | null }) {
@@ -37,6 +38,9 @@ export function AppNav({ email }: { email?: string | null }) {
           </Link>
           <a href="/enterprise" className="text-sm text-ink-2 hover:text-ink">
             Enterprise
+          </a>
+          <a href={WALLET_BUY_URL} className="text-sm text-ink-2 hover:text-ink">
+            Buy Ixis
           </a>
           {email && <span className="hidden text-xs text-ink-3 sm:inline">{email}</span>}
           <button type="button" onClick={() => void signOut()} className="text-sm text-ink-2 hover:text-ink">

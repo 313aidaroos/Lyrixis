@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { WALLET_BUY_URL } from "@/lib/wallet";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 const MENUS: Record<string, { label: string; href: string; hint: string }[]> = {
@@ -123,9 +124,15 @@ export function SiteNav() {
           <Link href="/pricing" className="nav-link text-ink-2 hover:text-ink" data-active={active("/pricing")}>
             Pricing
           </Link>
+          <a href={WALLET_BUY_URL} className="nav-link text-ink-2 hover:text-ink">
+            Wallet
+          </a>
         </nav>
 
         <div className="hidden items-center gap-4 text-sm lg:flex">
+          <a href={WALLET_BUY_URL} className="btn-secondary px-4 py-2 text-sm">
+            Buy Ixis
+          </a>
           {email ? (
             <>
               <Link href="/dashboard" className="nav-link text-ink-2 hover:text-ink" data-active={active("/dashboard")}>
@@ -177,7 +184,13 @@ export function SiteNav() {
             <Link href="/pricing" onClick={() => setOpen(false)}>
               Pricing
             </Link>
+            <a href={WALLET_BUY_URL} onClick={() => setOpen(false)}>
+              Wallet
+            </a>
           </div>
+          <a href={WALLET_BUY_URL} className="btn-secondary mb-2 block py-2 text-center text-sm" onClick={() => setOpen(false)}>
+            Buy Ixis
+          </a>
           <div className="flex gap-2">
             <Link href="/login" className="btn-secondary flex-1 py-2 text-sm" onClick={() => setOpen(false)}>
               Sign in
