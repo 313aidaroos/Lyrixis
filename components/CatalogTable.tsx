@@ -77,7 +77,11 @@ export function CatalogTable({
                     onClick={() => setOpenId(open ? null : row.id)}
                   >
                     <td className="border-l-2 border-transparent px-4 py-3 hover:border-cyan">
-                      <Link className="font-medium text-ink hover:text-cyan" href={`/catalog/${row.publicId}`}>
+                      <Link 
+                        className="font-medium text-ink hover:text-cyan" 
+                        href={`/catalog/${row.publicId}`}
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         {row.title}
                       </Link>
                     </td>
