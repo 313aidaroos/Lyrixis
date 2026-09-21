@@ -359,12 +359,38 @@ a:hover > .arrow {
   background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), rgba(34, 211, 238, 0.5), transparent);
 }
 
+/* Interim Cixy sprite sheet: 5 moods × 2 frames. See public/cixy/README.md. */
+.cixy-signature {
+  aspect-ratio: 1;
+  background-image: url("/cixy/cixy-sprites.png");
+  background-repeat: no-repeat;
+  background-size: 500% 200%;
+  background-position: var(--cixy-frame, 0%) 0%;
+}
+
+.cixy-signature.is-live {
+  animation: cixy-sprite-frames 4s steps(1, end) infinite;
+}
+
+@keyframes cixy-sprite-frames {
+  0%,
+  42%,
+  100% {
+    background-position: var(--cixy-frame, 0%) 0%;
+  }
+  43%,
+  85% {
+    background-position: var(--cixy-frame, 0%) 100%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .site-stage,
   .hero-mark,
   .vinyl-ring,
   .btn-pulse,
-  .pipe-line::after {
+  .pipe-line::after,
+  .cixy-signature.is-live {
     animation: none !important;
   }
   .reveal {
