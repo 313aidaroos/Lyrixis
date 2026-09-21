@@ -4,11 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { CixyChat } from "@/components/CixyChat";
+import { CixyCustomizer } from "@/components/CixyCustomizer";
 
 export function CixyWidget() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const [panel, setPanel] = useState<"chat" | "look">("chat");
 
   // The /cixy page is the full-size Cixy; do not show a second launcher there.
   if (pathname === "/cixy") return null;
@@ -21,7 +23,7 @@ export function CixyWidget() {
           aria-label="Cixy — Lyrixis native AI"
           className="fixed bottom-24 right-4 z-50 flex h-[580px] w-[min(440px,calc(100vw-2rem))] flex-col overflow-hidden rounded-3xl border border-line bg-[#09081e]/95 shadow-2xl shadow-violet/30 backdrop-blur-2xl"
         >
-          <div className="flex items-center justify-between border-b border-line px-5 py-3.5 bg-black/40">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line bg-black/40 px-4 py-3">
             <div>
               <p className="font-display text-sm font-semibold tracking-wide flex items-center gap-2">
                 <span className="grad-text text-base">◈</span> Cixy
@@ -29,6 +31,22 @@ export function CixyWidget() {
               <p className="text-[11px] text-ink-3">Lyrixis native AI · A Apixis Company</p>
             </div>
             <div className="flex items-center gap-3 text-xs">
+              <button
+                type="button"
+                onClick={() => setPanel("chat")}
+                className={panel === "chat" ? "text-cyan" : "text-ink-2 hover:text-ink"}
+                aria-pressed={panel === "chat"}
+              >
+                Chat
+              </button>
+              <button
+                type="button"
+                onClick={() => setPanel("look")}
+                className={panel === "look" ? "text-cyan" : "text-ink-2 hover:text-ink"}
+                aria-pressed={panel === "look"}
+              >
+                Look
+              </button>
               <Link href="/cixy" className="text-ink-2 hover:text-cyan transition" onClick={() => setOpen(false)}>
                 Open full ↗
               </Link>
@@ -42,7 +60,7 @@ export function CixyWidget() {
               </button>
             </div>
           </div>
-          <CixyChat />
+          {panel === "look" ? <CixyCustomizer compact /> : <CixyChat />}
         </div>
       )}
 

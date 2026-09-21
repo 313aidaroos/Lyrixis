@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CixyChat } from "@/components/CixyChat";
+import { CixyCustomizer } from "@/components/CixyCustomizer";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteNav } from "@/components/SiteNav";
 
@@ -58,6 +59,9 @@ export default function CixyPage() {
             </div>
             <CixyChat tall />
           </div>
+        </div>
+        <div className="mt-10">
+          <CixyCustomizer />
         </div>
       </main>
       <SiteFooter />
