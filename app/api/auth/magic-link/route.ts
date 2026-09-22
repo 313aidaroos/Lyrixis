@@ -55,7 +55,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Send email via Resend
-    const magicUrl = `${process.env.APP_URL}/auth/verify?token=${token}`;
+    // Never mail "undefined/auth/verify" again: fall back to the request's own origin.
+    const appUrl = (process.env.APP_URL || new URL(request.url).origin).replace(/\/$/, "");
+    const magicUrl = `${appUrl}/auth/verify?token=${token}`;
     
     if (!process.env.RESEND_API_KEY) {
       console.error('RESEND_API_KEY missing');
