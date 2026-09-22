@@ -1,99 +1,66 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminClient } from '@/lib/supabase/admin';
-import crypto from 'crypto';
+import { createClient } from '@supabase/supabase-js';
 
-const MAGIC_LINK_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
-const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
-const RATE_LIMIT_MAX = 3; // max 3 requests per minute
-
+/**
+ * Magic-link sign-in.
+ *
+ * Previously this minted its own token into `magic_links`, mailed a link to /auth/verify
+ * (a page that does not exist — the handler lived at /api/auth/verify) and set an
+ * `auth_session` cookie that nothing in the app reads: requireUser() is Supabase Auth.
+ * So no one could ever sign in. Verified live 2026-09-22.
+ *
+ * Now: ask Supabase Auth for the OTP link. Supabase sends it through the project's SMTP
+ * (Resend, from lyrixis@apixis.dev) and the existing /auth/callback exchanges the code
+ * for a real session. One auth system, not two.
+ */
+const RATE_LIMIT_WINDOW = 60 * 1000;
+const RATE_LIMIT_MAX = 3;
 const requestCounts = new Map<string, { count: number; resetAt: number }>();
 
 export async function POST(request: NextRequest) {
   try {
-    const { email } = await request.json();
-
-    if (!email || !email.includes('@')) {
+    const { email } = await request.json().catch(() => ({}));
+    if (typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json({ error: 'Invalid email' }, { status: 400 });
     }
 
-    // Rate limiting by IP
     const ip = request.headers.get('x-forwarded-for') || 'unknown';
     const now = Date.now();
     const limiter = requestCounts.get(ip);
-
     if (limiter && limiter.resetAt > now) {
       if (limiter.count >= RATE_LIMIT_MAX) {
-        return NextResponse.json(
-          { error: 'Too many requests. Try again in 1 minute.' },
-          { status: 429 }
-        );
+        return NextResponse.json({ error: 'Too many requests. Try again in 1 minute.' }, { status: 429 });
       }
       limiter.count++;
     } else {
       requestCounts.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
     }
 
-    // Generate magic link token
-    const token = crypto.randomBytes(32).toString('hex');
-    const expiresAt = new Date(now + MAGIC_LINK_EXPIRY).toISOString();
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!url || !anon) {
+      return NextResponse.json({ error: 'Sign-in is not configured' }, { status: 503 });
+    }
 
-    // Store token in database
-    const admin = createAdminClient();
-    const { error } = await admin.from('magic_links').insert({
+    const appUrl = (process.env.APP_URL || new URL(request.url).origin).replace(/\/$/, '');
+    const auth = createClient(url, anon, { auth: { persistSession: false, autoRefreshToken: false } });
+    const { error } = await auth.auth.signInWithOtp({
       email,
-      token,
-      expires_at: expiresAt,
-      used: false,
+      options: {
+        shouldCreateUser: true,
+        emailRedirectTo: `${appUrl}/auth/callback?next=${encodeURIComponent('/dashboard')}`,
+      },
     });
-
     if (error) {
-      console.error('Magic link creation failed:', error);
-      return NextResponse.json(
-        { error: 'Failed to create magic link' },
-        { status: 500 }
-      );
+      console.error('signInWithOtp failed:', error.message);
+      // Supabase rate-limits repeat sends to the same address; say so honestly.
+      const status = /rate|seconds/i.test(error.message) ? 429 : 500;
+      return NextResponse.json({ error: error.message }, { status });
     }
 
-    // Send email via Resend
-    // Never mail "undefined/auth/verify" again: fall back to the request's own origin.
-    const appUrl = (process.env.APP_URL || new URL(request.url).origin).replace(/\/$/, "");
-    const magicUrl = `${appUrl}/auth/verify?token=${token}`;
-    
-    if (!process.env.RESEND_API_KEY) {
-      console.error('RESEND_API_KEY missing');
-      return NextResponse.json(
-        { error: 'Email service not configured' },
-        { status: 503 }
-      );
-    }
-
-    try {
-      const { Resend } = await import('resend');
-      const resend = new Resend(process.env.RESEND_API_KEY);
-      
-      await resend.emails.send({
-        from: process.env.EMAIL_FROM || 'Lyrixis <lyrixis@apixis.dev>',
-        to: email,
-        subject: 'Your Lyrixis sign-in link',
-        text: `As-salamu alaykum,\n\nClick to sign in to Lyrixis (valid 24 hours):\n${magicUrl}\n\nIf you did not request this, ignore this email.`,
-      });
-    } catch (emailError) {
-      console.error('Email send failed:', emailError);
-      return NextResponse.json(
-        { error: 'Failed to send email' },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: 'Check your email for the magic link',
-    });
+    return NextResponse.json({ success: true, message: 'Check your email for the magic link' });
   } catch (error) {
     console.error('Magic link error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
