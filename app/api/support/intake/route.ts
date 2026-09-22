@@ -47,11 +47,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send confirmation email to user (mock)
-    console.log(`Support ticket ${ticket.id} created for ${email}`);
-    console.log(`Routing to awad@apixis.dev`);
+    // Send confirmation email to user and notification to Awad
+    try {
+      const { Resend } = await import('resend');
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      
+      // Send confirmation to user
+      await resend.emails.send({
+        from: process.env.EMAIL_FROM || 'Lyrixis <lyrixis@apixis.dev>',
+        to: email,
+        subject: 'We received your support request',
+        text: `As-salamu alaykum,\n\nWe received your support request (Ticket ${ticket.id}).\n\nYour message:\n${message}\n\nAwad will review it shortly.\n\n— Lyrixis Team`,
+      });
 
-    // In production, send actual email here
+      // Send notification to Awad
+      await resend.emails.send({
+        from: process.env.EMAIL_FROM || 'Lyrixis <lyrixis@apixis.dev>',
+        to: 'awad@apixis.dev',
+        subject: `Lyrixis Support: ${subject || 'General inquiry'}`,
+        text: `New support ticket ${ticket.id}\n\nFrom: ${email}\nCategory: ${category || 'general'}\nSubject: ${subject || 'General inquiry'}\n\nMessage:\n${message}\n\nView: https://lyrixis.vercel.app/admin/support/${ticket.id}`,
+      });
+    } catch (emailError) {
+      console.error('Email send failed:', emailError);
+      // Don't fail the request if email fails - ticket is already saved
+    }
 
     return NextResponse.json({
       success: true,

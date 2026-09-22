@@ -54,9 +54,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send email (mock for now, integrate with email service)
+    // Send email via Resend
     const magicUrl = `${process.env.APP_URL}/auth/verify?token=${token}`;
-    console.log(`Magic link for ${email}: ${magicUrl}`);
+    
+    if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY missing');
+      return NextResponse.json(
+        { error: 'Email service not configured' },
+        { status: 503 }
+      );
+    }
+
+    try {
+      const { Resend } = await import('resend');
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      
+      await resend.emails.send({
+        from: process.env.EMAIL_FROM || 'Lyrixis <lyrixis@apixis.dev>',
+        to: email,
+        subject: 'Your Lyrixis sign-in link',
+        text: `As-salamu alaykum,\n\nClick to sign in to Lyrixis (valid 24 hours):\n${magicUrl}\n\nIf you did not request this, ignore this email.`,
+      });
+    } catch (emailError) {
+      console.error('Email send failed:', emailError);
+      return NextResponse.json(
+        { error: 'Failed to send email' },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
