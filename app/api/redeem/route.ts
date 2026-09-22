@@ -46,14 +46,19 @@ export async function POST(request: NextRequest) {
 
     // Unlock single track: 300 Ixis
     const productKey = 'lyrixis.track.unlock';
-    const idempotencyKey = `lyrixis-track-${track.id}-${user.id}`;
+    // Per attempt: a released hold must never lock the customer out of retrying.
+    const idempotencyKey = `lyrixis-track-${track.id}-${user.id}-${Date.now()}`;
     const returnUrl = `https://lyrixis.vercel.app/catalog/${trackId}`;
 
+    if (!user.email) {
+      return NextResponse.json({ error: 'email_required', message: 'Sign in with email to redeem.' }, { status: 400 });
+    }
     const result = await redeem({
-      ownerId: user.id,
+      // Family identity is the verified EMAIL; this project's uid means nothing to the Wallet.
+      ownerEmail: user.email,
       productKey,
       idempotencyKey,
-      provision: async (reservation) => {
+      provision: async (reservation): Promise<{ trackId: string; title: string; ixis: number }> => {
         // Unlock the track while Ixis are held
         const { error: unlockError } = await admin
           .from('tracks')
