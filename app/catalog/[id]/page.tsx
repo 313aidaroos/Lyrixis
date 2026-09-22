@@ -28,15 +28,18 @@ export default async function CatalogRecordingPage({
 
   const user = await getUser();
   
-  // Check if track is unlocked
-  const admin = createAdminClient();
-  const { data: track } = await admin
-    .from('tracks')
-    .select('paid')
-    .eq('public_id', id)
-    .maybeSingle();
-  
-  const isUnlocked = track?.paid ?? false;
+  // Unlock is per user (cache of the Wallet entitlement), never a global flag.
+  let isUnlocked = false;
+  if (user) {
+    const admin = createAdminClient();
+    const { data: unlock } = await admin
+      .from('track_unlocks')
+      .select('receipt_id')
+      .eq('user_id', user.id)
+      .eq('recording_public_id', id)
+      .maybeSingle();
+    isUnlocked = Boolean(unlock);
+  }
   const writers = recording.writers.length > 0 ? recording.writers.join(", ") : null;
 
   return (

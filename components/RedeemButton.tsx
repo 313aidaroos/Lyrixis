@@ -40,7 +40,7 @@ export function RedeemButton({ trackId, isUnlocked }: { trackId: string; isUnloc
       }
 
       if (!res.ok) {
-        setError(data.message || data.error || 'Redemption failed');
+        setError(typeof data.message === 'string' ? data.message : typeof data.error === 'string' ? data.error : (data.error && typeof data.error.message === 'string') ? data.error.message : 'Redemption failed');
         return;
       }
 
