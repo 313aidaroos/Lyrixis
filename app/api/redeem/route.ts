@@ -48,7 +48,8 @@ export async function POST(request: NextRequest) {
       ownerEmail: user.email,
       productKey: PRODUCT_KEY,
       // Per attempt: a released hold must never lock the customer out of retrying.
-      idempotencyKey: `lyrixis-unlock-${user.id}-${rec.public_id}-${Date.now()}`,
+      // Wallet caps this at 80 chars: short uid prefix + short recording id + timestamp.
+      idempotencyKey: `lyx-${user.id.slice(0, 8)}-${rec.public_id.slice(0, 24)}-${Date.now().toString(36)}`,
       provision: async (reservation): Promise<{ ixis: number }> => {
         const { error } = await admin.from('track_unlocks').insert({
           user_id: user.id,
