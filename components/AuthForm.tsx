@@ -1,69 +1,77 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
-export function AuthForm({ mode }: { mode: "login" | "signup" }) {
+export function AuthForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") ?? "/dashboard";
+  const next = searchParams.get("next") ?? "/catalog";
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
   const [pending, setPending] = useState(false);
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
     setError(null);
-    setNotice(null);
     setPending(true);
-    const supabase = createBrowserSupabaseClient();
+
     try {
-      if (mode === "login") {
-        const { error: signError } = await supabase.auth.signInWithPassword({ email, password });
-        if (signError) throw signError;
-        router.push(next);
-        router.refresh();
+      const res = await fetch('/api/auth/magic-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || data.error || 'Failed to send magic link');
         return;
       }
-      const origin = window.location.origin;
-      const { error: signError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}` },
-      });
-      if (signError) throw signError;
-      setNotice("Check your email to confirm your account, then sign in. If confirmation is disabled, you can sign in now.");
+
+      setSent(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Authentication failed.");
+      setError('Network error. Please try again.');
     } finally {
       setPending(false);
     }
   }
 
-  async function google() {
-    setError(null);
-    const supabase = createBrowserSupabaseClient();
-    const origin = window.location.origin;
-    const { error: oauthError } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}` },
-    });
-    if (oauthError) setError(oauthError.message);
+  if (sent) {
+    return (
+      <div className="mx-auto max-w-md px-6 py-16">
+        <div className="page-panel">
+          <p className="font-mono text-xs uppercase tracking-widest text-ink-2">Lyrixis</p>
+          <h1 className="mt-3 font-display text-3xl font-bold">Check your email</h1>
+          <p className="mt-2 text-sm text-ink-2">
+            As-salamu alaykum. We sent a sign-in link to <strong>{email}</strong>.
+          </p>
+          <p className="mt-4 text-sm text-ink-3">
+            The link expires in 24 hours. If you don&apos;t see it, check spam.
+          </p>
+          <button
+            className="btn-secondary mt-6 w-full"
+            onClick={() => {
+              setSent(false);
+              setEmail("");
+            }}
+          >
+            Use a different email
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="mx-auto max-w-md px-6 py-16">
       <div className="page-panel">
         <p className="font-mono text-xs uppercase tracking-widest text-ink-2">Lyrixis</p>
-        <h1 className="mt-3 font-display text-3xl font-bold">
-          {mode === "login" ? "Sign in" : "Create an account"}
-        </h1>
+        <h1 className="mt-3 font-display text-3xl font-bold">Sign in</h1>
         <p className="mt-2 text-sm text-ink-2">
-          Email and password, or Google. Processing starts after you upload a track you have rights to.
+          Enter your email. We&apos;ll send you a magic link to sign in — no password needed.
         </p>
 
         <form className="mt-8 space-y-4" onSubmit={(event) => void onSubmit(event)}>
@@ -79,50 +87,21 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
               required
               value={email}
               onChange={(event) => setEmail(event.target.value)}
+              placeholder="you@example.com"
             />
           </div>
-          <div>
-            <label className="label" htmlFor="password">
-              Password
-            </label>
-            <input
-              id="password"
-              className="input"
-              type="password"
-              autoComplete={mode === "login" ? "current-password" : "new-password"}
-              required
-              minLength={8}
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            />
-          </div>
-          {error && <p className="text-sm text-rose-600">{error}</p>}
-          {notice && <p className="text-sm text-cyan">{notice}</p>}
+          {error && (
+            <div className="card bg-red-500/10 border-red-500/30">
+              <p className="text-sm text-red-300">{error}</p>
+            </div>
+          )}
           <button className="btn-primary w-full" type="submit" disabled={pending}>
-            {pending ? "Please wait…" : mode === "login" ? "Sign in" : "Sign up"}
+            {pending ? "Sending..." : "Send magic link"}
           </button>
         </form>
 
-        <button className="btn-secondary mt-4 w-full" type="button" onClick={() => void google()}>
-          Continue with Google
-        </button>
-
-        <p className="mt-6 text-sm text-ink-3">
-          {mode === "login" ? (
-            <>
-              No account?{" "}
-              <Link className="text-violet" href="/signup">
-                Sign up
-              </Link>
-            </>
-          ) : (
-            <>
-              Already have an account?{" "}
-              <Link className="text-violet" href="/login">
-                Sign in
-              </Link>
-            </>
-          )}
+        <p className="mt-6 text-xs text-ink-3 text-center">
+          100 Ixis = $1. Paid Ixis never expires.
         </p>
       </div>
     </div>

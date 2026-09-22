@@ -7,7 +7,7 @@ export default function SignupPage() {
     <div>
       <SiteNav />
       <Suspense fallback={<div className="mx-auto max-w-md px-6 py-16 text-ink-3">Loading…</div>}>
-        <AuthForm mode="signup" />
+        <AuthForm />
       </Suspense>
     </div>
   );
