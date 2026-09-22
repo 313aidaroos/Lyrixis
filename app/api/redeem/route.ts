@@ -44,8 +44,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Use apixis.file.unit as interim productKey until Lyrixis SKUs are added
-    const productKey = 'apixis.file.unit'; // 300 Ixis per hermes
+    // Unlock single track: 300 Ixis
+    const productKey = 'lyrixis.track.unlock';
     const idempotencyKey = `lyrixis-track-${track.id}-${user.id}`;
     const returnUrl = `https://lyrixis.vercel.app/catalog/${trackId}`;
 
