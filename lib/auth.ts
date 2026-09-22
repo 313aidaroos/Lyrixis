@@ -77,3 +77,11 @@ export async function requireUser(): Promise<AppUser> {
 
   return toAppUser(created as UserRow);
 }
+
+export async function getUser(): Promise<AppUser | null> {
+  try {
+    return await requireUser();
+  } catch {
+    return null;
+  }
+}

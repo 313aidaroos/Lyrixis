@@ -3,14 +3,13 @@ import { z } from 'zod';
 import { requireUser } from '@/lib/auth';
 import { jsonError, HttpError } from '@/lib/errors';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { redeem, buyIxisUrl, WalletError } from '@/lib/apixis-wallet';
 
 export const runtime = 'nodejs';
 
 const bodySchema = z.object({
   trackId: z.string().min(1),
 });
-
-const WALLET_BASE_URL = 'https://apixis-wallet.vercel.app';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,7 +23,7 @@ export async function POST(request: NextRequest) {
 
     const { trackId } = parsed.data;
 
-    // Check if track exists and user has access
+    // Check if track exists
     const admin = createAdminClient();
     const { data: track, error: trackError } = await admin
       .from('tracks')
@@ -36,7 +35,7 @@ export async function POST(request: NextRequest) {
       throw new HttpError(404, 'track_not_found', 'Track not found');
     }
 
-    // Check if already paid
+    // Check if already unlocked
     if (track.paid) {
       return NextResponse.json({
         success: true,
@@ -45,120 +44,61 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Single track unlock: 300 Ixis
-    const productKey = 'lyrixis.track.unlock';
+    // Use apixis.file.unit as interim productKey until Lyrixis SKUs are added
+    const productKey = 'apixis.file.unit'; // 300 Ixis per hermes
     const idempotencyKey = `lyrixis-track-${track.id}-${user.id}`;
+    const returnUrl = `https://lyrixis.vercel.app/catalog/${trackId}`;
 
-    // 1. Quote
-    const quoteRes = await fetch(`${WALLET_BASE_URL}/api/v1/quotes`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const result = await redeem({
+      ownerId: user.id,
+      productKey,
+      idempotencyKey,
+      provision: async (reservation) => {
+        // Unlock the track while Ixis are held
+        const { error: unlockError } = await admin
+          .from('tracks')
+          .update({ paid: true })
+          .eq('id', track.id);
+
+        if (unlockError) {
+          throw new HttpError(500, 'provision_failed', 'Failed to unlock track');
+        }
+
+        return { trackId: track.public_id, title: track.title, ixis: reservation.ixis };
       },
-      body: JSON.stringify({ productKey }),
     });
 
-    if (!quoteRes.ok) {
-      if (quoteRes.status === 404) {
-        throw new HttpError(503, 'sku_not_found', 'Lyrixis SKU not in Wallet catalog yet. Contact @apixiswallet.');
-      }
-      throw new HttpError(503, 'wallet_quote_failed', 'Failed to quote price');
-    }
-
-    const quote = await quoteRes.json();
-
-    // 2. Reserve Ixis
-    if (!process.env.WALLET_API_KEY) {
-      throw new HttpError(503, 'wallet_not_configured', 'Wallet integration not configured');
-    }
-
-    const reserveRes = await fetch(`${WALLET_BASE_URL}/api/v1/reservations`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.WALLET_API_KEY}`,
-      },
-      body: JSON.stringify({
-        productKey,
-        quoteId: quote.quoteId,
-        idempotencyKey,
-        ownerId: user.id,
-      }),
-    });
-
-    if (!reserveRes.ok) {
-      const error = await reserveRes.json().catch(() => ({}));
-      
-      if (reserveRes.status === 402) {
-        // Not enough Ixis
-        return NextResponse.json({
-          error: 'insufficient_ixis',
-          message: 'Not enough Ixis. Buy Ixis in Apixis Wallet first.',
-          required: quote.xp,
-          buyUrl: `${WALLET_BASE_URL}/buy?return_url=${encodeURIComponent('https://lyrixis.vercel.app/catalog/' + trackId)}&product=lyrixis`,
-        }, { status: 402 });
-      }
-
-      throw new HttpError(503, 'wallet_reserve_failed', error.message || 'Failed to reserve Ixis');
-    }
-
-    const reservation = await reserveRes.json();
-
-    // 3. Provision (unlock the track)
-    try {
-      const { error: unlockError } = await admin
-        .from('tracks')
-        .update({ paid: true })
-        .eq('id', track.id);
-
-      if (unlockError) {
-        // Provision failed - release the reservation
-        await fetch(`${WALLET_BASE_URL}/api/v1/reservations/${reservation.reservationId}/release`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.WALLET_API_KEY}`,
-          },
-        });
-
-        throw new HttpError(500, 'provision_failed', 'Failed to unlock track');
-      }
-
-      // 4. Capture (finalize the spend)
-      const captureRes = await fetch(`${WALLET_BASE_URL}/api/v1/reservations/${reservation.reservationId}/capture`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.WALLET_API_KEY}`,
-        },
-      });
-
-      if (!captureRes.ok) {
-        console.error('Wallet capture failed but track already unlocked:', await captureRes.text());
-        // Track is unlocked but Ixis might not be spent - log for manual resolution
-      }
-
+    if (!result.ok) {
+      // 402 insufficient Ixis
       return NextResponse.json({
-        success: true,
-        message: `Track unlocked! Spent ${quote.xp} Ixis ($${quote.usdEquivalent})`,
-        trackId,
-        spent: {
-          ixis: quote.xp,
-          usd: quote.usdEquivalent,
-        },
-      });
-
-    } catch (provisionError) {
-      // Release reservation if provision fails
-      await fetch(`${WALLET_BASE_URL}/api/v1/reservations/${reservation.reservationId}/release`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.WALLET_API_KEY}`,
-        },
-      }).catch(() => {});
-
-      throw provisionError;
+        error: 'insufficient_ixis',
+        message: result.message,
+        needed: result.needed,
+        buyUrl: buyIxisUrl('lyrixis', returnUrl),
+      }, { status: 402 });
     }
+
+    // Success: track unlocked and Ixis captured
+    return NextResponse.json({
+      success: true,
+      message: `Track unlocked! Spent ${result.result.ixis} Ixis ($${(result.result.ixis / 100).toFixed(2)})`,
+      trackId: result.result.trackId,
+      receiptId: result.receiptId,
+      spent: {
+        ixis: result.result.ixis,
+        usd: (result.result.ixis / 100).toFixed(2),
+      },
+    });
 
   } catch (error) {
+    if (error instanceof WalletError && error.insufficient) {
+      const returnUrl = `https://lyrixis.vercel.app/catalog`;
+      return NextResponse.json({
+        error: 'insufficient_ixis',
+        message: error.message,
+        buyUrl: buyIxisUrl('lyrixis', returnUrl),
+      }, { status: 402 });
+    }
     return jsonError(error);
   }
 }

@@ -2,6 +2,9 @@ import { notFound } from "next/navigation";
 import { formatIsrc, formatIswc } from "@/lib/music-ids";
 import { SiteNav } from "@/components/SiteNav";
 import { getCatalogRecording } from "@/services/catalog";
+import { RedeemButton } from "@/components/RedeemButton";
+import { getUser } from "@/lib/auth";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +26,17 @@ export default async function CatalogRecordingPage({
   const recording = await getCatalogRecording(id);
   if (!recording) notFound();
 
+  const user = await getUser();
+  
+  // Check if track is unlocked
+  const admin = createAdminClient();
+  const { data: track } = await admin
+    .from('tracks')
+    .select('paid')
+    .eq('public_id', id)
+    .maybeSingle();
+  
+  const isUnlocked = track?.paid ?? false;
   const writers = recording.writers.length > 0 ? recording.writers.join(", ") : null;
 
   return (
@@ -44,6 +58,8 @@ export default async function CatalogRecordingPage({
           <Meta label="Writers" value={writers} />
           <Meta label="Source" value={recording.source} />
         </div>
+
+        {user && <RedeemButton trackId={recording.publicId} isUnlocked={isUnlocked} />}
 
         <section className="mt-10">
           <h2 className="font-display text-2xl font-semibold">Lyrics</h2>
