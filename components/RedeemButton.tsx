@@ -11,7 +11,19 @@ export function RedeemButton({ trackId, isUnlocked }: { trackId: string; isUnloc
   if (isUnlocked) {
     return (
       <div className="card mt-6 bg-cyan/10 border-cyan/30">
-        <p className="text-cyan font-medium">✓ Track unlocked — exports ready</p>
+        <p className="text-cyan font-medium">✓ Track unlocked</p>
+        <p className="mt-2 text-sm text-ink-2">Download your exports:</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {(["txt", "lrc", "json"] as const).map((f) => (
+            <a
+              key={f}
+              href={`/api/catalog/${encodeURIComponent(trackId)}/export?format=${f}`}
+              className="rounded border border-cyan/40 px-3 py-1 text-sm text-cyan hover:bg-cyan/10"
+            >
+              .{f}
+            </a>
+          ))}
+        </div>
       </div>
     );
   }
