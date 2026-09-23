@@ -8,8 +8,41 @@ export const maxDuration = 60;
 const SESSION_RE = /^[a-zA-Z0-9_-]{8,64}$/;
 
 export async function GET() {
-  const ready = Boolean(process.env.ANTHROPIC_API_KEY);
-  return Response.json({ cixy: "Lyrixis native AI", provider: "anthropic", ready }, { status: ready ? 200 : 503 });
+  try {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return Response.json({ cixy: "Lyrixis native AI", provider: "anthropic", ready: false, error: "API key not configured" }, { status: 503 });
+    }
+
+    // Real health check: ping Anthropic with minimal request
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 10,
+        messages: [{ role: 'user', content: 'ping' }],
+      }),
+    });
+
+    const ready = response.ok;
+    return Response.json({ 
+      cixy: "Lyrixis native AI", 
+      provider: "anthropic", 
+      ready,
+      status: response.status,
+    }, { status: ready ? 200 : 503 });
+  } catch (error) {
+    return Response.json({ 
+      cixy: "Lyrixis native AI", 
+      provider: "anthropic", 
+      ready: false, 
+      error: error instanceof Error ? error.message : 'Health check failed',
+    }, { status: 503 });
+  }
 }
 
 export async function POST(request: Request) {
