@@ -44,20 +44,37 @@ export async function POST(request: NextRequest) {
     }
 
     const returnUrl = `${SITE}/catalog/${encodeURIComponent(trackId)}`;
+    
+    // Generate client attemptId for true idempotency (reuse on retry, new on fresh click)
+    const attemptId = request.headers.get('x-idempotency-key') || crypto.randomUUID();
+    
     const result = await redeem({
       ownerEmail: user.email,
       productKey: PRODUCT_KEY,
-      // Per attempt: a released hold must never lock the customer out of retrying.
-      // Wallet caps this at 80 chars: short uid prefix + short recording id + timestamp.
-      idempotencyKey: `lyx-${user.id.slice(0, 8)}-${rec.public_id.slice(0, 24)}-${Date.now().toString(36)}`,
-      provision: async (reservation): Promise<{ ixis: number }> => {
-        const { error } = await admin.from('track_unlocks').insert({
+      // Stable per user+product+attempt (NOT Date.now(); retry must reuse key)
+      // Under 80 chars: user prefix + recording + attempt
+      idempotencyKey: `lyx-${user.id.slice(0, 12)}-${rec.public_id.slice(4, 28)}-${attemptId.slice(0, 8)}`,
+      provision: async (reservation): Promise<{ unlockId: string; ixis: number }> => {
+        const { data, error } = await admin.from('track_unlocks').insert({
           user_id: user.id,
           recording_public_id: rec.public_id,
           receipt_id: reservation.reservationId,
-        });
+        }).select('user_id, recording_public_id').single();
+        
         if (error) throw new HttpError(500, 'provision_failed', `Could not record unlock: ${error.message}`);
-        return { ixis: reservation.ixis };
+        return { unlockId: `${data.user_id}:${data.recording_public_id}`, ixis: reservation.ixis };
+      },
+      unprovision: async (reservation, result) => {
+        // Capture failed after we wrote the unlock row: delete it
+        const { error } = await admin.from('track_unlocks')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('recording_public_id', rec.public_id)
+          .eq('receipt_id', reservation.reservationId); // Only delete THIS attempt's row
+        
+        if (error) {
+          console.error('[CRITICAL] unprovision failed:', { user: user.id, track: rec.public_id, error });
+        }
       },
     });
 

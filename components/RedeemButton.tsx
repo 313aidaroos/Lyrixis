@@ -32,10 +32,16 @@ export function RedeemButton({ trackId, isUnlocked }: { trackId: string; isUnloc
     setLoading(true);
     setError(null);
 
+    // Generate attemptId once per click (retries reuse it)
+    const attemptId = crypto.randomUUID();
+
     try {
       const res = await fetch('/api/redeem', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-Idempotency-Key': attemptId, // Retry-safe: same key for same button click
+        },
         body: JSON.stringify({ trackId }),
       });
 
