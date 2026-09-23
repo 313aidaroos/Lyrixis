@@ -47,6 +47,13 @@ export function RedeemButton({ trackId, isUnlocked }: { trackId: string; isUnloc
 
       const data = await res.json();
 
+      if (res.status === 401) {
+        // Not signed in - redirect to login with next
+        const current = window.location.pathname;
+        router.push(`/login?next=${encodeURIComponent(current)}`);
+        return;
+      }
+
       if (res.status === 402) {
         // Insufficient Ixis - redirect to Wallet
         if (data.buyUrl) {
