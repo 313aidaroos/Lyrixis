@@ -13,7 +13,7 @@ export async function GET() {
       return Response.json({ cixy: "Lyrixis native AI", provider: "anthropic", ready: false, error: "API key not configured" }, { status: 503 });
     }
 
-    // Real health check: ping Anthropic with minimal request
+    // Real health check: ping Anthropic with minimal valid request
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -23,12 +23,12 @@ export async function GET() {
       },
       body: JSON.stringify({
         model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 10,
-        messages: [{ role: 'user', content: 'ping' }],
+        max_tokens: 1,
+        messages: [{ role: 'user', content: '.' }],
       }),
     });
 
-    const ready = response.ok;
+    const ready = response.status === 200;
     return Response.json({ 
       cixy: "Lyrixis native AI", 
       provider: "anthropic", 
