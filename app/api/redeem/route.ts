@@ -4,6 +4,7 @@ import { requireUser } from '@/lib/auth';
 import { jsonError, HttpError } from '@/lib/errors';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { redeem, buyIxisUrl, WalletError } from '@/lib/apixis-wallet';
+import { apixisOwner } from "@/lib/apixis-login";
 
 export const runtime = 'nodejs';
 
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest) {
     const attemptId = request.headers.get('x-idempotency-key') || crypto.randomUUID();
     
     const result = await redeem({
-      ownerEmail: user.email,
+      owner: (await apixisOwner(user.email)) ?? user.email,
       productKey: PRODUCT_KEY,
       // Stable per user+product+attempt (NOT Date.now(); retry must reuse key)
       // Under 80 chars: user prefix + recording + attempt
