@@ -46,7 +46,7 @@ export function SupportForm() {
         <p className="font-mono text-xs uppercase tracking-widest text-ink-2">Support</p>
         <h1 className="mt-3 font-display text-3xl font-bold">Get help</h1>
         <p className="mt-2 text-sm text-ink-2">
-          Tell us what's on your mind. We'll respond within 24 hours.
+          Tell us what&apos;s on your mind. We&apos;ll respond within 24 hours.
         </p>
 
         {notice && (
