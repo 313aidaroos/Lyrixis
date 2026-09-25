@@ -1,3 +1,4 @@
+-- Change note (Claude, Sep 2026): View is `security_invoker`; browser writes revoked (closed free unlocks). See docs/LAUNCH_NOTES.md.
 -- SECURITY: my_track_unlocks ran as its owner (bypassing RLS) and default grants gave
 -- anon/authenticated INSERT/UPDATE/DELETE on it. The view is auto-updatable, so a signed-in
 -- user could insert track_unlocks rows = free paid unlocks. The app reads unlocks with the

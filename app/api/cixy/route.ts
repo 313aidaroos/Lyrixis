@@ -1,3 +1,4 @@
+// Change note (Claude, Sep 2026): GET = config check only (no paid call); POST rate limited. Kept this over main's paid health ping. See docs/LAUNCH_NOTES.md.
 import { jsonError, HttpError } from "@/lib/errors";
 import { assertRateLimit } from "@/lib/rate-limit";
 import { askCixy, logCixyExchange, normalizeMessages } from "@/services/cixy";
