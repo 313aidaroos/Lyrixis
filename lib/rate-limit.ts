@@ -1,3 +1,4 @@
+// Change note (Claude, Sep 2026): New. `assertRateLimit()` (Redis-backed). See docs/LAUNCH_NOTES.md.
 import IORedis from "ioredis";
 import { getRedisUrl } from "@/lib/env";
 import { HttpError } from "@/lib/errors";

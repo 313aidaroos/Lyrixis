@@ -29,6 +29,8 @@ App `lyrixis`. Sells `lyrixis.track.unlock` (300 Ixis per track).
 
 ## What changed, file by file
 
+Each changed backend code file also starts with a one-line `Change note (Claude, Sep 2026)` comment saying the same thing.
+
 | File | Change |
 |---|---|
 | `.env.example` | Added 10 key(s) the code reads that were missing: `ANTHROPIC_API_KEY`, `RESEND_API_KEY`, `WALLET_API_KEY`, `AI_MODEL`, `AI_PROVIDER`, `ANTHROPIC_MODEL`, `APIXIS_WALLET_API_URL`, `EMAIL_FROM`, `NEXT_PUBLIC_APP_URL`, `APIXIS_WALLET_API_KEY`. |
