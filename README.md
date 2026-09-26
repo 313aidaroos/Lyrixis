@@ -6,7 +6,7 @@ This repository contains the static marketing site and the MVP web app + worker 
 
 ## What ships in the MVP
 
-A person can sign up, upload one song (with rights confirmation), watch it process, preview the first 30 seconds of synced lyrics, pay $2.99, correct a line (versioned), and download TXT / SRT / LRC / JSON.
+A person can sign up, upload one song (with rights confirmation), watch it process, preview the first 30 seconds of synced lyrics, unlock the track with Ixis (300 Ixis = $3, paid through Apixis Wallet), correct a line (versioned), and download TXT / SRT / LRC / JSON.
 
 The live homepage is a **public catalog**: search recordings (`?q=` filters title, artist, writers, year, ISRC/ISWC/UPC), open metadata, and view lyrics that persist in Supabase (`catalog_recordings`, `catalog_lyrics`). Add a recording at `/add` or bulk CSV at the same page (public-domain or original lyrics only). ISRC/ISWC/UPC are normalized and unique. Extra ID-backed public-domain rows: `database/seeds/public-domain-id-backed.json` and `database/migrations/0005_id_backed_public_domain.sql`. Enterprise marketing lives at `/enterprise`.
 
@@ -17,7 +17,7 @@ Deferred (schema only): public API keys UI, batch upload, org admin, translation
 | Piece | Where it runs |
 |---|---|
 | Marketing (`public/index.html`) | Static, rewritten to `/` |
-| Next.js App Router | Vercel (or `npm run dev`) — auth, dashboard, upload, Stripe, APIs |
+| Next.js App Router | Vercel (or `npm run dev`) — auth, dashboard, upload, Wallet redeem, APIs |
 | BullMQ worker (`npm run worker`) | **Separate long-running process** (Railway / Fly / Render / local). Not Vercel serverless. |
 | Postgres + Auth + private Storage | Supabase |
 | Queue | Redis |
@@ -50,14 +50,9 @@ Install **ffmpeg** on the machine that runs the worker (`ffmpeg -version`).
 
 Run Redis locally (`redis-server` or Docker) and set `REDIS_URL=redis://127.0.0.1:6379`.
 
-### 4. Stripe
+### 4. Payments (Apixis Wallet)
 
-1. Use test keys (`sk_test_…`).
-2. `STRIPE_PRICE_SINGLE_TRACK` is the TEST Price ID for **Lyrixis Single Track Unlock** (`prod_VDM9sVq3P1cxel`, $2.99). Checkout uses this Price; the server still quotes `pricing_tiers` and refuses to start Checkout if Stripe's amount does not match the DB.
-3. `stripe listen --forward-to localhost:3000/api/webhooks/stripe`
-4. Put the webhook signing secret in `STRIPE_WEBHOOK_SECRET`. Never commit `STRIPE_SECRET_KEY` or the webhook secret.
-5. Never mark a track paid from the client. Unlock happens only in the verified webhook.
-6. Swap `STRIPE_PRICE_SINGLE_TRACK` to the live Price ID before production. Balance top-ups are deferred.
+Lyrixis takes no card payments. A track unlock is the Wallet product `lyrixis.track.unlock` (300 Ixis). `POST /api/redeem` holds the Ixis, records the unlock in `track_unlocks`, then captures (released if recording fails). Set `WALLET_API_KEY` from `npm run family-keys` in the ApixisWallet repo. The old Stripe Checkout code was removed (Sep 2026); the `stripe_*` columns in the schema are unused.
 
 ### 5. Transcription provider
 
@@ -85,7 +80,7 @@ npm run dev          # http://localhost:3000  (marketing at /, app at /login)
 npm run worker       # BullMQ consumer
 ```
 
-Then: Sign in → Upload → wait for status → preview → Pay → exports.
+Then: Sign in → Upload → wait for status → preview → Unlock (Ixis) → exports.
 
 ## Marketing waitlist
 
@@ -116,14 +111,11 @@ Nothing in this repo talks to live vendors without keys. Before a paying-custome
 | `NEXT_PUBLIC_SUPABASE_URL` | Auth, DB, Storage |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Browser + SSR auth |
 | `SUPABASE_SERVICE_ROLE_KEY` | Worker + privileged API (never expose to the browser) |
-| `STRIPE_SECRET_KEY` | Checkout Sessions (never commit) |
-| `STRIPE_WEBHOOK_SECRET` | Signed webhook verification (never commit) |
-| `STRIPE_PRICE_SINGLE_TRACK` | Catalog Price ID for single-track unlock |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Optional Stripe.js; hosted Checkout does not require it |
+| `WALLET_API_KEY` | Apixis Wallet key for track unlocks (from `npm run family-keys`) |
 | `REDIS_URL` | Queue + upload rate limit |
 | `TRANSCRIPTION_API_KEY` | Whisper (or OpenAI-compatible) transcription |
 | Worker host with **ffmpeg** | Audio normalize to 16 kHz mono WAV |
-| `APP_URL` | Stripe success/cancel + OAuth redirects |
+| `APP_URL` | Public URL for links and OAuth redirects |
 
 Google OAuth also needs the client ID/secret configured **inside the Supabase dashboard**, not in this repo.
 

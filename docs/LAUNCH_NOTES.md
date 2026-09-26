@@ -26,6 +26,8 @@ App `lyrixis`. Sells `lyrixis.track.unlock` (300 Ixis per track).
 ## Open items
 
 - Public catalog 'add' page is open to anyone: keep or require sign-in (your call).
+- Host the worker (`npm run worker`) on Railway/Fly with Redis and a transcription key: uploads never process without it.
+- Price mismatch: `pricing_tiers` quotes $2.99 while the Wallet charges 300 Ixis ($3.00). Pick one.
 
 ## What changed, file by file
 
@@ -33,13 +35,18 @@ Each changed backend code file also starts with a one-line `Change note (Claude,
 
 | File | Change |
 |---|---|
-| `.env.example` | Added 10 key(s) the code reads that were missing: `ANTHROPIC_API_KEY`, `RESEND_API_KEY`, `WALLET_API_KEY`, `AI_MODEL`, `AI_PROVIDER`, `ANTHROPIC_MODEL`, `APIXIS_WALLET_API_URL`, `EMAIL_FROM`, `NEXT_PUBLIC_APP_URL`, `APIXIS_WALLET_API_KEY`. |
+| `.env.example` | Stripe block removed; missing keys added. |
+| `README.md` | Payments section describes the Wallet unlock (300 Ixis), not $2.99 card checkout. |
 | `app/api/cixy/route.ts` | GET = config check only (no paid call); POST rate limited. Kept this over main's paid health ping. |
 | `components/SupportForm.tsx` | Escaped two apostrophes: `next build` failed on main. Text identical. |
 | `database/migrations/20260923_lock_my_track_unlocks_view.sql` | View is `security_invoker`; browser writes revoked (closed free unlocks). |
 | `docs/LAUNCH_NOTES.md` | This file. |
+| `lib/env.ts` | Removed the Stripe key getters (checkout code was dead). |
+| `lib/pipeline.test.ts` | New. 10 tests: upload validation, TXT/SRT/LRC/JSON exports, Wallet unlock (capture, release, take-back, insufficient). |
 | `lib/rate-limit.ts` | New. `assertRateLimit()` (Redis-backed). |
+| `package-lock.json` | Regenerated. |
+| `package.json` | Removed the unused `stripe` package. |
 
-**Removed:** `README 2.md` (older duplicate).
+**Removed:** `README 2.md` (older duplicate). `services/billing.ts` and `lib/stripe.ts` (dead Stripe checkout).
 
 _Changes are backend and plumbing only. Pages, design and UI are not changed except where noted as a build or lint fix with no visual change._

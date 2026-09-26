@@ -1,5 +1,5 @@
 // Env values pasted into dashboards sometimes carry trailing whitespace or a
-// literal "\n" sequence. Normalize so secrets/IDs never reach Stripe malformed.
+// literal "\n" sequence. Normalize so secrets/IDs never reach a provider malformed.
 function clean(raw: string | undefined): string | undefined {
   if (raw === undefined) return undefined;
   const value = raw.replace(/(\\n|\\r)+$/g, "").trim();
@@ -52,17 +52,8 @@ export function getRedisUrl(): string {
   return required("REDIS_URL");
 }
 
-export function getStripeSecretKey(): string {
-  return required("STRIPE_SECRET_KEY");
-}
 
-export function getStripeWebhookSecret(): string {
-  return required("STRIPE_WEBHOOK_SECRET");
-}
 
-export function getStripePriceSingleTrack(): string {
-  return required("STRIPE_PRICE_SINGLE_TRACK");
-}
 
 export function getTranscriptionProviderName(): string {
   return optional("TRANSCRIPTION_PROVIDER") ?? "whisper_v3";
