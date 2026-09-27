@@ -31,7 +31,8 @@ export function SupportForm() {
         return;
       }
 
-      setNotice("✓ Ticket submitted. We'll get back to you soon.");
+      const ticketId = data.id || data.ticketId;
+      setNotice(ticketId ? `✓ Ticket #${ticketId} submitted. We'll get back to you soon.` : "✓ Ticket submitted. We'll get back to you soon.");
       setFormData({ email: "", subject: "", message: "", category: "general" });
     } catch (err) {
       setNotice("Network error. Please try again.");
