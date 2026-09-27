@@ -62,7 +62,7 @@ export default async function CatalogRecordingPage({
           <Meta label="Source" value={recording.source} />
         </div>
 
-        {user && <RedeemButton trackId={recording.publicId} isUnlocked={isUnlocked} />}
+        <RedeemButton trackId={recording.publicId} isUnlocked={isUnlocked} />
 
         <section className="mt-10">
           <h2 className="font-display text-2xl font-semibold">Lyrics</h2>
