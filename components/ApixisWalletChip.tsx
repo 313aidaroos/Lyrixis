@@ -5,7 +5,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 /**
  * The shared Apixis Wallet inside this site: the person's one Ixis balance as a small pill
  * (links to Buy Ixis on Apixis Wallet, which comes back here), plus "Sign in with Apixis" when the
- * person is signed out or their account is not linked to an Apixis ID yet.
+ * person is signed out, or "Link Apixis ID" when signed in but not linked yet (never both).
  *
  * One fetch of GET /api/wallet/balance is shared by every chip on the page. It refetches when the
  * tab regains focus / becomes visible and on pageshow (back/forward cache), so the number updates
@@ -33,7 +33,7 @@ function load() {
         available: typeof d.available === "number" && Number.isFinite(d.available) ? d.available : null,
         buy: typeof d.buy === "string" ? d.buy : current.buy,
         linked: d.linked === true,
-        signedIn: status !== 401,
+        signedIn: typeof d.signedIn === "boolean" ? d.signedIn : status !== 401,
         loaded: true,
       };
       listeners.forEach((listener) => listener());
@@ -100,9 +100,16 @@ export function ApixisWalletChip({ className, next }: { className?: string; next
         <span aria-hidden="true">✦</span>
         {amount} Ixis
       </a>
-      {wallet.loaded && (!wallet.signedIn || !wallet.linked) && (
-        <a className="apx-wallet-signin" href={signIn} style={{ color: "inherit", fontSize: 11, textDecoration: "underline", whiteSpace: "nowrap", opacity: 0.85 }}>
-          Sign in with Apixis
+      {/* 2026-09-28 Grok Developer Bot: never ask a signed-in person to "Sign in" again. Signed out →
+          "Sign in"; signed in with email only → "Link Apixis ID". */}
+      {wallet.loaded && !wallet.signedIn && (
+        <a className="apx-wallet-signin" href={`/login?next=${encodeURIComponent(next ?? here)}`} style={{ color: "inherit", fontSize: 11, textDecoration: "underline", whiteSpace: "nowrap", opacity: 0.85 }}>
+          Sign in
+        </a>
+      )}
+      {wallet.loaded && wallet.signedIn && !wallet.linked && (
+        <a className="apx-wallet-signin" href={signIn} title="Connect this account to your Apixis ID to use one Wallet everywhere" style={{ color: "inherit", fontSize: 11, textDecoration: "underline", whiteSpace: "nowrap", opacity: 0.85 }}>
+          Link Apixis ID
         </a>
       )}
     </span>

@@ -1,5 +1,6 @@
 import { Suspense } from "react";
-import { AuthForm } from "@/components/AuthForm";
+// 2026-09-28 Grok Developer Bot: /signup used a second "Sign in" form; it now shares LoginForm.
+import { LoginForm } from "@/components/LoginForm";
 import { SiteNav } from "@/components/SiteNav";
 
 export default function SignupPage() {
@@ -7,7 +8,7 @@ export default function SignupPage() {
     <div>
       <SiteNav />
       <Suspense fallback={<div className="mx-auto max-w-md px-6 py-16 text-ink-3">Loading…</div>}>
-        <AuthForm />
+        <LoginForm variant="signup" />
       </Suspense>
     </div>
   );

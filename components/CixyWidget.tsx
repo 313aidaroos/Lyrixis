@@ -12,6 +12,8 @@ export function CixyWidget() {
 
   // The /cixy page is the full-size Cixy; do not show a second launcher there.
   if (pathname === "/cixy") return null;
+  // 2026-09-28 Grok Developer Bot: sign-in pages have their own "Ask Cixy" card; one Cixy per screen.
+  if (pathname === "/login" || pathname === "/signup" || pathname === "/set-password") return null;
 
   return (
     <>

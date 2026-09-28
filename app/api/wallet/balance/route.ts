@@ -16,19 +16,22 @@ export async function GET(request: Request) {
   const origin = process.env.NEXT_PUBLIC_SITE_URL ?? new URL(request.url).origin;
   const back = request.headers.get("referer")?.startsWith(origin) ? request.headers.get("referer")! : origin + "/";
   const buy = buyIxisUrl("lyrixis", back);
-  if (!url || !key) return NextResponse.json({ available: null, buy });
+  if (!url || !key) return NextResponse.json({ available: null, buy, signedIn: false });
   const jar = await cookies();
   const supabase = createServerClient(url, key, { cookies: { getAll: () => jar.getAll(), setAll: () => undefined } });
   const { data } = await supabase.auth.getUser();
   const user = data.user;
-  if (!user) return NextResponse.json({ available: null, buy, signIn: true }, { status: 401 });
+  if (!user) return NextResponse.json({ available: null, buy, signIn: true, signedIn: false }, { status: 401 });
+  // 2026-09-28 Grok Developer Bot: every signed-in answer says signedIn: true, so the pill never shows
+  // "Sign in" to someone who already is.
+  const linked = Boolean(apixisSubOf(user));
   const owner = apixisSubOf(user) ?? user.email ?? null;
-  if (!owner) return NextResponse.json({ available: null, buy, linked: false });
+  if (!owner) return NextResponse.json({ available: null, buy, linked, signedIn: true });
   try {
     const balance = await walletBalance(owner, { history: 10 });
-    return NextResponse.json({ ...balance, buy, linked: Boolean(apixisSubOf(user)) }, { headers: { "cache-control": "no-store" } });
+    return NextResponse.json({ ...balance, buy, linked, signedIn: true }, { headers: { "cache-control": "no-store" } });
   } catch (error) {
     const signInWithApixis = error instanceof WalletError && (error.status === 403 || error.status === 404);
-    return NextResponse.json({ available: null, buy, signInWithApixis }, { status: signInWithApixis ? 200 : 503 });
+    return NextResponse.json({ available: null, buy, signInWithApixis, linked, signedIn: true }, { status: signInWithApixis ? 200 : 503 });
   }
 }

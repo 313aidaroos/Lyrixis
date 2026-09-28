@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -26,7 +26,21 @@ function sessionId(): string {
   return id;
 }
 
-export function CixyChat({ tall = false }: { tall?: boolean }) {
+// 2026-09-28 Grok Developer Bot: optional starters / intro / placeholder so the login page can open
+// Cixy with sign-in questions. Defaults are unchanged.
+export function CixyChat({
+  tall = false,
+  starters = STARTERS,
+  intro,
+  placeholder = "Ask Cixy about this catalog, mix, or metadata…",
+  compact = false,
+}: {
+  tall?: boolean;
+  starters?: string[];
+  intro?: ReactNode;
+  placeholder?: string;
+  compact?: boolean;
+}) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [pending, setPending] = useState(false);
@@ -74,15 +88,17 @@ export function CixyChat({ tall = false }: { tall?: boolean }) {
 
   return (
     <div className="flex h-full flex-col bg-[#0b0a20]/95">
-      <div className={`flex-1 space-y-3 overflow-y-auto px-4 py-4 ${tall ? "min-h-[460px]" : "min-h-[280px]"}`}>
+      <div className={`flex-1 space-y-3 overflow-y-auto px-4 py-4 ${tall ? "min-h-[460px]" : compact ? "max-h-[360px] min-h-[160px]" : "min-h-[280px]"}`}>
         {messages.length === 0 && (
           <div className="space-y-3">
-            <p className="text-xs sm:text-sm text-ink-2 leading-relaxed">
-              Hi, I&apos;m <span className="grad-text font-bold">Cixy</span> — Lyrixis&apos;s native music AI.
-              I can audit catalog metadata, query live tracks, troubleshoot mixes, and give precise mastering/distribution specs.
-            </p>
+            {intro ?? (
+              <p className="text-xs sm:text-sm text-ink-2 leading-relaxed">
+                Hi, I&apos;m <span className="grad-text font-bold">Cixy</span> — Lyrixis&apos;s native music AI.
+                I can audit catalog metadata, query live tracks, troubleshoot mixes, and give precise mastering/distribution specs.
+              </p>
+            )}
             <div className="flex flex-wrap gap-2 pt-1">
-              {STARTERS.map((starter) => (
+              {starters.map((starter) => (
                 <button
                   key={starter}
                   type="button"
@@ -116,7 +132,7 @@ export function CixyChat({ tall = false }: { tall?: boolean }) {
                 style={{ animationDelay: `${i * 120}ms` }}
               />
             ))}
-            <span className="ml-2 font-mono text-xs text-ink-3">Analyzing catalog...</span>
+            <span className="ml-2 font-mono text-xs text-ink-3">{compact ? "Thinking..." : "Analyzing catalog..."}</span>
           </div>
         )}
         {error && <p className="text-xs text-rose-400 px-2">{error}</p>}
@@ -127,7 +143,7 @@ export function CixyChat({ tall = false }: { tall?: boolean }) {
           className="input py-2.5 text-sm"
           value={input}
           onChange={(event) => setInput(event.target.value)}
-          placeholder="Ask Cixy about this catalog, mix, or metadata…"
+          placeholder={placeholder}
           aria-label="Message Cixy"
           maxLength={2000}
         />
