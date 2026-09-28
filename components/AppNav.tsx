@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { WALLET_BUY_URL } from "@/lib/wallet";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { ApixisWalletChip } from "@/components/ApixisWalletChip";
+import { enterApixisUrl } from "@/lib/apixis-world";
 
 export function AppNav({ email }: { email?: string | null }) {
   const pathname = usePathname();
@@ -37,6 +38,9 @@ export function AppNav({ email }: { email?: string | null }) {
           <Link href="/upload" className={linkClass("/upload")}>
             Upload
           </Link>
+          <a href={enterApixisUrl("lyrixis")} className="text-sm text-ink-2 hover:text-ink">
+            Apixis World ↗
+          </a>
           <ApixisWalletChip className="text-sm text-ink-2" />
           <a href="/enterprise" className="text-sm text-ink-2 hover:text-ink">
             Enterprise

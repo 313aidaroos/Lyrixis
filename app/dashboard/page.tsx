@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/auth";
 import { listTracks } from "@/services/tracks";
 import { AppNav } from "@/components/AppNav";
 import { ConfidenceBadge, StatusBadge } from "@/components/StatusBadge";
+import { ApixisWorldWelcome } from "@/components/ApixisWorldWelcome";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,9 @@ export default async function DashboardPage() {
             Upload a track
           </Link>
         </div>
+
+        {/* Apixis world: new accounts get their own agent created server-side; one-time welcome card. */}
+        <ApixisWorldWelcome />
 
         {tracks.length === 0 ? (
           <div className="card mt-10">
