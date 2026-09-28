@@ -1,33 +1,108 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-type State = { available: number | null; buy: string | null };
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 /**
- * The shared Apixis Wallet inside this site: the person's one Ixis balance and a "Buy Ixis" link
- * (goes to Apixis Wallet, comes back here with the Ixis). Style it with `className`.
+ * The shared Apixis Wallet inside this site: the person's one Ixis balance as a small pill
+ * (links to Buy Ixis on Apixis Wallet, which comes back here), plus "Sign in with Apixis" when the
+ * person is signed out or their account is not linked to an Apixis ID yet.
+ *
+ * One fetch of GET /api/wallet/balance is shared by every chip on the page. It refetches when the
+ * tab regains focus / becomes visible and on pageshow (back/forward cache), so the number updates
+ * right after a purchase on Apixis Wallet sends the person back. Never shows a made-up number.
+ * Updated 2026-09-27 (Grok, balance pill).
  */
-export function ApixisWalletChip({ className }: { className?: string }) {
-  const [state, setState] = useState<State>({ available: null, buy: null });
+
+type WalletState = { available: number | null; buy: string | null; linked: boolean; signedIn: boolean; loaded: boolean };
+
+const INITIAL: WalletState = { available: null, buy: null, linked: false, signedIn: false, loaded: false };
+const FALLBACK_BUY = "https://apixis-wallet.vercel.app/buy?product=lyrixis";
+let current: WalletState = INITIAL;
+let inFlight = false;
+let started = false;
+const listeners = new Set<() => void>();
+
+function load() {
+  if (inFlight) return;
+  inFlight = true;
+  fetch("/api/wallet/balance", { cache: "no-store", credentials: "same-origin" })
+    .then(async (response) => ({ status: response.status, data: await response.json().catch(() => null) }))
+    .then(({ status, data }) => {
+      const d = (data ?? {}) as Record<string, unknown>;
+      current = {
+        available: typeof d.available === "number" && Number.isFinite(d.available) ? d.available : null,
+        buy: typeof d.buy === "string" ? d.buy : current.buy,
+        linked: d.linked === true,
+        signedIn: status !== 401,
+        loaded: true,
+      };
+      listeners.forEach((listener) => listener());
+    })
+    .catch(() => undefined)
+    .finally(() => {
+      inFlight = false;
+    });
+}
+
+function start() {
+  if (started || typeof window === "undefined") return;
+  started = true;
+  load();
+  window.addEventListener("focus", load);
+  window.addEventListener("pageshow", load);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") load();
+  });
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  start();
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+export function useApixisWallet(): WalletState {
+  return useSyncExternalStore(subscribe, () => current, () => INITIAL);
+}
+
+export function ApixisWalletChip({ className, next }: { className?: string; next?: string }) {
+  const wallet = useApixisWallet();
+  const [here, setHere] = useState("/");
   useEffect(() => {
-    let cancelled = false;
-    fetch("/api/wallet/balance", { cache: "no-store", credentials: "same-origin" })
-      .then((response) => response.json().catch(() => null))
-      .then((data) => {
-        if (!cancelled && data) setState({ available: typeof data.available === "number" ? data.available : null, buy: data.buy ?? null });
-      })
-      .catch(() => undefined);
-    return () => {
-      cancelled = true;
-    };
+    setHere(window.location.pathname + window.location.search);
   }, []);
+  const signIn = `/auth/apixis/start?next=${encodeURIComponent(next ?? here)}`;
+  const amount = wallet.available === null ? "—" : wallet.available.toLocaleString();
   return (
-    <span className={className} style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
-      <span>{state.available === null ? "Apixis Wallet" : `${state.available.toLocaleString()} Ixis`}</span>
-      {state.buy && (
-        <a href={state.buy} style={{ textDecoration: "underline" }}>
-          Buy Ixis
+    <span className={["apx-wallet", className].filter(Boolean).join(" ")} style={{ display: "inline-flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+      <a
+        className="apx-wallet-pill"
+        href={wallet.buy ?? FALLBACK_BUY}
+        title="Your Apixis Wallet balance · Buy Ixis"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 5,
+          padding: "4px 11px",
+          borderRadius: 999,
+          border: "1px solid color-mix(in srgb, currentColor 35%, transparent)",
+          background: "color-mix(in srgb, currentColor 8%, transparent)",
+          color: "inherit",
+          fontSize: 12,
+          fontWeight: 700,
+          lineHeight: 1.4,
+          textDecoration: "none",
+          whiteSpace: "nowrap",
+        }}
+      >
+        <span aria-hidden="true">✦</span>
+        {amount} Ixis
+      </a>
+      {wallet.loaded && (!wallet.signedIn || !wallet.linked) && (
+        <a className="apx-wallet-signin" href={signIn} style={{ color: "inherit", fontSize: 11, textDecoration: "underline", whiteSpace: "nowrap", opacity: 0.85 }}>
+          Sign in with Apixis
         </a>
       )}
     </span>

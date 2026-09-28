@@ -23,10 +23,10 @@ export async function GET(request: Request) {
   const user = data.user;
   if (!user) return NextResponse.json({ available: null, buy, signIn: true }, { status: 401 });
   const owner = apixisSubOf(user) ?? user.email ?? null;
-  if (!owner) return NextResponse.json({ available: null, buy });
+  if (!owner) return NextResponse.json({ available: null, buy, linked: false });
   try {
     const balance = await walletBalance(owner, { history: 10 });
-    return NextResponse.json({ ...balance, buy }, { headers: { "cache-control": "no-store" } });
+    return NextResponse.json({ ...balance, buy, linked: Boolean(apixisSubOf(user)) }, { headers: { "cache-control": "no-store" } });
   } catch (error) {
     const signInWithApixis = error instanceof WalletError && (error.status === 403 || error.status === 404);
     return NextResponse.json({ available: null, buy, signInWithApixis }, { status: signInWithApixis ? 200 : 503 });
