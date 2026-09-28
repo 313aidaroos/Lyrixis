@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { WALLET_BUY_URL } from "@/lib/wallet";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import { ApixisWalletChip } from "@/components/ApixisWalletChip";
 
 const MENUS: Record<string, { label: string; href: string; hint: string }[]> = {
   Product: [
@@ -135,6 +136,7 @@ export function SiteNav() {
           </a>
           {email ? (
             <>
+              <ApixisWalletChip className="text-ink-2" />
               <Link href="/dashboard" className="nav-link text-ink-2 hover:text-ink" data-active={active("/dashboard")}>
                 Dashboard
               </Link>
@@ -154,6 +156,11 @@ export function SiteNav() {
           )}
         </div>
 
+        {email && (
+          <span className="ml-auto text-sm text-ink-2 lg:hidden">
+            <ApixisWalletChip />
+          </span>
+        )}
         <button
           type="button"
           className="btn-secondary px-3 py-1.5 text-sm lg:hidden"
