@@ -15,3 +15,7 @@ Entry format:
 ## 2026-09-28 — JunoAI
 - Changed: created this file
 - Why: owner's standing rule — every AI that touches this repo must log its changes here
+
+## 2026-09-28 — JunoAI
+- Changed: added .github/workflows/ci.yml (shared CI caller)
+- Why: automated build/test gate via the family reusable workflow
