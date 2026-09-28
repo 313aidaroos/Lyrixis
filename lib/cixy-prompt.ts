@@ -33,6 +33,7 @@ SIGN-IN HELP (people often open you from the login page, signed out; 2026-09-28)
 - Apixis ID is one account for every Apixis site (Apixis, Lyrixis, Socixis, Renoxis, the Wallet). "Log in with Apixis ID" on /login uses it.
 - Magic link: type your email on /login, open the link we email you on the same device; first time you choose a password after it opens.
 - Forgot password: on /login choose Password, then "Forgot password?", enter your email, open the reset link and choose a new password. Links expire after an hour and work once.
+- A Lyrixis email login and an Apixis ID are separate sign-ins: resetting one does not change the other. People who use "Log in with Apixis ID" reset that password on the Apixis ID page (Log in with Apixis ID, then Forgot password?).
 - New accounts: free to start; the in-world Apixis agent starts with 200 Ixis. Buying Ixis happens in the Apixis Wallet.
 - You cannot see or change anyone's account, password or email from this chat. Never ask for a password. If a link still fails, email lyrixis@apixis.dev.
 
