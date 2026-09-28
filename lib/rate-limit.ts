@@ -1,3 +1,4 @@
+// Change note (Claude, Sep 2026): New. `assertRateLimit()` (Redis-backed). See docs/LAUNCH_NOTES.md.
 import IORedis from "ioredis";
 import { getRedisUrl } from "@/lib/env";
 import { HttpError } from "@/lib/errors";
@@ -98,5 +99,37 @@ export async function assertWaitlistRateLimit(ip: string): Promise<void> {
   } catch (error) {
     if (error instanceof HttpError) throw error;
     assertMemoryWaitlistLimit(identity);
+  }
+}
+
+const genericMemory = new Map<string, { count: number; resetAt: number }>();
+
+/** Named fixed-window limit. Uses Redis when REDIS_URL is set; otherwise per-instance memory. */
+export async function assertRateLimit(name: string, identity: string, max: number, windowSec: number): Promise<void> {
+  const id = identity || "unknown";
+  const limited = () => {
+    throw new HttpError(429, "rate_limited", "Too many requests. Please wait a few minutes.");
+  };
+  const memory = () => {
+    const now = Date.now();
+    const key = `${name}:${id}`;
+    const current = genericMemory.get(key);
+    if (!current || current.resetAt <= now) {
+      genericMemory.set(key, { count: 1, resetAt: now + windowSec * 1000 });
+      if (genericMemory.size > 5000) genericMemory.clear();
+      return;
+    }
+    current.count += 1;
+    if (current.count > max) limited();
+  };
+  if (!process.env.REDIS_URL) return memory();
+  try {
+    const key = `rl:${name}:${id}`;
+    const count = await getRedis().incr(key);
+    if (count === 1) await getRedis().expire(key, windowSec);
+    if (count > max) limited();
+  } catch (error) {
+    if (error instanceof HttpError) throw error;
+    memory();
   }
 }

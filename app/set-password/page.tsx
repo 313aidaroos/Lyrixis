@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { setPassword } from "@/app/login/actions";
 
+export const dynamic = "force-dynamic";
+
 function SetPasswordInner() {
   const params = useSearchParams();
   const next = params.get("next") ?? "/";
