@@ -10,7 +10,7 @@ const ok = { ok: true as const, created: true, starterGrantedNow: true, starterI
 describe("Apixis world agent (Lyrixis)", () => {
   it("enters via www.apixis.dev/enter?from=lyrixis", () => {
     expect(enterApixisUrl("lyrixis")).toBe("https://www.apixis.dev/enter?from=lyrixis");
-    expect(APIXIS_ENTER_CLIENTS.length).toBe(13);
+    expect(APIXIS_ENTER_CLIENTS.length).toBe(15);
   });
   it("provisions a new verified account once; never older or unverified accounts", async () => {
     const calls: unknown[] = [];

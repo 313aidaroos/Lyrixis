@@ -1,7 +1,7 @@
-import { safeLocalRedirect } from "./apixis-redirect";
 /**
  * "Sign in with Apixis" for a Next.js (App Router) sister site that uses Supabase auth.
- * Copy next to apixis-wallet.ts (lib/apixis-login.ts). Server only.
+ * Copy next to apixis-wallet.ts (lib/apixis-login.ts), together with sdk/apixis-redirect.ts
+ * as lib/apixis-redirect.ts. Server only.
  *
  *   app/auth/apixis/start/route.ts     →  export { GET } from "@/lib/apixis-login-routes/start";
  *   app/auth/apixis/callback/route.ts  →  export { GET } from "@/lib/apixis-login-routes/callback";
@@ -22,6 +22,7 @@ import { safeLocalRedirect } from "./apixis-redirect";
  *   WALLET_API_KEY, APIXIS_CLIENT_ID                                               from the Wallet lead
  * Callback URL to register with the Wallet: https://<your-domain>/auth/apixis/callback
  */
+import { safeLocalRedirect } from "./apixis-redirect";
 import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
@@ -30,7 +31,6 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { apixisLoginUrl, exchangeLoginCode } from "./apixis-wallet";
 
 const STATE_COOKIE = "apixis_login";
-
 
 
 function callbackUrl(request: Request) {
@@ -112,7 +112,8 @@ export async function finishApixisLogin(request: Request) {
         list.forEach(({ name, value, options }) => jar.set(name, value, options)),
     },
   });
-  const { error } = await supabase.auth.verifyOtp({ type: "magiclink", token_hash: tokenHash });
+  // "email" accepts the magic-link token and the `signup` token GoTrue mints for a brand-new address.
+  const { error } = await supabase.auth.verifyOtp({ type: "email", token_hash: tokenHash });
   if (error) return fail("session_error");
 
   return NextResponse.redirect(new URL(safeLocalRedirect(saved.next ?? "/"), url.origin), 302);
