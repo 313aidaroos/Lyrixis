@@ -23,3 +23,4 @@ Entry format:
 ## 2026-09-29 — Grok (Lyrixis Lead)
 - Changed: `lib/apixis-world-agent-server.ts`, `lib/apixis-world-client.ts`, `components/ApixisWorldLink.tsx` (new); `app/api/apixis/world-agent/route.ts`, `lib/apixis-login.ts`, `app/auth/callback/callback-client.tsx`, `components/AppNav.tsx`, `components/ApixisWorldWelcome.tsx`, `WORKBOARD.md`, `NOTES/GROK.md`
 - Why: one Apixis ID = one Wallet = one world agent: provision the agent at first sign-in, show "Your agent is in the Apixis world" link
+- 2026-09-29 follow-up: starter grant copy 200 → 1000 Ixis (Apixis.dev grants it) in LoginForm, ApixisWorldWelcome, world-agent test, comments, and only that number in lib/cixy-prompt.ts

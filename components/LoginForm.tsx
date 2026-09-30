@@ -174,7 +174,7 @@ export function LoginForm({ variant = "login" }: { variant?: "login" | "signup" 
           {variant === "signup" ? "Create your account" : "Sign in"}
         </h1>
         <p className="mt-2 text-sm text-ink-2">
-          One Apixis ID for every Apixis site. New accounts are free to start, and your Apixis agent comes with 200 Ixis.
+          One Apixis ID for every Apixis site. New accounts are free to start, and your Apixis agent comes with 1000 Ixis.
         </p>
         <a href={`/auth/apixis/start?next=${encodeURIComponent(next)}`} className="btn-primary mt-6 w-full justify-center">
           Log in with Apixis ID

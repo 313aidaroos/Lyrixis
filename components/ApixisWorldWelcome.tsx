@@ -58,7 +58,7 @@ export function ApixisWorldWelcome() {
           </p>
           <ul className="mt-4 flex flex-wrap gap-2 text-xs font-semibold" aria-label="Your agent">
             <li className="rounded-full px-3 py-1 text-white" style={{ background: "var(--spectrum)" }}>✦ {ready && view.agentName ? view.agentName : "Your agent"}</li>
-            <li className="rounded-full border border-line bg-surface/60 px-3 py-1 text-ink-2">200 in-world Ixis to start</li>
+            <li className="rounded-full border border-line bg-surface/60 px-3 py-1 text-ink-2">1000 in-world Ixis to start</li>
             <li className="rounded-full border border-line bg-surface/60 px-3 py-1 text-ink-2">Sign in with Apixis ID</li>
           </ul>
         </div>
