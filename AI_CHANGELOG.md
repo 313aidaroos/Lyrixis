@@ -19,3 +19,7 @@ Entry format:
 ## 2026-09-28 — JunoAI
 - Changed: added .github/workflows/ci.yml (shared CI caller)
 - Why: automated build/test gate via the family reusable workflow
+
+## 2026-09-29 — Grok (Lyrixis Lead)
+- Changed: `lib/apixis-world-agent-server.ts`, `lib/apixis-world-client.ts`, `components/ApixisWorldLink.tsx` (new); `app/api/apixis/world-agent/route.ts`, `lib/apixis-login.ts`, `app/auth/callback/callback-client.tsx`, `components/AppNav.tsx`, `components/ApixisWorldWelcome.tsx`, `WORKBOARD.md`, `NOTES/GROK.md`
+- Why: one Apixis ID = one Wallet = one world agent: provision the agent at first sign-in, show "Your agent is in the Apixis world" link

@@ -19,3 +19,12 @@ Grok Bot (Developer Bot hub + product leads) notes. Every change Grok Bot makes 
 - Where: `app/api/apixis/world-agent/route.ts`, `components/ApixisWorldWelcome.tsx`, `lib/apixis-world.ts`, `lib/apixis-world-provision.ts`, `lib/apixis-world-agent.ts`, `lib/apixis-world-agent.test.ts`, `app/dashboard/page.tsx`, `components/AppNav.tsx`, `public/cixy/cixy-combo-a-avatar.webp`, `.env.example`.
 - Not touched: login/signup pages, Wallet pill/balance route, Stripe/payments, existing accounts.
 - Undo: revert the PR's squash commit; optionally remove Vercel env `APIXIS_WORLD_KEY` (the route then does nothing). Agents already created live in Apixis.dev (`apixis.agents`) and are not deleted by reverting.
+
+## 2026-09-29 (CT) — Grok (Lyrixis Lead): one Apixis ID = one Wallet = one world agent
+- What: audit of Awad's one-account brief (2026-09-29 8:45 PM CT). Already on main: Wallet SSO "Log in with Apixis ID" (PR #6 merge 42c600d, #11), shared-Wallet balance pill in AppNav + SiteNav (7daf776), redeem-only spending via `lib/apixis-wallet.ts`, world-agent provisioning (#10). Gaps fixed here: (1) the agent was only provisioned when the dashboard card loaded, so it is now also created server-side at the first sign-in (Apixis ID callback, and the magic-link callback pings `GET /api/apixis/world-agent`); (2) AppNav link now reads "Your agent is in the Apixis world ↗" once the agent exists; (3) card + link share one fetch (no double provision call).
+- Where: `lib/apixis-world-agent-server.ts` (new, mirrors Renoxis `lib/renoxis/world-agent-server.ts`), `lib/apixis-world-client.ts` (new), `components/ApixisWorldLink.tsx` (new), `app/api/apixis/world-agent/route.ts`, `lib/apixis-login.ts`, `app/auth/callback/callback-client.tsx`, `components/AppNav.tsx`, `components/ApixisWorldWelcome.tsx`.
+- Storage: no migration. Agent id/time stay in Supabase auth `app_metadata.apixis_world_agent_id` / `_at` / `_name` (same as Renoxis). Idempotent: flag skip here + Apixis.dev dedupes by verified email (one citizen, one agent, 200 starter once).
+- Blocked: `APIXIS_WORLD_KEY` is NOT set on Vercel project `lyrixis` (checked by name 2026-09-29), so provisioning returns `apixis_world_key_missing` until Developer Bot issues it. Not minted here.
+- Not touched: Cixy prompts, Stripe, Wallet settings/keys/internals, PR #14.
+- Who: Lyrixis Lead / Grok. PR against main, not merged, not deployed to production.
+- Undo: revert the PR (or its merge/squash commit).

@@ -35,6 +35,12 @@ export function CallbackClient() {
           if (error) throw error;
           window.history.replaceState(null, "", window.location.pathname + window.location.search);
         }
+        // 2026-09-29 Grok (Lyrixis Lead): first sign-in → create this person's own Apixis world agent
+        // (server-side, idempotent). Capped at 7s so a slow Apixis.dev never blocks sign-in.
+        await Promise.race([
+          fetch("/api/apixis/world-agent", { cache: "no-store", credentials: "same-origin" }).catch(() => null),
+          new Promise((resolve) => setTimeout(resolve, 7000)),
+        ]);
         if (!cancelled) {
           router.replace(next);
           router.refresh();

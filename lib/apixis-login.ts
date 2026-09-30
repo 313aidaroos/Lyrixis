@@ -27,6 +27,7 @@ import { cookies } from "next/headers";
 import { createClient, type User } from "@supabase/supabase-js";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { apixisLoginUrl, exchangeLoginCode } from "./apixis-wallet";
+import { ensureLyrixisWorldAgent } from "./apixis-world-agent-server";
 
 const STATE_COOKIE = "apixis_login";
 
@@ -113,8 +114,12 @@ export async function finishApixisLogin(request: Request) {
         list.forEach(({ name, value, options }) => jar.set(name, value, options)),
     },
   });
-  const { error } = await supabase.auth.verifyOtp({ type: "magiclink", token_hash: tokenHash });
+  const { data: session, error } = await supabase.auth.verifyOtp({ type: "magiclink", token_hash: tokenHash });
   if (error) return fail("session_error");
+
+  // 2026-09-29 Grok (Lyrixis Lead): first Apixis ID sign-in → this person's own Apixis world agent
+  // (idempotent, never throws; a failure just retries on the next signed-in load).
+  if (session.user) await ensureLyrixisWorldAgent(session.user);
 
   return NextResponse.redirect(new URL(safeNext(saved.next ?? "/"), url.origin), 302);
 }

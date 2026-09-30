@@ -4,6 +4,7 @@
 // Cixy is the guide, never the person's avatar. Grok Developer Bot, 2026-09-28.
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { fetchWorldAgent } from "@/lib/apixis-world-client";
 
 type View = { ok: boolean; status: "ready" | "invite"; agentName: string | null; showWelcome: boolean; enterUrl: string };
 
@@ -22,10 +23,7 @@ export function ApixisWorldWelcome() {
   const [view, setView] = useState<View | null>(null);
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/apixis/world-agent", { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((v) => { if (!cancelled && v?.ok) setView(v); })
-      .catch(() => {});
+    void fetchWorldAgent().then((v) => { if (!cancelled && v) setView(v); });
     return () => { cancelled = true; };
   }, []);
   if (!view?.showWelcome) return null;

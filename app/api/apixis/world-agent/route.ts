@@ -5,16 +5,11 @@
 // Grok Developer Bot, 2026-09-28. Shared flow: Apixis.dev docs/APIXIS_ENTER.md "Automatic agent on signup".
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
-import { provisionApixisWorldAgent } from "@/lib/apixis-world-provision";
-import { ensureWorldAgent, welcomeSeenMetadata } from "@/lib/apixis-world-agent";
+import { welcomeSeenMetadata } from "@/lib/apixis-world-agent";
 import { enterApixisUrl } from "@/lib/apixis-world";
+import { ensureLyrixisWorldAgent, LYRIXIS_WORLD_CLIENT as CLIENT, saveUserAppMetadata as saveAppMetadata } from "@/lib/apixis-world-agent-server";
 
 export const dynamic = "force-dynamic";
-
-const CLIENT = "lyrixis";
-// Accounts created before Lyrixis shipped this are not auto-provisioned (no backfill).
-const ROLLOUT_AT = "2026-09-28T07:30:00.000Z";
 
 async function currentUser() {
   const sb = await createServerSupabaseClient();
@@ -22,23 +17,10 @@ async function currentUser() {
   return data.user ?? null;
 }
 
-async function saveAppMetadata(userId: string, appMetadata: Record<string, unknown>) {
-  const { error } = await createAdminClient().auth.admin.updateUserById(userId, { app_metadata: appMetadata });
-  if (error) throw error;
-}
-
 export async function GET() {
   const user = await currentUser().catch(() => null);
   if (!user) return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
-  const view = await ensureWorldAgent(
-    user,
-    {
-      client: CLIENT,
-      provision: (input) => provisionApixisWorldAgent({ ...input, emailVerified: true, timeoutMs: 6000 }),
-      saveAppMetadata,
-    },
-    ROLLOUT_AT,
-  );
+  const view = await ensureLyrixisWorldAgent(user);
   return NextResponse.json({ ok: true, ...view, enterUrl: enterApixisUrl(CLIENT) }, { headers: { "cache-control": "no-store" } });
 }
 
