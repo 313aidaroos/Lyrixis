@@ -19,3 +19,7 @@ Entry format:
 ## 2026-09-28 — JunoAI
 - Changed: added .github/workflows/ci.yml (shared CI caller)
 - Why: automated build/test gate via the family reusable workflow
+
+## 2026-09-29 — JunoAI
+- Changed: built Release Tool v1 — `/release` wizard, `releases` table (+RLS), release/pay/package/verify API routes, Ixis payment via Apixis Wallet, zip release packages, tests
+- Why: owner's request for a sellable pay-per-song product on the Lyrixis codebase (PR for owner review, not merged)
