@@ -25,3 +25,4 @@ Grok Bot (Developer Bot hub + product leads) notes. Every change Grok Bot makes 
 - Where: `lib/ixis-companies.ts` (single list — swap URLs here when custom domains arrive), `components/SiteFooter.tsx`.
 - Who: Lyrixis Lead / Grok. PR against main, not merged, not deployed to production.
 - Undo: revert the PR (or its merge/squash commit).
+- 2026-09-29 (CT) follow-up: removed Qahwah World and Nursery Toons from `lib/ixis-companies.ts` (Awad-approved via hub); footer now lists 11 sites. Same undo.

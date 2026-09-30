@@ -23,3 +23,4 @@ Entry format:
 ## 2026-09-29 — Grok (Lyrixis Lead)
 - Changed: `lib/ixis-companies.ts` (new), `components/SiteFooter.tsx`, `WORKBOARD.md`, `NOTES/GROK.md`
 - Why: Awad-approved footer section linking to the other Ixis companies; URLs kept in one data file
+- 2026-09-29 follow-up: removed Qahwah World and Nursery Toons from `lib/ixis-companies.ts` (Awad-approved via hub); 11 sites remain

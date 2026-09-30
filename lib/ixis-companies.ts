@@ -17,7 +17,5 @@ export const OTHER_IXIS_COMPANIES: readonly IxisCompany[] = [
   { name: "Recovra", url: "https://recovra-three.vercel.app" },
   { name: "Deduxis", url: "https://deduxis.vercel.app" },
   { name: "Geoxis", url: "https://spatial-dashboard-xi.vercel.app" },
-  { name: "Qahwah World", url: "https://qahwahworld.vercel.app" },
-  { name: "Nursery Toons", url: "https://nurserytoons.vercel.app" },
   { name: "Wattixis", url: "https://wattixis.vercel.app" },
 ];
