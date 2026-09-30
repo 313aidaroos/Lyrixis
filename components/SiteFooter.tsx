@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { WALLET_BUY_URL } from "@/lib/wallet";
+import { OTHER_IXIS_COMPANIES } from "@/lib/ixis-companies";
 
 export function SiteFooter() {
   return (
     <footer className="mt-24">
       <div className="seam" />
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 sm:grid-cols-4">
+      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 sm:grid-cols-5">
         <div className="sm:col-span-2">
           <div className="flex items-center gap-2.5">
             <img src="/lyrixis-mark.png" alt="" className="mark-glow h-8 w-8 object-contain" />
@@ -32,6 +33,14 @@ export function SiteFooter() {
           <a href="mailto:lyrixis@apixis.dev?subject=Terms%20request" className="hover:text-ink">Terms</a>
           <a href="mailto:lyrixis@apixis.dev?subject=Privacy%20request" className="hover:text-ink">Privacy</a>
           <a href="mailto:lyrixis@apixis.dev?subject=DMCA%20notice" className="hover:text-ink">Copyright / DMCA</a>
+        </div>
+        <div className="flex flex-col gap-2 text-sm text-ink-2">
+          <p className="mb-1 font-mono text-[11px] uppercase tracking-widest text-ink-3">Other Ixis companies</p>
+          {OTHER_IXIS_COMPANIES.map((c) => (
+            <a key={c.url} href={c.url} target="_blank" rel="noopener noreferrer" className="hover:text-ink">
+              {c.name}
+            </a>
+          ))}
         </div>
       </div>
       <div className="border-t border-line">

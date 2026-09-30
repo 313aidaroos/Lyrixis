@@ -19,3 +19,10 @@ Grok Bot (Developer Bot hub + product leads) notes. Every change Grok Bot makes 
 - Where: `app/api/apixis/world-agent/route.ts`, `components/ApixisWorldWelcome.tsx`, `lib/apixis-world.ts`, `lib/apixis-world-provision.ts`, `lib/apixis-world-agent.ts`, `lib/apixis-world-agent.test.ts`, `app/dashboard/page.tsx`, `components/AppNav.tsx`, `public/cixy/cixy-combo-a-avatar.webp`, `.env.example`.
 - Not touched: login/signup pages, Wallet pill/balance route, Stripe/payments, existing accounts.
 - Undo: revert the PR's squash commit; optionally remove Vercel env `APIXIS_WORLD_KEY` (the route then does nothing). Agents already created live in Apixis.dev (`apixis.agents`) and are not deleted by reverting.
+
+## 2026-09-29 (CT) — Grok (Lyrixis Lead): footer "Other Ixis companies"
+- What: added an "Other Ixis companies" column to the site footer with plain text links (new tab, `rel="noopener noreferrer"`) to the 13 approved Ixis sites (Lyrixis itself excluded; Nexxis/Omnixis, Launchixis, PersonalContentBot, AwadBot, COMMAND intentionally left out). Existing footer classes reused; the footer grid went from `sm:grid-cols-4` to `sm:grid-cols-5` to fit the third column. Approved by Awad via the Developer Bot hub as a one-time exception to the credit pause.
+- Where: `lib/ixis-companies.ts` (single list — swap URLs here when custom domains arrive), `components/SiteFooter.tsx`.
+- Who: Lyrixis Lead / Grok. PR against main, not merged, not deployed to production.
+- Undo: revert the PR (or its merge/squash commit).
+- 2026-09-29 (CT) follow-up: removed Qahwah World and Nursery Toons from `lib/ixis-companies.ts` (Awad-approved via hub); footer now lists 11 sites. Same undo.
