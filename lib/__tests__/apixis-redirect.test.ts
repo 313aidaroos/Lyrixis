@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import test from 'node:test';
-import { safeLocalRedirect } from '../apixis-redirect.ts';
+import { test } from 'vitest';
+import { safeLocalRedirect } from '../apixis-redirect';
 
 test('preserves ordinary local destinations', () => {
   for (const path of ['/', '/account', '/marketplace?q=copper#offers', '/jobs/abc']) {
