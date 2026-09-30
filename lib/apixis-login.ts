@@ -1,3 +1,4 @@
+import { safeLocalRedirect } from "./apixis-redirect";
 /**
  * "Sign in with Apixis" for a Next.js (App Router) sister site that uses Supabase auth.
  * Copy next to apixis-wallet.ts (lib/apixis-login.ts). Server only.
@@ -30,9 +31,7 @@ import { apixisLoginUrl, exchangeLoginCode } from "./apixis-wallet";
 
 const STATE_COOKIE = "apixis_login";
 
-function safeNext(raw: string | null) {
-  return raw && raw.startsWith("/") && !raw.startsWith("//") ? raw : "/";
-}
+
 
 function callbackUrl(request: Request) {
   const configured = process.env.APIXIS_REDIRECT_URI;
@@ -50,7 +49,7 @@ function siteEnv() {
 
 /** GET /auth/apixis/start?next=/path */
 export async function startApixisLogin(request: Request) {
-  const next = safeNext(new URL(request.url).searchParams.get("next"));
+  const next = safeLocalRedirect(new URL(request.url).searchParams.get("next"));
   const state = randomBytes(24).toString("base64url");
   const response = NextResponse.redirect(apixisLoginUrl({ state, redirectUri: callbackUrl(request) }), 302);
   response.cookies.set(STATE_COOKIE, JSON.stringify({ state, next }), {
@@ -116,7 +115,7 @@ export async function finishApixisLogin(request: Request) {
   const { error } = await supabase.auth.verifyOtp({ type: "magiclink", token_hash: tokenHash });
   if (error) return fail("session_error");
 
-  return NextResponse.redirect(new URL(safeNext(saved.next ?? "/"), url.origin), 302);
+  return NextResponse.redirect(new URL(safeLocalRedirect(saved.next ?? "/"), url.origin), 302);
 }
 
 /** The Apixis ID `sub` saved at sign-in; pass it as `owner` to Wallet calls. Null until they use Apixis sign-in. */
