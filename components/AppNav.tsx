@@ -38,6 +38,9 @@ export function AppNav({ email }: { email?: string | null }) {
           <Link href="/upload" className={linkClass("/upload")}>
             Upload
           </Link>
+          <Link href="/release" className={linkClass("/release")}>
+            Release
+          </Link>
           <a href={enterApixisUrl("lyrixis")} className="text-sm text-ink-2 hover:text-ink">
             Apixis World ↗
           </a>

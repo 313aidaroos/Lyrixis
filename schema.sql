@@ -380,3 +380,32 @@ create policy "own tracks" on tracks for select using (
 );
 -- Repeat the equivalent policy for every child table (join through track_id).
 -- track_costs, admin views and pricing_tiers: service-role / admin only.
+
+-- ============================================================
+-- Release Tool v1 (2026-09-29): pay-per-song release packages.
+-- Migration: 0002_release_tool
+-- ============================================================
+
+create type release_status as enum ('draft','paid','delivered');
+
+create table releases (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid not null references users(id) on delete cascade,
+  track_ids uuid[] not null default '{}',   -- v1: exactly one track
+  title text not null,
+  metadata jsonb not null default '{}'::jsonb,  -- primary_artist, featured_artists, release_type, isrc/iswc/upc (normalized)
+  splits jsonb not null default '[]'::jsonb,    -- collaborators [{name, role, percentage, email}]
+  status release_status not null default 'draft',
+  song_count integer not null default 1,
+  amount_cents bigint,                          -- USD quote from pricing_tiers (accounting); the charge itself is Ixis via Wallet
+  paid_via text,                                -- 'ixis' (v1)
+  paid_at timestamptz,
+  created_at timestamptz not null default now()
+);
+create index on releases (user_id, created_at desc);
+
+alter table releases enable row level security;
+
+create policy "own releases" on releases for all using (
+  user_id = (select id from users where auth_id = auth.uid())
+);
