@@ -5,6 +5,7 @@ import { getCatalogRecording } from "@/services/catalog";
 import { RedeemButton } from "@/components/RedeemButton";
 import { getUser } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { currentSessionIsOwner } from "@/lib/owners";
 
 export const dynamic = "force-dynamic";
 
@@ -38,7 +39,8 @@ export default async function CatalogRecordingPage({
       .eq('user_id', user.id)
       .eq('recording_public_id', id)
       .maybeSingle();
-    isUnlocked = Boolean(unlock);
+    // Owner bypass (lib/owners.ts): proven owner session counts as unlocked.
+    isUnlocked = Boolean(unlock) || (await currentSessionIsOwner());
   }
   const writers = recording.writers.length > 0 ? recording.writers.join(", ") : null;
 
