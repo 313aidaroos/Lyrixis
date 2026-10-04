@@ -1,6 +1,6 @@
 // GET  /api/apixis/world-agent  → the signed-in person's Apixis world agent state. For a NEW account
 //      (created after the rollout, verified email) the first call asks Apixis.dev to create their own
-//      agent (default Apixis body, 200 in-world Ixis once) and records it on the auth user.
+//      agent (default Apixis body, 1,000 in-world Ixis once) and records it on the auth user.
 // POST /api/apixis/world-agent { action: "enter" | "dismiss" } → hides the one-time welcome card.
 // Grok Developer Bot, 2026-09-28. Shared flow: Apixis.dev docs/APIXIS_ENTER.md "Automatic agent on signup".
 import { NextResponse } from "next/server";

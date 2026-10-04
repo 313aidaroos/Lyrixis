@@ -4,11 +4,13 @@ import { CallbackClient } from "./callback-client";
 export const dynamic = "force-dynamic";
 
 /**
- * Magic-link landing. The OTP link is requested server-side with a plain client, so Supabase
- * issues an implicit-flow link: tokens arrive in the URL *hash*, which the browser never sends
- * to a Route Handler. The old handler looked for ?code= and bounced everyone to /login with the
- * tokens still in the address bar (verified live). This page reads the hash in the browser, sets
- * the cookie session, strips the tokens, then continues. PKCE ?code= links still work.
+ * Magic-link landing. Handles THREE flows:
+ * 1. token_hash (from admin.generateLink) → middleware verifyOtp with cookies
+ * 2. ?code= (PKCE) → client-side exchangeCodeForSession
+ * 3. #access_token (implicit) → client-side setSession
+ * 
+ * CRITICAL BUG FIX: verifyOtp type: "email" accepts both "signup" (new user) and "magiclink" (existing).
+ * Using type: "magiclink" causes otp_expired for brand-new emails. Reference: Ominix 3d17c68, 78d2af9.
  */
 export default function AuthCallbackPage() {
   return (

@@ -1,8 +1,9 @@
 /**
  * Other Ixis companies shown in the site footer.
  * Single source of truth: swap URLs here when custom domains arrive.
- * Lyrixis itself is intentionally left out. Do not add Nexxis/Omnixis
- * (rename pending), Launchixis, PersonalContentBot, AwadBot, or COMMAND.
+ * Lyrixis itself is intentionally left out. Ominix (formerly Nexxis/Omnixis) stays
+ * excluded per the footer brief, as do Launchixis, PersonalContentBot, AwadBot and COMMAND.
+ * (The /companies page has its own full directory; this list is only the footer's.)
  */
 export type IxisCompany = { name: string; url: string };
 

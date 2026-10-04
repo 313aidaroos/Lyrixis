@@ -5,12 +5,12 @@ import { ensureWorldAgent, needsProvision, welcomeSeenMetadata, worldAgentView }
 const ROLLOUT = "2026-09-28T07:30:00.000Z";
 const NEW = "2026-09-28T08:00:00.000Z";
 const user = { id: "u1", email: "new@example.com", created_at: NEW, email_confirmed_at: NEW, app_metadata: { provider: "email" } };
-const ok = { ok: true as const, created: true, starterGrantedNow: true, starterIxis: 200, agent: { id: "a1", name: "New", status: "active", ixix_balance: 200 }, enterUrl: "" };
+const ok = { ok: true as const, created: true, starterGrantedNow: true, starterIxis: 1000, agent: { id: "a1", name: "New", status: "active", ixix_balance: 1000 }, enterUrl: "" };
 
 describe("Apixis world agent (Lyrixis)", () => {
   it("enters via www.apixis.dev/enter?from=lyrixis", () => {
     expect(enterApixisUrl("lyrixis")).toBe("https://www.apixis.dev/enter?from=lyrixis");
-    expect(APIXIS_ENTER_CLIENTS.length).toBe(13);
+    expect(APIXIS_ENTER_CLIENTS.length).toBe(15);
   });
   it("provisions a new verified account once; never older or unverified accounts", async () => {
     const calls: unknown[] = [];
