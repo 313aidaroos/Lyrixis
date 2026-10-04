@@ -1,9 +1,10 @@
-## 2026-10-04 summary
+Grok Bot (Developer Bot hub + product leads) notes. Every change Grok Bot makes to this product (code, env, database, deploys) gets a dated entry here so Claude, Hermes and Codex stay on the same page.
+
 ## 2026-10-04 summary
 
 - **Grok:** added the verified-owner unlock bypass.
 - **Lead:** prepared upload-worker hosting docs and a Feed preview; those preview changes were not merged.
-- **Claude/Hermes/Codex/Juno:** Claude, Hermes, and Juno had no commits or merged PRs in this repo on 2026-10-04 CT.
+- **Claude/Hermes/Codex/Juno:** Hermes and Juno had no commits or merged PRs here on 2026-10-04 CT. Claude merged notes-only PR #27 at 6:31 PM CT, after this summary was written (see the 2026-10-04 Claude entry at the bottom).
 
 
 
@@ -160,3 +161,21 @@ The entries below record the day's observed commits and merged PRs. Existing det
 
 ### Merged PRs
 - PR #26, merge `bfac9cc`, `grok/owner-allowlist` → `main`, merged 2026-10-04 CT by 313aidaroos: Owner allowlist: proven owner session skips unlock gates. Undo: `git revert bfac9cc`.
+
+## 2026-10-04 6:01 PM / 6:31 PM (CT) — Claude: full-portfolio review notes (PR #27, merged)
+- What: notes only. New `NOTES/CLAUDE.md` (this repo's slice of Claude's 24-repo review: what is live, what is open, who owns it, drift found) and a 2026-10-04 entry in `AI_CHANGELOG.md`. No code, env, database or deploy changes.
+- Where: branch `claude/great-fermi-6brq7a` (commit `39882db`, 6:01 PM CT, author Claude <noreply@anthropic.com>) → PR #27, squash commit `8cf8429` on `main`, merged 6:31 PM CT by 313aidaroos (body says Awad approved). Vercel production `dpl_GRPjDqkXsrSGsLfS9Tcb1Pq7Fhrn` built from `8cf8429`, READY (auto-deploy from main; notes only, so the site output did not change).
+- Who: Claude (Claude Code), merged from the 313aidaroos account.
+- Accuracy: `NOTES/CLAUDE.md` says "`main` @ `3fd1b9d` … code unchanged since 10-02", but #26 (owner allowlist, code) had already merged at 6:14 PM CT. The Ominix link drift it lists is fixed in `grok/claude-audit-fixes`.
+- Undo: `git revert 8cf8429` (removes `NOTES/CLAUDE.md` and the AI_CHANGELOG lines). The branch `claude/great-fermi-6brq7a` can be deleted once nobody needs it.
+
+## 2026-10-04 ~6:55 PM (CT) — Grok: Claude-audit lock fixes (branch `grok/claude-audit-fixes`, PR open, not merged)
+- What: audit of everything since `3fd1b9d` against Awad's locks; fixed the lock breaks found on `main`:
+  - `components/TrackView.tsx` (`/tracks/[id]`, own uploads): removed the dead Stripe checkout button (it POSTed to `/api/checkout`, which is gone and returns 404), the "Stripe confirms the webhook" notice and the USD price from `/api/quote`. It now says plainly that upload unlocks will go through the Apixis Wallet and are not live yet. No charge path added.
+  - `components/AuthForm.tsx` and `app/api/support/intake/route.ts`: removed the "As-salamu alaykum" greetings (religious wording belongs only on Halaxis). The support email now opens with "Hi,".
+  - `app/companies/page.tsx`: Ominix link `nexxis-tau.vercel.app` (retired host) → `https://ominix-app.vercel.app`.
+  - `components/LoginForm.tsx`, `components/ApixisWorldWelcome.tsx`: the 1,000 Ixis wording now says Apixis.dev gives it.
+- Not touched: `lib/cixy-prompt.ts` (Cixy prompt, flagged to Awad: it still has Muslim identity, halal and prayer/Ramadan instructions), footer (PR #14), env, database, deploys.
+- Who: Grok (Developer Bot executor).
+- Undo: close the PR without merging, or after a merge `git revert <squash sha>`.
+
