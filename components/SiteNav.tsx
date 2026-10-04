@@ -123,6 +123,7 @@ export function SiteNav() {
             API
           </Link>
           <Link href="/companies" className="nav-link text-ink-2 hover:text-ink" data-active={active("/companies")}>Apixis Companies</Link>
+          <Link href="/feed" className="nav-link text-ink-2 hover:text-ink" data-active={active("/feed")}>Feed</Link>
           <Link href="/pricing" className="nav-link text-ink-2 hover:text-ink" data-active={active("/pricing")}>
             Pricing
           </Link>
@@ -190,6 +191,7 @@ export function SiteNav() {
               API
             </Link>
             <Link href="/companies" onClick={() => setOpen(false)}>Apixis Companies</Link>
+            <Link href="/feed" onClick={() => setOpen(false)}>Feed</Link>
             <Link href="/pricing" onClick={() => setOpen(false)}>
               Pricing
             </Link>
