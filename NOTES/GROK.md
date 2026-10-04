@@ -135,3 +135,9 @@ _Backfill below (written 2026-10-02 ~17:30 CT by Grok Developer Bot, notes only,
 - Where: PR #23 (branch `codex/fix-recovra-company-link-20261002`), squash commit 475f737, `app/companies/page.tsx`. Production deployment `dpl_Fb83RLm6kPfGuS2G3KPQsjbzhH1p` built from main 475f737, READY at 03:18 CT.
 - Who: Codex (branch prefix); deploy is the Vercel Git integration (creator `313aidaroos`).
 - Undo: `git revert 475f737`; or promote/roll back to the previous production deployment `dpl_EbmtyMLb7RRfKS9pcxHcmLKjjEwn` (c413496).
+
+## 2026-10-04 18:45 (CT) — Grok (Lyrixis Lead): Lyrixis Voices (PR open, not merged)
+- What: invite-only Arabic/bilingual voice licensing marketplace at `/voices` — catalog, auditions, license flow with frozen terms + Wallet hold/capture, receipts, creator onboarding/consent/permissions, provider (ElevenLabs) verification with admin fallback, admin console, double-entry ledger (creator 60% after 5% fee + provider cost; payout blocked), workspaces, Socixis partner API, Cixy read-only recommendations, metrics. Demo mode on previews (fictional voices, demo Ixis, tone audio). Awad's 2026-10-04 defaults seeded as editable versioned config.
+- Where: branch `grok/lyrixis-voices`. `app/voices/**`, `app/api/voices/**`, `app/api/v1/voices/**`, `lib/voices/**`, `components/voices/**`, `database/migrations/0006_lyrixis_voices.sql` (+ rollback, local tests; NOT applied), `scripts/voices-db-test.sh`, `docs/voices/**`, `docs/VOICE_MARKET.md`, `components/SiteNav.tsx` (one link), `.env.example`. Removed old skeleton `lib/voiceMarket.ts`, `components/VoiceFloor.tsx`, `app/api/voices/route.ts` (replaced).
+- Who: Grok as Lyrixis Lead, approved by Awad 2026-10-04 17:49 CT.
+- Undo: close the PR / delete the branch. After a merge: `git revert <merge commit>`; if 0006 was applied, run `database/migrations/rollback/0006_lyrixis_voices_down.sql`.
