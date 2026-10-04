@@ -61,6 +61,8 @@ export interface FeedClientOptions {
   sessionUrl?: string | null;
   /** Send cookies with feed calls (only for same-origin apixis.dev). */
   withCookies?: boolean;
+  /** Extra headers for the sessionUrl call only (sites whose own sign-in token lives in the browser, e.g. Geoxis). */
+  sessionHeaders?: () => Record<string, string>;
   fetchImpl?: typeof fetch;
 }
 
@@ -100,7 +102,7 @@ export function createFeedClient(opts: FeedClientOptions) {
     if (!force && sessionPromise) return sessionPromise;
     sessionPromise = (async () => {
       try {
-        const r = await f(opts.sessionUrl || "/api/feed-session", { credentials: "same-origin", cache: "no-store" });
+        const r = await f(opts.sessionUrl || "/api/feed-session", { credentials: "same-origin", cache: "no-store", headers: opts.sessionHeaders?.() });
         const d = await r.json().catch(() => null);
         session = r.ok && d?.ok && d.token ? { token: d.token, expires_at: d.expires_at ?? null, profile: d.profile ?? null } : { token: null, expires_at: null, profile: null };
       } catch { session = { token: null, expires_at: null, profile: null }; }
