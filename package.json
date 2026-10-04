@@ -10,7 +10,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "worker": "tsx workers/index.ts"
+    "worker": "tsx workers/index.ts",
+    "worker:build": "esbuild workers/index.ts --bundle --platform=node --target=node22 --format=esm --packages=external --outfile=dist/worker.mjs",
+    "worker:start": "node dist/worker.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

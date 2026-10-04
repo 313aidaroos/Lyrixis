@@ -30,6 +30,20 @@ function loadEnvFile(): void {
 
 loadEnvFile();
 
+// Optional polling knobs (unset = BullMQ defaults). On a per-command-billed Redis
+// such as Upstash, an idle BullMQ worker polls every few seconds; raising these
+// keeps idle traffic inside the free tier. See docs/WORKER_HOSTING.md.
+function positiveNumberEnv(name: string): number | undefined {
+  const raw = process.env[name]?.trim();
+  if (!raw) return undefined;
+  const value = Number(raw);
+  return Number.isFinite(value) && value > 0 ? value : undefined;
+}
+
+const drainDelay = positiveNumberEnv("WORKER_DRAIN_DELAY_SEC");
+const stalledInterval = positiveNumberEnv("WORKER_STALLED_INTERVAL_MS");
+const concurrency = positiveNumberEnv("WORKER_CONCURRENCY") ?? 2;
+
 const worker = new Worker(
   TRACK_QUEUE_NAME,
   async (job) => {
@@ -43,7 +57,9 @@ const worker = new Worker(
   },
   {
     connection: getWorkerConnection(),
-    concurrency: 2,
+    concurrency,
+    ...(drainDelay !== undefined ? { drainDelay } : {}),
+    ...(stalledInterval !== undefined ? { stalledInterval } : {}),
   }
 );
 
