@@ -1,4 +1,11 @@
-Grok Bot (Developer Bot hub + product leads) notes. Every change Grok Bot makes to this product (code, env, database, deploys) gets a dated entry here so Claude, Hermes and Codex stay on the same page.
+## 2026-10-04 summary
+## 2026-10-04 summary
+
+- **Grok:** added the verified-owner unlock bypass.
+- **Lead:** prepared upload-worker hosting docs and a Feed preview; those preview changes were not merged.
+- **Claude/Hermes/Codex/Juno:** Claude, Hermes, and Juno had no commits or merged PRs in this repo on 2026-10-04 CT.
+
+
 
 ## 2026-09-27 (CT) — Developer Bot (hub)
 - Wallet registration: added `lyrixis` to `wallet_api_clients` in Supabase project `kzneeksminozmhnqaaun`, with `require_sso=false`.
@@ -135,6 +142,24 @@ _Backfill below (written 2026-10-02 ~17:30 CT by Grok Developer Bot, notes only,
 - Where: PR #23 (branch `codex/fix-recovra-company-link-20261002`), squash commit 475f737, `app/companies/page.tsx`. Production deployment `dpl_Fb83RLm6kPfGuS2G3KPQsjbzhH1p` built from main 475f737, READY at 03:18 CT.
 - Who: Codex (branch prefix); deploy is the Vercel Git integration (creator `313aidaroos`).
 - Undo: `git revert 475f737`; or promote/roll back to the previous production deployment `dpl_EbmtyMLb7RRfKS9pcxHcmLKjjEwn` (c413496).
+
+## 2026-10-04 — Owner allowlist (Grok)
+- What: lib/owners.ts adds isOwner() and currentSessionIsOwner(). An owner is a confirmed email that is alaidaroosawad@gmail.com, awad@apixis.dev or in ADMIN_EMAILS, AND a session with an email-proving sign-in (magic link/OTP, Apixis ID/OAuth, recovery). A password-only session never counts, because neither owner has an account in mkuvgkjakxkytscfvnkf yet. An owner skips the unlock gates: full lyrics and track exports on his own tracks (/api/tracks/[id], /api/tracks/[id]/exports), and catalog exports plus the catalog page unlock state. These are product gates only: no track_unlocks row, no Wallet call, no ledger entry. His real Wallet purchases still work as normal.
+- Not changed: Lyrixis has no admin pages (the /admin/support link in support emails has no page), and no new admin UI was built.
+- Where: lib/owners.ts (+ lib/owners.test.ts), app/api/catalog/[id]/export/route.ts, app/api/tracks/[id]/route.ts, app/api/tracks/[id]/exports/route.ts, app/catalog/[id]/page.tsx. ADMIN_EMAILS was added to the Vercel project lyrixis.
+- Who: Grok.
+- Undo: revert this PR and remove ADMIN_EMAILS from Vercel.
+## 2026-10-04 catch-up provenance (CT)
+
+The entries below record the day's observed commits and merged PRs. Existing detailed entries above remain the change descriptions; this section supplies exact provenance and undo pointers.
+
+### Commits
+- `04b09b3` (2026-10-04T17:57:07-05:00, 313aidaroos; 313aidaroos@users.noreply.github.com) — Upload worker hosting: Dockerfile.worker, railway.json, docs, env example, opt-in polling knobs. Undo: no main change; close/delete the branch (or revert the branch commit before reuse).
+- `48c00c3` (2026-10-04T18:11:35-05:00, 313aidaroos; 313aidaroos@users.noreply.github.com) — Feed tab: Socixis Social family feed at /feed (preview only, do not merge). Undo: no main change; close/delete the branch (or revert the branch commit before reuse).
+- `bfac9cc` (2026-10-04T18:14:59-05:00, 313aidaroos; alaidaroosawad@gmail.com) — Owner allowlist: proven owner session skips unlock gates (#26). Undo: undo via the merged PR below: git revert bfac9cc.
+
+### Merged PRs
+- PR #26, merge `bfac9cc`, `grok/owner-allowlist` → `main`, merged 2026-10-04 CT by 313aidaroos: Owner allowlist: proven owner session skips unlock gates. Undo: `git revert bfac9cc`.
 
 ## 2026-10-04 18:45 (CT) — Grok (Lyrixis Lead): Lyrixis Voices (PR open, not merged)
 - What: invite-only Arabic/bilingual voice licensing marketplace at `/voices` — catalog, auditions, license flow with frozen terms + Wallet hold/capture, receipts, creator onboarding/consent/permissions, provider (ElevenLabs) verification with admin fallback, admin console, double-entry ledger (creator 60% after 5% fee + provider cost; payout blocked), workspaces, Socixis partner API, Cixy read-only recommendations, metrics. Demo mode on previews (fictional voices, demo Ixis, tone audio). Awad's 2026-10-04 defaults seeded as editable versioned config.
