@@ -4,9 +4,16 @@ Grok Bot (Developer Bot hub + product leads) notes. Every change Grok Bot makes 
 
 - **Grok:** added the verified-owner unlock bypass.
 - **Lead:** prepared upload-worker hosting docs and a Feed preview; those preview changes were not merged.
-- **Claude/Hermes/Codex/Juno:** Hermes and Juno had no commits or merged PRs here on 2026-10-04 CT. Claude merged notes-only PR #27 at 6:31 PM CT, after this summary was written (see the 2026-10-04 Claude entry at the bottom).
+- **Claude:** merged PR #27 (`8cf8429`) around 6:30 PM CT, adding the full-portfolio review to `NOTES/CLAUDE.md` and `AI_CHANGELOG.md` (notes/docs only).
+- **Hermes:** no 2026-10-04 commit or merged PR identified in this repository.
+- **Juno:** no 2026-10-04 commit or merged PR identified in this repository.
 
+## Catch-up correction — 2026-10-04 (CT)
 
+Claude activity was present; the earlier “no Claude activity” line was incorrect. Each item below has an undo pointer.
+
+- **Claude, 2026-10-04 6:31 PM CT — PR #27, merge `8cf842961ddedacc942a17410bf1e2603e59da57`:** notes: Claude full-portfolio review 2026-10-04 (NOTES/CLAUDE.md, AI_CHANGELOG); added `NOTES/CLAUDE.md` and `AI_CHANGELOG.md` (notes/docs only). Undo: `git revert 8cf842961ddedacc942a17410bf1e2603e59da57`.
+- **2026-10-04 6:31 PM CT — 313aidaroos:** `notes: Claude full-portfolio review 2026-10-04 (NOTES/CLAUDE.md, AI_CHANGELOG) (#27)` landed as `8cf842961ddedacc942a17410bf1e2603e59da57`. Where: commit `8cf842961ddedacc942a17410bf1e2603e59da57`. Undo: `git revert 8cf842961ddedacc942a17410bf1e2603e59da57`.
 
 ## 2026-09-27 (CT) — Developer Bot (hub)
 - Wallet registration: added `lyrixis` to `wallet_api_clients` in Supabase project `kzneeksminozmhnqaaun`, with `require_sso=false`.
@@ -169,7 +176,7 @@ The entries below record the day's observed commits and merged PRs. Existing det
 - Accuracy: `NOTES/CLAUDE.md` says "`main` @ `3fd1b9d` … code unchanged since 10-02", but #26 (owner allowlist, code) had already merged at 6:14 PM CT. The Ominix link drift it lists is fixed in `grok/claude-audit-fixes`.
 - Undo: `git revert 8cf8429` (removes `NOTES/CLAUDE.md` and the AI_CHANGELOG lines). The branch `claude/great-fermi-6brq7a` can be deleted once nobody needs it.
 
-## 2026-10-04 ~6:55 PM (CT) — Grok: Claude-audit lock fixes (branch `grok/claude-audit-fixes`, PR open, not merged)
+## 2026-10-04 ~6:55 PM (CT) — Grok: Claude-audit lock fixes (PR #29, branch `grok/claude-audit-fixes`, open, not merged)
 - What: audit of everything since `3fd1b9d` against Awad's locks; fixed the lock breaks found on `main`:
   - `components/TrackView.tsx` (`/tracks/[id]`, own uploads): removed the dead Stripe checkout button (it POSTed to `/api/checkout`, which is gone and returns 404), the "Stripe confirms the webhook" notice and the USD price from `/api/quote`. It now says plainly that upload unlocks will go through the Apixis Wallet and are not live yet. No charge path added.
   - `components/AuthForm.tsx` and `app/api/support/intake/route.ts`: removed the "As-salamu alaykum" greetings (religious wording belongs only on Halaxis). The support email now opens with "Hi,".
@@ -178,4 +185,10 @@ The entries below record the day's observed commits and merged PRs. Existing det
 - Not touched: `lib/cixy-prompt.ts` (Cixy prompt, flagged to Awad: it still has Muslim identity, halal and prayer/Ramadan instructions), footer (PR #14), env, database, deploys.
 - Who: Grok (Developer Bot executor).
 - Undo: close the PR without merging, or after a merge `git revert <squash sha>`.
+
+## 2026-10-04 ~7:10 PM (CT) — Hub decision + PR #29 refresh (notes only)
+- Decision (Developer Bot hub, 2026-10-04): own uploads on `/tracks/[id]` will reuse the existing Wallet product `lyrixis.track.unlock` (300 Ixis), the same SKU as catalog unlocks. **Not built yet.** PR #29 only removes the dead Stripe checkout and shows an honest "not live yet" note. A later PR will add the Wallet redeem path for uploads (today `app/api/redeem/route.ts` only looks up `catalog_recordings`).
+- Cixy prompt: `lib/cixy-prompt.ts` is not changed in #29. Developer Bot will sync it after #29.
+- Refresh: merged `main` (`450c577`, which had already restored this file's intro line and fixed the 10-04 summary) into `grok/claude-audit-fixes` with a normal merge commit. Kept main's summary lines in the one conflict.
+- Who: Grok (Developer Bot executor). Undo: `git revert -m 1` the "Merge main into grok/claude-audit-fixes" commit; this entry goes with it.
 
