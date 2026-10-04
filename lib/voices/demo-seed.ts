@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 // DEMO DATA ONLY — fictional voices for the preview. Not real people, no testimonials, no earnings,
 // no verification badges. Audio is a synthetic tone from the demo adapter, not a voice.
 import type { VoicesRepo } from "./repo";
@@ -23,6 +24,12 @@ const VOICES: { slug: string; name: string; name_ar: string; desc: string; desc_
   { slug: "demo-bilingual-gulf-en", name: "Demo · Bilingual Gulf / English", name_ar: "تجريبي · ثنائي اللغة خليجي/إنجليزي", desc: "Fictional demo voice. Switches between Gulf Arabic and English mid-sentence.", desc_ar: "صوت تجريبي خيالي. ينتقل بين الخليجية والإنجليزية في نفس الجملة.", langs: ["ar", "en"], dialects: ["ar-gulf-kw", "en-us"], tones: ["youthful", "energetic"], uses: ["ads", "social", "explainer"], mode: "instant", publication: true, custom: false, hz: 220 },
 ];
 
+/** Deterministic ids so every serverless instance seeds identical demo rows. */
+function did(name: string): string {
+  const h = createHash("sha256").update(`lyxv-demo:${name}`).digest("hex");
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-4${h.slice(13, 16)}-8${h.slice(17, 20)}-${h.slice(20, 32)}`;
+}
+
 export async function seedDemo(repo: VoicesRepo) {
   if (await repo.one("voice_pricing_configs", { version: 1 })) return;
   const now = new Date().toISOString();
@@ -42,16 +49,16 @@ export async function seedDemo(repo: VoicesRepo) {
   for (const [i, v] of VOICES.entries()) {
     const userId = i === 0 ? DEMO_PERSONAS.creator.id : `00000000-0000-4000-8000-0000000001${String(i).padStart(2, "0")}`;
     if (i !== 0) await repo.insert("users", { id: userId, email: `demo-creator-${i}@demo.lyrixis.invalid`, full_name: `Demo creator ${i}`, role: "user" });
-    const creator = await repo.insert("voice_creators", { user_id: userId, handle: `demo-creator-${i + 1}`, display_name: `Demo creator ${i + 1}`, display_name_ar: `صانع تجريبي ${i + 1}`, bio: "Fictional demo profile for the Lyrixis Voices preview. Not a real person.", bio_ar: "ملف تجريبي خيالي لمعاينة أصوات ليريكسيس. ليس شخصًا حقيقيًا.", adult_attested_at: now, identity_check_status: "not_started", payout_status: "blocked_no_payout_rail", wallet_owner: null, status: "active", hire_enabled: v.custom, is_demo: true });
-    const voice = await repo.insert("voices", { slug: v.slug, creator_id: creator.id, display_name: v.name, display_name_ar: v.name_ar, description: v.desc, description_ar: v.desc_ar, languages: v.langs, dialects: v.dialects, tones: v.tones, use_categories: v.uses, status: "active", status_reason: null, verification_status: "unverified", dialect_review_status: "pending", licensing_mode: v.mode, current_permission_version: 1, model_version: "demo-1", provider: "demo", provider_voice_ref: `demo:${v.slug}`, is_demo: true, submitted_at: now, approved_at: now });
+    const creator = await repo.insert("voice_creators", { id: did(`creator:${i}`), user_id: userId, handle: `demo-creator-${i + 1}`, display_name: `Demo creator ${i + 1}`, display_name_ar: `صانع تجريبي ${i + 1}`, bio: "Fictional demo profile for the Lyrixis Voices preview. Not a real person.", bio_ar: "ملف تجريبي خيالي لمعاينة أصوات ليريكسيس. ليس شخصًا حقيقيًا.", adult_attested_at: now, identity_check_status: "not_started", payout_status: "blocked_no_payout_rail", wallet_owner: null, status: "active", hire_enabled: v.custom, is_demo: true });
+    const voice = await repo.insert("voices", { id: did(`voice:${v.slug}`), slug: v.slug, creator_id: creator.id, display_name: v.name, display_name_ar: v.name_ar, description: v.desc, description_ar: v.desc_ar, languages: v.langs, dialects: v.dialects, tones: v.tones, use_categories: v.uses, status: "active", status_reason: null, verification_status: "unverified", dialect_review_status: "pending", licensing_mode: v.mode, current_permission_version: 1, model_version: "demo-1", provider: "demo", provider_voice_ref: `demo:${v.slug}`, is_demo: true, submitted_at: now, approved_at: now });
     await repo.insert("voice_permission_versions", { ...DEFAULT_PERMISSIONS, voice_id: voice.id, version: 1, auditions: true, paid_generation: true, publication: v.publication, custom_recordings: v.custom, assistant_use: true, allowed_uses: v.uses, allowed_channels: [], created_at: now });
-    await repo.insert("voice_consents", { creator_id: creator.id, voice_id: voice.id, kind: "cloning", terms_version: TERMS.cloning_consent, text_hash: sha256(CLONING_CONSENT_TEXT), ip_hash: null, revoked_at: null, revoke_reason: null });
+    await repo.insert("voice_consents", { id: did(`consent:${v.slug}`), creator_id: creator.id, voice_id: voice.id, kind: "cloning", terms_version: TERMS.cloning_consent, text_hash: sha256(CLONING_CONSENT_TEXT), ip_hash: null, revoked_at: null, revoke_reason: null });
     const lines = v.langs.includes("en") ? ["Demo sample — synthetic tone, not a real voice.", "عيّنة تجريبية — نغمة اصطناعية وليست صوتًا حقيقيًا."] : ["عيّنة تجريبية — نغمة اصطناعية وليست صوتًا حقيقيًا."];
     for (const [j, line] of lines.entries()) {
       const path = `${voice.id}/demo-${j}`;
       const body = demoWav(line, 4, v.hz);
       await repo.putObject("voices-public-samples", path, body, "audio/wav");
-      await repo.insert("voice_samples", { voice_id: voice.id, title: j === 0 && v.langs.includes("en") ? "Demo sample (EN)" : "عيّنة تجريبية (AR)", language: j === 0 && v.langs.includes("en") ? "en" : "ar", dialect: v.dialects[Math.min(j, v.dialects.length - 1)], transcript: line, storage_bucket: "voices-public-samples", storage_path: path, mime_type: "audio/wav", bytes: body.byteLength, creator_approved: true, admin_approved: true, is_demo: true });
+      await repo.insert("voice_samples", { id: did(`sample:${v.slug}:${j}`), voice_id: voice.id, title: j === 0 && v.langs.includes("en") ? "Demo sample (EN)" : "عيّنة تجريبية (AR)", language: j === 0 && v.langs.includes("en") ? "en" : "ar", dialect: v.dialects[Math.min(j, v.dialects.length - 1)], transcript: line, storage_bucket: "voices-public-samples", storage_path: path, mime_type: "audio/wav", bytes: body.byteLength, creator_approved: true, admin_approved: true, is_demo: true });
     }
   }
 }

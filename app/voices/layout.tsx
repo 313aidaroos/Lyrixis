@@ -16,12 +16,12 @@ export default async function VoicesLayout({ children }: { children: React.React
   const access = await svc.hasAccess(actor);
   const creator = actor ? await svc.myCreator(actor) : null;
   return (
-    <div>
+    <div data-voices-mode={svc.mode}>
       <SiteNav />
       {persona && (
         <div className="border-b border-amber-300/20 bg-amber-300/10 text-amber-100">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-6 py-2 text-xs">
-            <span><strong>Demo mode.</strong> Sample data, fictional voices, demo Ixis (no real money), synthetic tone audio. Nothing here is a real person or a real purchase.</span>
+            <span><strong>Demo mode.</strong> Sample data, fictional voices, demo Ixis (no real money), synthetic tone audio. Nothing here is a real person or a real purchase. Demo state is in memory and resets when the preview restarts.</span>
             <form action="/api/voices/demo-persona" method="post" className="flex items-center gap-2">
               <label htmlFor="as">View as</label>
               <select id="as" name="as" defaultValue={persona} className="rounded border border-amber-200/30 bg-transparent px-2 py-0.5"><option value="customer" className="bg-[#0b0a24]">Customer (business)</option><option value="creator" className="bg-[#0b0a24]">Creator</option><option value="admin" className="bg-[#0b0a24]">Admin</option></select>

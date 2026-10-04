@@ -35,3 +35,9 @@ Not added to `vercel.json` in this PR to avoid touching production config. UI pu
 
 ## Checks
 `npm run typecheck && npx vitest run && npm run build`, plus the DB script above.
+
+## Demo mode on Vercel previews
+Demo state is in memory per serverless instance. Seed ids are deterministic, so every instance shows the same voices;
+UI actions go through a Server Action (same function as the pages) so a visit's purchases/receipts stay together;
+signed demo audio links fall back to a stand-in tone if another instance serves them. The demo resets on cold start
+and the partner API's demo state is separate. Live mode keeps everything in Supabase, so none of this applies.
