@@ -85,7 +85,7 @@ export function SiteNav() {
           <span className="font-display text-sm font-semibold tracking-[0.24em]">LYRIXIS</span>
         </Link>
 
-        <nav className="hidden items-center gap-8 text-sm lg:flex" onMouseLeave={scheduleClose}>
+        <nav className="hidden items-center gap-6 whitespace-nowrap text-sm lg:flex" onMouseLeave={scheduleClose}>
           {Object.keys(MENUS).map((name) => (
             <div key={name} className="relative" onMouseEnter={() => openMenu(name)}>
               <button
@@ -132,7 +132,7 @@ export function SiteNav() {
           </a>
         </nav>
 
-        <div className="hidden items-center gap-4 text-sm lg:flex">
+        <div className="hidden items-center gap-4 whitespace-nowrap text-sm lg:flex">
           <a href={WALLET_BUY_URL} className="btn-secondary px-4 py-2 text-sm">
             Buy Ixis
           </a>
