@@ -176,9 +176,9 @@ The entries below record the day's observed commits and merged PRs. Existing det
 ### Merged PRs
 - PR #26, merge `bfac9cc`, `grok/owner-allowlist` → `main`, merged 2026-10-04 CT by 313aidaroos: Owner allowlist: proven owner session skips unlock gates. Undo: `git revert bfac9cc`.
 
-## 2026-10-04 ~7:05 PM (CT) — Grok: PR #14 footer branch brought up to date with main (not merged)
+## 2026-10-04 6:55 PM (CT) — Grok: PR #14 footer branch brought up to date with main (not merged)
 - What: merged `main` (`450c577`) into `grok/ixis-footer` with a normal merge commit (no force-push). Conflicts in `NOTES/GROK.md` and `AI_CHANGELOG.md` resolved by keeping both sides' entries; `WORKBOARD.md` merged cleanly with both sides' lines. `lib/ixis-companies.ts` stays the footer's single list (11 sites). Its header comment now says Ominix (formerly Nexxis/Omnixis) is still excluded, matching the brief. No site added or removed.
 - Where: branch `grok/ixis-footer` (PR #14): `lib/ixis-companies.ts` (comment only), `NOTES/GROK.md`, `AI_CHANGELOG.md`.
 - Who: Grok (Developer Bot executor), at the hub's request. Not merged; Awad confirms merges.
 - Undo: on the branch, `git revert -m 1` the commit "Merge main into grok/ixis-footer" (it carries the merge, the comment change and these notes).
-
+- Preview check (7:00 PM CT, Vercel preview `dpl_Bb4cB9ZeVUPprdeB9i5qbCccqR3E`, merge commit `fcfa751`, CI and Vercel green): the footer shows the "Other Ixis companies" column with 11 links (new tab, `noopener noreferrer`) at 1280 and 390 px, with no sideways scroll and no page errors. Compared with live `lyrixis.vercel.app`, the homepage above the footer is pixel-identical at both widths, and the footer link font and colors are the same. Theme unchanged apart from the new column. Screenshots on the box: `/workspace/lyrixis-footer/v2/`.
