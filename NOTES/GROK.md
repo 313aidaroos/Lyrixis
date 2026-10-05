@@ -151,6 +151,19 @@ _Backfill below (written 2026-10-02 ~17:30 CT by Grok Developer Bot, notes only,
 - Who: Codex (branch prefix); deploy is the Vercel Git integration (creator `313aidaroos`).
 - Undo: `git revert 475f737`; or promote/roll back to the previous production deployment `dpl_EbmtyMLb7RRfKS9pcxHcmLKjjEwn` (c413496).
 
+## 2026-10-04 (CT) — Grok Bot: Feed tab on Lyrixis (PR open, NOT merged)
+- Why: Awad asked for the Socixis Social family feed as a Feed tab on every Ixis site. Awad put feed changes on hold, so this PR is for preview review only; do not merge until Awad says so.
+- What: new public `/feed` page in Lyrixis's own shell (same header, footer, fonts, colors and buttons). For You is the unfiltered mixed feed from every Apixis company with source-site badges and AI labels; Following, Search · Trending and You tabs; video/photo/text posts, like, comment, follow, save, share, report, tips and boosts in Ixis. Signed-out visitors can browse; the 4th tab says "You" and shows a sign-in card (Apixis ID). Text-only posts use the site's body font, wrap long words and size to their content; media posts keep the full-height layout; feed modals sit above everything.
+- Where: `app/feed/` (page with SiteNav/SiteFooter, Lyrixis skin, `feed.css` mapped to Lyrixis tokens), `feed-client/` (shared client), `app/api/feed-session/route.ts`, "Feed" link in `components/SiteNav.tsx` (desktop + mobile), `lib/feed-client.test.ts`.
+- Backend: https://www.apixis.dev/api/feed. `/api/feed-session` calls POST /api/feed/session server-side with the existing `APIXIS_WORLD_KEY` + X-Apixis-Client/Sub/Email and returns the short-lived fdt_ token. No new env vars, no DB change, no SVGs.
+- Who: Grok Bot (for Awad).
+- Undo: close this PR, or `git revert <squash sha>` if it is ever merged.
+
+## 2026-10-04 19:00 (CT) — Grok Bot: Feed phone tab fit (same PR, still NOT merged)
+- What: at 375px the 4th "You" tab was pushed off-screen by "Search · Trending". Under 560px the tab now reads "Search", tabs are tighter, and if a wide site font still can't fit the tabs and "+ Post" on one row, Post drops to its own row instead of covering "You". Desktop is unchanged; the site's colors, fonts and buttons are untouched; no SVGs. Also: desktop header (`components/SiteNav.tsx`) uses gap-6 + whitespace-nowrap so the extra Feed link no longer wraps "Use Cases" / "Buy Ixis" / "Sign in" at 1440px.
+- Where: feed client `FeedView.tsx` (tab label) and the shared layout section of the site's feed CSS.
+- Who: Grok Bot (for Awad). No merge, no production deploy.
+- Undo: revert this commit on the PR branch.
 ## 2026-10-04 — Owner allowlist (Grok)
 - What: lib/owners.ts adds isOwner() and currentSessionIsOwner(). An owner is a confirmed email that is alaidaroosawad@gmail.com, awad@apixis.dev or in ADMIN_EMAILS, AND a session with an email-proving sign-in (magic link/OTP, Apixis ID/OAuth, recovery). A password-only session never counts, because neither owner has an account in mkuvgkjakxkytscfvnkf yet. An owner skips the unlock gates: full lyrics and track exports on his own tracks (/api/tracks/[id], /api/tracks/[id]/exports), and catalog exports plus the catalog page unlock state. These are product gates only: no track_unlocks row, no Wallet call, no ledger entry. His real Wallet purchases still work as normal.
 - Not changed: Lyrixis has no admin pages (the /admin/support link in support emails has no page), and no new admin UI was built.
@@ -175,3 +188,9 @@ The entries below record the day's observed commits and merged PRs. Existing det
 - Why: Awad's lock — no religious content in Cixy on any product except Halaxis; she declines only genuinely harmful, deceptive or illegal content, never on religious grounds (9/30). Kit = ApixisWallet `sdk/apixis-cixy.*` v2 (3a22244, PR #50) with two hub edits pending canonical: the religion-derived "clean recommendations" rule (gambling) is replaced by "decline only harmful, deceptive or illegal, never on religious grounds", and the character line reads "draws on Arab culture". Ominix links point to https://ominix-app.vercel.app (checked 200 on 2026-10-04 ~6:55 PM CT).
 - Who: Grok (Developer Bot hub), branch `grok/cixy-v2-20261004`, one squash-merged PR.
 - Undo: `git revert <squash sha of this PR>` (sha recorded in the PR), then redeploy prod.
+
+## 2026-10-04 19:13 (CT) — Grok Bot: Feed PR #25 approved for production by Awad
+- Why: Awad said "make it live" at 7:13 PM CT on Oct 4, 2026, approving the squash-merge of this PR and the production deploy that follows from main.
+- What: squash-merge of PR #25 (feed files + Feed nav entry only); Vercel's Git integration deploys main to production.
+- Who: Grok Bot (for Awad).
+- Undo: `git revert <squash sha of PR #25>` on main and push (the squash sha is on the PR page and in /workspace/feed/STATUS.md), or in Vercel promote the previous production deployment (instant rollback) and then revert.
