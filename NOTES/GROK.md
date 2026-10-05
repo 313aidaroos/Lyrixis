@@ -181,3 +181,10 @@ The entries below record the day's observed commits and merged PRs. Existing det
 
 ### Merged PRs
 - PR #26, merge `bfac9cc`, `grok/owner-allowlist` → `main`, merged 2026-10-04 CT by 313aidaroos: Owner allowlist: proven owner session skips unlock gates. Undo: `git revert bfac9cc`.
+
+## 2026-10-04 (CT) — Grok (Developer Bot hub): Cixy persona v2 sync + Ominix link
+- What: lib/cixy-prompt.ts now builds on the v2 kit (new lib/apixis-cixy.ts, same text as the other TS sites); removed 'Muslim AI operator' identity, salaam/Insha'Allah/alhamdulillah, 'NOT a scholar', HALAL-CONSCIOUS (alcohol/pork/gambling/riba/haram lyrics) and PRAYER/RAMADAN AWARE blocks. Added lib/__tests__/cixy-prompt.test.ts (religious-terms guard). The Ominix link and the AuthForm/support-email salam greetings are left to lead PR #29 to avoid conflicting with it.
+- Files: lib/cixy-prompt.ts lib/__tests__/cixy-prompt.test.ts lib/apixis-cixy.ts 
+- Why: Awad's lock — no religious content in Cixy on any product except Halaxis; she declines only genuinely harmful, deceptive or illegal content, never on religious grounds (9/30). Kit = ApixisWallet `sdk/apixis-cixy.*` v2 (3a22244, PR #50) with two hub edits pending canonical: the religion-derived "clean recommendations" rule (gambling) is replaced by "decline only harmful, deceptive or illegal, never on religious grounds", and the character line reads "draws on Arab culture". Ominix links point to https://ominix-app.vercel.app (checked 200 on 2026-10-04 ~6:55 PM CT).
+- Who: Grok (Developer Bot hub), branch `grok/cixy-v2-20261004`, one squash-merged PR.
+- Undo: `git revert <squash sha of this PR>` (sha recorded in the PR), then redeploy prod.
