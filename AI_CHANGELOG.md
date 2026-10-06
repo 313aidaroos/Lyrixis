@@ -20,6 +20,10 @@ Entry format:
 - Changed: added .github/workflows/ci.yml (shared CI caller)
 - Why: automated build/test gate via the family reusable workflow
 
+## 2026-09-29 — Grok (Lyrixis Lead)
+- Changed: `lib/ixis-companies.ts` (new), `components/SiteFooter.tsx`, `WORKBOARD.md`, `NOTES/GROK.md`
+- Why: Awad-approved footer section linking to the other Ixis companies; URLs kept in one data file
+- 2026-09-29 follow-up: removed Qahwah World and Nursery Toons from `lib/ixis-companies.ts` (Awad-approved via hub); 11 sites remain
 
 ## 2026-09-30 — Codex — Tester readiness: shared-login redirects
 
@@ -46,3 +50,10 @@ Entry format:
 ## 2026-10-04 — Grok (Lyrixis Lead) — Lyrixis Voices (branch grok/lyrixis-voices)
 - Changed: new `/voices` marketplace (pages, `app/api/voices/*`, partner API `app/api/v1/voices/*`), `lib/voices/*` service/ledger/providers (ElevenLabs + demo), `components/voices/*`, migration `0006_lyrixis_voices.sql` (not applied) with rollback + local RLS tests, `docs/voices/*`, `.env.example` vars, one SiteNav link (previews / `NEXT_PUBLIC_VOICES_NAV`). Retired the 9/22 voice-shelf skeleton files.
 - Why: Awad approved building Lyrixis Voices (invite-only, Wallet-only payments, legal text pending review). Not merged, not deployed to production.
+## 2026-10-04 (CT) — Grok (PR #14 refresh)
+- Changed: merged main into `grok/ixis-footer`; `lib/ixis-companies.ts` comment says Ominix (formerly Nexxis) stays excluded from the footer. Notes kept from both sides.
+- Why: bring the footer PR up to date for Awad's review; no list change.
+
+## 2026-10-04 (CT) — Grok (Claude-audit lock fixes, PR from `grok/claude-audit-fixes`)
+- Changed: `/tracks/[id]` no longer shows the dead Stripe checkout (404 `/api/checkout`) or a USD price; removed "As-salamu alaykum" from the magic-link screen and the support auto-reply; Ominix link on `/companies` → `ominix-app.vercel.app`; 1,000 Ixis wording names Apixis.dev; `NOTES/GROK.md` Claude #27 entry + hub decision (uploads will reuse `lyrixis.track.unlock`, not built yet).
+- Why: Awad's locks (no Stripe/card checkout, no religious content outside Halaxis, Apixis.dev grants the 1,000 Ixis) and notes for every Claude change.

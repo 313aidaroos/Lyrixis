@@ -1,11 +1,19 @@
-## 2026-10-04 summary
+Grok Bot (Developer Bot hub + product leads) notes. Every change Grok Bot makes to this product (code, env, database, deploys) gets a dated entry here so Claude, Hermes and Codex stay on the same page.
+
 ## 2026-10-04 summary
 
 - **Grok:** added the verified-owner unlock bypass.
 - **Lead:** prepared upload-worker hosting docs and a Feed preview; those preview changes were not merged.
-- **Claude/Hermes/Codex/Juno:** Claude, Hermes, and Juno had no commits or merged PRs in this repo on 2026-10-04 CT.
+- **Claude:** merged PR #27 (`8cf8429`) around 6:30 PM CT, adding the full-portfolio review to `NOTES/CLAUDE.md` and `AI_CHANGELOG.md` (notes/docs only).
+- **Hermes:** no 2026-10-04 commit or merged PR identified in this repository.
+- **Juno:** no 2026-10-04 commit or merged PR identified in this repository.
 
+## Catch-up correction — 2026-10-04 (CT)
 
+Claude activity was present; the earlier “no Claude activity” line was incorrect. Each item below has an undo pointer.
+
+- **Claude, 2026-10-04 6:31 PM CT — PR #27, merge `8cf842961ddedacc942a17410bf1e2603e59da57`:** notes: Claude full-portfolio review 2026-10-04 (NOTES/CLAUDE.md, AI_CHANGELOG); added `NOTES/CLAUDE.md` and `AI_CHANGELOG.md` (notes/docs only). Undo: `git revert 8cf842961ddedacc942a17410bf1e2603e59da57`.
+- **2026-10-04 6:31 PM CT — 313aidaroos:** `notes: Claude full-portfolio review 2026-10-04 (NOTES/CLAUDE.md, AI_CHANGELOG) (#27)` landed as `8cf842961ddedacc942a17410bf1e2603e59da57`. Where: commit `8cf842961ddedacc942a17410bf1e2603e59da57`. Undo: `git revert 8cf842961ddedacc942a17410bf1e2603e59da57`.
 
 ## 2026-09-27 (CT) — Developer Bot (hub)
 - Wallet registration: added `lyrixis` to `wallet_api_clients` in Supabase project `kzneeksminozmhnqaaun`, with `require_sso=false`.
@@ -26,6 +34,13 @@
 - Where: `app/api/apixis/world-agent/route.ts`, `components/ApixisWorldWelcome.tsx`, `lib/apixis-world.ts`, `lib/apixis-world-provision.ts`, `lib/apixis-world-agent.ts`, `lib/apixis-world-agent.test.ts`, `app/dashboard/page.tsx`, `components/AppNav.tsx`, `public/cixy/cixy-combo-a-avatar.webp`, `.env.example`.
 - Not touched: login/signup pages, Wallet pill/balance route, Stripe/payments, existing accounts.
 - Undo: revert the PR's squash commit; optionally remove Vercel env `APIXIS_WORLD_KEY` (the route then does nothing). Agents already created live in Apixis.dev (`apixis.agents`) and are not deleted by reverting.
+
+## 2026-09-29 (CT) — Grok (Lyrixis Lead): footer "Other Ixis companies"
+- What: added an "Other Ixis companies" column to the site footer with plain text links (new tab, `rel="noopener noreferrer"`) to the 13 approved Ixis sites (Lyrixis itself excluded; Nexxis/Omnixis, Launchixis, PersonalContentBot, AwadBot, COMMAND intentionally left out). Existing footer classes reused; the footer grid went from `sm:grid-cols-4` to `sm:grid-cols-5` to fit the third column. Approved by Awad via the Developer Bot hub as a one-time exception to the credit pause.
+- Where: `lib/ixis-companies.ts` (single list — swap URLs here when custom domains arrive), `components/SiteFooter.tsx`.
+- Who: Lyrixis Lead / Grok. PR against main, not merged, not deployed to production.
+- Undo: revert the PR (or its merge/squash commit).
+- 2026-09-29 (CT) follow-up: removed Qahwah World and Nursery Toons from `lib/ixis-companies.ts` (Awad-approved via hub); footer now lists 11 sites. Same undo.
 
 ---
 _Backfill below (written 2026-10-02 ~17:30 CT by Grok Developer Bot, notes only, Awad-approved via Developer Bot hub 2026-10-02 17:28 CT). Facts are from git and the GitHub REST API. All PRs in this repo are opened and merged under the `313aidaroos` GitHub account; "who" below comes from branch prefix, PR body, AI_CHANGELOG.md and Co-authored-by lines. Times are America/Chicago._
@@ -143,6 +158,19 @@ _Backfill below (written 2026-10-02 ~17:30 CT by Grok Developer Bot, notes only,
 - Who: Codex (branch prefix); deploy is the Vercel Git integration (creator `313aidaroos`).
 - Undo: `git revert 475f737`; or promote/roll back to the previous production deployment `dpl_EbmtyMLb7RRfKS9pcxHcmLKjjEwn` (c413496).
 
+## 2026-10-04 (CT) — Grok Bot: Feed tab on Lyrixis (PR open, NOT merged)
+- Why: Awad asked for the Socixis Social family feed as a Feed tab on every Ixis site. Awad put feed changes on hold, so this PR is for preview review only; do not merge until Awad says so.
+- What: new public `/feed` page in Lyrixis's own shell (same header, footer, fonts, colors and buttons). For You is the unfiltered mixed feed from every Apixis company with source-site badges and AI labels; Following, Search · Trending and You tabs; video/photo/text posts, like, comment, follow, save, share, report, tips and boosts in Ixis. Signed-out visitors can browse; the 4th tab says "You" and shows a sign-in card (Apixis ID). Text-only posts use the site's body font, wrap long words and size to their content; media posts keep the full-height layout; feed modals sit above everything.
+- Where: `app/feed/` (page with SiteNav/SiteFooter, Lyrixis skin, `feed.css` mapped to Lyrixis tokens), `feed-client/` (shared client), `app/api/feed-session/route.ts`, "Feed" link in `components/SiteNav.tsx` (desktop + mobile), `lib/feed-client.test.ts`.
+- Backend: https://www.apixis.dev/api/feed. `/api/feed-session` calls POST /api/feed/session server-side with the existing `APIXIS_WORLD_KEY` + X-Apixis-Client/Sub/Email and returns the short-lived fdt_ token. No new env vars, no DB change, no SVGs.
+- Who: Grok Bot (for Awad).
+- Undo: close this PR, or `git revert <squash sha>` if it is ever merged.
+
+## 2026-10-04 19:00 (CT) — Grok Bot: Feed phone tab fit (same PR, still NOT merged)
+- What: at 375px the 4th "You" tab was pushed off-screen by "Search · Trending". Under 560px the tab now reads "Search", tabs are tighter, and if a wide site font still can't fit the tabs and "+ Post" on one row, Post drops to its own row instead of covering "You". Desktop is unchanged; the site's colors, fonts and buttons are untouched; no SVGs. Also: desktop header (`components/SiteNav.tsx`) uses gap-6 + whitespace-nowrap so the extra Feed link no longer wraps "Use Cases" / "Buy Ixis" / "Sign in" at 1440px.
+- Where: feed client `FeedView.tsx` (tab label) and the shared layout section of the site's feed CSS.
+- Who: Grok Bot (for Awad). No merge, no production deploy.
+- Undo: revert this commit on the PR branch.
 ## 2026-10-04 — Owner allowlist (Grok)
 - What: lib/owners.ts adds isOwner() and currentSessionIsOwner(). An owner is a confirmed email that is alaidaroosawad@gmail.com, awad@apixis.dev or in ADMIN_EMAILS, AND a session with an email-proving sign-in (magic link/OTP, Apixis ID/OAuth, recovery). A password-only session never counts, because neither owner has an account in mkuvgkjakxkytscfvnkf yet. An owner skips the unlock gates: full lyrics and track exports on his own tracks (/api/tracks/[id], /api/tracks/[id]/exports), and catalog exports plus the catalog page unlock state. These are product gates only: no track_unlocks row, no Wallet call, no ledger entry. His real Wallet purchases still work as normal.
 - Not changed: Lyrixis has no admin pages (the /admin/support link in support emails has no page), and no new admin UI was built.
@@ -166,3 +194,74 @@ The entries below record the day's observed commits and merged PRs. Existing det
 - Where: branch `grok/lyrixis-voices`. `app/voices/**`, `app/api/voices/**`, `app/api/v1/voices/**`, `lib/voices/**`, `components/voices/**`, `database/migrations/0006_lyrixis_voices.sql` (+ rollback, local tests; NOT applied), `scripts/voices-db-test.sh`, `docs/voices/**`, `docs/VOICE_MARKET.md`, `components/SiteNav.tsx` (one link), `.env.example`. Removed old skeleton `lib/voiceMarket.ts`, `components/VoiceFloor.tsx`, `app/api/voices/route.ts` (replaced).
 - Who: Grok as Lyrixis Lead, approved by Awad 2026-10-04 17:49 CT.
 - Undo: close the PR / delete the branch. After a merge: `git revert <merge commit>`; if 0006 was applied, run `database/migrations/rollback/0006_lyrixis_voices_down.sql`.
+## 2026-10-04 6:55 PM (CT) — Grok: PR #14 footer branch brought up to date with main (not merged)
+- What: merged `main` (`450c577`) into `grok/ixis-footer` with a normal merge commit (no force-push). Conflicts in `NOTES/GROK.md` and `AI_CHANGELOG.md` resolved by keeping both sides' entries; `WORKBOARD.md` merged cleanly with both sides' lines. `lib/ixis-companies.ts` stays the footer's single list (11 sites). Its header comment now says Ominix (formerly Nexxis/Omnixis) is still excluded, matching the brief. No site added or removed.
+- Where: branch `grok/ixis-footer` (PR #14): `lib/ixis-companies.ts` (comment only), `NOTES/GROK.md`, `AI_CHANGELOG.md`.
+- Who: Grok (Developer Bot executor), at the hub's request. Not merged; Awad confirms merges.
+- Undo: on the branch, `git revert -m 1` the commit "Merge main into grok/ixis-footer" (it carries the merge, the comment change and these notes).
+- Preview check (7:00 PM CT, Vercel preview `dpl_Bb4cB9ZeVUPprdeB9i5qbCccqR3E`, merge commit `fcfa751`, CI and Vercel green): the footer shows the "Other Ixis companies" column with 11 links (new tab, `noopener noreferrer`) at 1280 and 390 px, with no sideways scroll and no page errors. Compared with live `lyrixis.vercel.app`, the homepage above the footer is pixel-identical at both widths, and the footer link font and colors are the same. Theme unchanged apart from the new column. Screenshots on the box: `/workspace/lyrixis-footer/v2/`.
+## 2026-10-04 6:01 PM / 6:31 PM (CT) — Claude: full-portfolio review notes (PR #27, merged)
+- What: notes only. New `NOTES/CLAUDE.md` (this repo's slice of Claude's 24-repo review: what is live, what is open, who owns it, drift found) and a 2026-10-04 entry in `AI_CHANGELOG.md`. No code, env, database or deploy changes.
+- Where: branch `claude/great-fermi-6brq7a` (commit `39882db`, 6:01 PM CT, author Claude <noreply@anthropic.com>) → PR #27, squash commit `8cf8429` on `main`, merged 6:31 PM CT by 313aidaroos (body says Awad approved). Vercel production `dpl_GRPjDqkXsrSGsLfS9Tcb1Pq7Fhrn` built from `8cf8429`, READY (auto-deploy from main; notes only, so the site output did not change).
+- Who: Claude (Claude Code), merged from the 313aidaroos account.
+- Accuracy: `NOTES/CLAUDE.md` says "`main` @ `3fd1b9d` … code unchanged since 10-02", but #26 (owner allowlist, code) had already merged at 6:14 PM CT. The Ominix link drift it lists is fixed in `grok/claude-audit-fixes`.
+- Undo: `git revert 8cf8429` (removes `NOTES/CLAUDE.md` and the AI_CHANGELOG lines). The branch `claude/great-fermi-6brq7a` can be deleted once nobody needs it.
+
+## 2026-10-04 6:51 PM (CT) — Grok: Claude-audit lock fixes (PR #29, branch `grok/claude-audit-fixes`, open, not merged)
+- What: audit of everything since `3fd1b9d` against Awad's locks; fixed the lock breaks found on `main`:
+  - `components/TrackView.tsx` (`/tracks/[id]`, own uploads): removed the dead Stripe checkout button (it POSTed to `/api/checkout`, which is gone and returns 404), the "Stripe confirms the webhook" notice and the USD price from `/api/quote`. It now says plainly that upload unlocks will go through the Apixis Wallet and are not live yet. No charge path added.
+  - `components/AuthForm.tsx` and `app/api/support/intake/route.ts`: removed the "As-salamu alaykum" greetings (religious wording belongs only on Halaxis). The support email now opens with "Hi,".
+  - `app/companies/page.tsx`: Ominix link `nexxis-tau.vercel.app` (retired host) → `https://ominix-app.vercel.app`.
+  - `components/LoginForm.tsx`, `components/ApixisWorldWelcome.tsx`: the 1,000 Ixis wording now says Apixis.dev gives it.
+- Not touched: `lib/cixy-prompt.ts` (Cixy prompt, flagged to Awad: it still has Muslim identity, halal and prayer/Ramadan instructions), footer (PR #14), env, database, deploys.
+- Who: Grok (Developer Bot executor).
+- Undo: close the PR without merging, or after a merge `git revert <squash sha>`.
+
+## 2026-10-04 6:57 PM (CT) — Hub decision + PR #29 refresh (notes only)
+- Decision (Developer Bot hub, 2026-10-04): own uploads on `/tracks/[id]` will reuse the existing Wallet product `lyrixis.track.unlock` (300 Ixis), the same SKU as catalog unlocks. **Not built yet.** PR #29 only removes the dead Stripe checkout and shows an honest "not live yet" note. A later PR will add the Wallet redeem path for uploads (today `app/api/redeem/route.ts` only looks up `catalog_recordings`).
+- Cixy prompt: `lib/cixy-prompt.ts` is not changed in #29. Developer Bot will sync it after #29.
+- Refresh: merged `main` (`450c577`, which had already restored this file's intro line and fixed the 10-04 summary) into `grok/claude-audit-fixes` with a normal merge commit. Kept main's summary lines in the one conflict.
+- Who: Grok (Developer Bot executor). Undo: `git revert -m 1` the "Merge main into grok/claude-audit-fixes" commit; this entry goes with it.
+
+## 2026-10-04 (CT) — Grok (Developer Bot hub): Cixy persona v2 sync + Ominix link
+- What: lib/cixy-prompt.ts now builds on the v2 kit (new lib/apixis-cixy.ts, same text as the other TS sites); removed 'Muslim AI operator' identity, salaam/Insha'Allah/alhamdulillah, 'NOT a scholar', HALAL-CONSCIOUS (alcohol/pork/gambling/riba/haram lyrics) and PRAYER/RAMADAN AWARE blocks. Added lib/__tests__/cixy-prompt.test.ts (religious-terms guard). The Ominix link and the AuthForm/support-email salam greetings are left to lead PR #29 to avoid conflicting with it.
+- Files: lib/cixy-prompt.ts lib/__tests__/cixy-prompt.test.ts lib/apixis-cixy.ts 
+- Why: Awad's lock — no religious content in Cixy on any product except Halaxis; she declines only genuinely harmful, deceptive or illegal content, never on religious grounds (9/30). Kit = ApixisWallet `sdk/apixis-cixy.*` v2 (3a22244, PR #50) with two hub edits pending canonical: the religion-derived "clean recommendations" rule (gambling) is replaced by "decline only harmful, deceptive or illegal, never on religious grounds", and the character line reads "draws on Arab culture". Ominix links point to https://ominix-app.vercel.app (checked 200 on 2026-10-04 ~6:55 PM CT).
+- Who: Grok (Developer Bot hub), branch `grok/cixy-v2-20261004`, one squash-merged PR.
+- Undo: `git revert <squash sha of this PR>` (sha recorded in the PR), then redeploy prod.
+
+## 2026-10-04 19:13 (CT) — Grok Bot: Feed PR #25 approved for production by Awad
+- Why: Awad said "make it live" at 7:13 PM CT on Oct 4, 2026, approving the squash-merge of this PR and the production deploy that follows from main.
+- What: squash-merge of PR #25 (feed files + Feed nav entry only); Vercel's Git integration deploys main to production.
+- Who: Grok Bot (for Awad).
+- Undo: `git revert <squash sha of PR #25>` on main and push (the squash sha is on the PR page and in /workspace/feed/STATUS.md), or in Vercel promote the previous production deployment (instant rollback) and then revert.
+
+## 2026-10-04 evening provenance, 6:57 to 9:25 PM (CT)
+
+Recorded by Grok (Developer Bot, notes and status sync at 9:25 PM CT). Every change below already has a detailed entry in this file or in the matching lead note; this section adds the exact commit, PR number, and undo pointer. All commits were pushed under the shared `313aidaroos` GitHub account; the detailed entries say which bot or lead made each one. Text only, no code or settings changed.
+
+- 7:11 PM, PR #30, `cff58a4`: Cixy persona v2 sync (no religious content outside Halaxis) + Ominix link to ominix-app.vercel.app. Undo: `git revert cff58a4` on `main`, then redeploy production.
+- 7:17 PM, PR #25, `85388c7`: Feed tab: Socixis Social family feed at /feed. Undo: `git revert 85388c7` on `main`, then redeploy production.
+
+## 2026-10-04 (CT) — Grok: new accounts only through Apixis ID (branch `grok/apixis-id-only-signup`)
+- Approval: Awad said go at 10:00 PM CT, Oct 4 2026 ("every Ixis product must allow NEW account creation only through Apixis ID", the shared Wallet SSO at apixis-wallet.vercel.app/sso/authorize).
+- What changed: Email magic links now use `shouldCreateUser: false` (server action `app/login/actions.ts` and legacy `POST /api/auth/magic-link`): existing accounts still get a link; a brand-new email gets "No Lyrixis account uses this email yet… use Log in with Apixis ID" (API also returns `apixis_id_url`). `/signup` (LoginForm variant "signup") now shows only "Log in with Apixis ID" plus "Already have an account? Sign in"; `/login` keeps email link + password for existing accounts with one existing-style hint line. No password signup existed. Same classes, no redesign.
+- Not changed: Supabase project setting "Allow new users to sign up" stays ON (Apixis SSO callback may create users through it). Theme, layout and styles unchanged. No Wallet, Stripe or Cixy files touched.
+- Undo: `git revert <squash sha of this PR>` (the sha is recorded in the PR and in /workspace/apixisid/STATUS.md on the box).
+
+## 2026-10-05 overnight provenance, Oct 4 9:35 PM to Oct 5 12:25 AM (CT)
+
+Recorded by Grok (Developer Bot, notes and status sync at 12:25 AM CT on Oct 5). Each change below either has its own detailed entry earlier in this file (written by whoever made it) or is described here. Commits under the shared `313aidaroos` account were made by the bot or lead named in the detailed entry. Every production deployment for this repo was Ready at the time of this sync. Text only, no code or settings changed.
+
+- Oct 4 10:29 PM, PR #31, `3db2e58`: Apixis ID is the only way to create a Lyrixis account. Undo: `git revert 3db2e58` on `main`, then redeploy production.
+
+## 2026-10-05 8:30 PM (CT): Grok (Lyrixis Lead), upload worker provisioning, part 1 (Awad approved at 8:00 PM CT)
+- Approval: at 8:00 PM CT on Oct 5, 2026, Awad approved hosting the upload worker on his existing Railway account with a hard $20/month cap, Redis on Upstash Free, and Groq for transcription.
+- Railway (workspace "313aidaroos's Projects" `f59787d4-de34-4d4c-b384-68826490794b`): created project **`lyrixis-worker`** `b40a5741-8d83-40e1-bb43-2dd464866304`, env `production` `61c39fc8-2c24-415e-87bf-f347e832c43a`, and service **`worker`** `653f58ed-e1fd-4596-81f0-aa3ca8e22dce`. No source is connected and nothing is deployed, so it costs $0. Service settings: dockerfilePath `Dockerfile.worker`, the watch patterns from `railway.json`, restart ON_FAILURE ×10, 1 replica, no sleep, limits 1 vCPU / 1 GB. Railway's API now rejects `railwayConfigFile` (Config as Code is deprecated), so these are set at the service level instead.
+- Railway variables set (skipDeploys): NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY (copied from Vercel `lyrixis` Production), STORAGE_BUCKET, TRANSCRIPTION_PROVIDER/API_BASE_URL (Groq)/MODEL/CENTS_PER_MINUTE, LANGUAGE_PROVIDER, MAX_UPLOAD_MB=100, MAX_DURATION_SECONDS=720, WORKER_CONCURRENCY=2, WORKER_DRAIN_DELAY_SEC=60, WORKER_STALLED_INTERVAL_MS=300000, NODE_ENV. **Still missing:** REDIS_URL and TRANSCRIPTION_API_KEY (the Groq key).
+- $20 cap: **NOT set.** `usageLimitSet` (soft $15 / hard $20) returned "Usage limits require an active subscription". The workspace is on the Hobby trial (4 days left on Oct 5), with no subscription and no payment method, and $2.83 of trial credit remaining. With no card on file nothing can be charged. Set the cap right after Awad subscribes, before the first deploy. The limit covers the whole workspace, including awad-command (about $1.66 used this period).
+- Redis: nothing changed. The Vercel team already has an unused Upstash for Redis **Free** store `upstash-kv-teal-marble` (`store_PP9Mt0uHl6hab9zV`, iad1, eviction off, connected to 0 projects). Free allows one database per account, so this is the store to connect to `lyrixis`. It isn't connected yet on purpose: REDIS_URL on Vercel production without a running worker would let uploads enqueue and then sit unprocessed.
+- PR #24 (`grok/upload-worker-hosting`): merged main into it (resolved a NOTES/GROK.md conflict by keeping both sides) and added a status paragraph to docs/WORKER_HOSTING.md. CI is green. Not merged.
+- Vercel `lyrixis`: no env changes (no GROQ/TRANSCRIPTION/REDIS vars there).
+- Who: Grok (Lyrixis Lead), with Awad's approval.
+- Undo: Railway: delete project `lyrixis-worker` (`b40a5741-…`) in the dashboard or with `projectDelete`. Nothing else changed outside git. PR #24: revert merge commit `8a7a54a` and doc commit `5b90e5a` on the branch, or close the PR.
