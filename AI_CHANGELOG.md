@@ -47,6 +47,9 @@ Entry format:
 - Changed: `NOTES/CLAUDE.md` — this repo's slice of the 24-repo review (what is live, what is open, who owns each item, drift found). No code, env, database or deploy changes.
 - Why: Awad asked for every repo to be read twice with a done / to-do / owner status, and for the notes in each repo to be updated. Notes only; Awad approved the merge on 2026-10-04.
 
+## 2026-10-04 — Grok (Lyrixis Lead) — Lyrixis Voices (branch grok/lyrixis-voices)
+- Changed: new `/voices` marketplace (pages, `app/api/voices/*`, partner API `app/api/v1/voices/*`), `lib/voices/*` service/ledger/providers (ElevenLabs + demo), `components/voices/*`, migration `0006_lyrixis_voices.sql` (not applied) with rollback + local RLS tests, `docs/voices/*`, `.env.example` vars, one SiteNav link (previews / `NEXT_PUBLIC_VOICES_NAV`). Retired the 9/22 voice-shelf skeleton files.
+- Why: Awad approved building Lyrixis Voices (invite-only, Wallet-only payments, legal text pending review). Not merged, not deployed to production.
 ## 2026-10-04 (CT) — Grok (PR #14 refresh)
 - Changed: merged main into `grok/ixis-footer`; `lib/ixis-companies.ts` comment says Ominix (formerly Nexxis) stays excluded from the footer. Notes kept from both sides.
 - Why: bring the footer PR up to date for Awad's review; no list change.

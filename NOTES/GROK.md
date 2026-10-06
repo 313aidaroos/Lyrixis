@@ -197,6 +197,11 @@ The entries below record the day's observed commits and merged PRs. Existing det
 ### Merged PRs
 - PR #26, merge `bfac9cc`, `grok/owner-allowlist` → `main`, merged 2026-10-04 CT by 313aidaroos: Owner allowlist: proven owner session skips unlock gates. Undo: `git revert bfac9cc`.
 
+## 2026-10-04 18:45 (CT) — Grok (Lyrixis Lead): Lyrixis Voices (PR open, not merged)
+- What: invite-only Arabic/bilingual voice licensing marketplace at `/voices` — catalog, auditions, license flow with frozen terms + Wallet hold/capture, receipts, creator onboarding/consent/permissions, provider (ElevenLabs) verification with admin fallback, admin console, double-entry ledger (creator 60% after 5% fee + provider cost; payout blocked), workspaces, Socixis partner API, Cixy read-only recommendations, metrics. Demo mode on previews (fictional voices, demo Ixis, tone audio). Awad's 2026-10-04 defaults seeded as editable versioned config.
+- Where: branch `grok/lyrixis-voices`. `app/voices/**`, `app/api/voices/**`, `app/api/v1/voices/**`, `lib/voices/**`, `components/voices/**`, `database/migrations/0006_lyrixis_voices.sql` (+ rollback, local tests; NOT applied), `scripts/voices-db-test.sh`, `docs/voices/**`, `docs/VOICE_MARKET.md`, `components/SiteNav.tsx` (one link), `.env.example`. Removed old skeleton `lib/voiceMarket.ts`, `components/VoiceFloor.tsx`, `app/api/voices/route.ts` (replaced).
+- Who: Grok as Lyrixis Lead, approved by Awad 2026-10-04 17:49 CT.
+- Undo: close the PR / delete the branch. After a merge: `git revert <merge commit>`; if 0006 was applied, run `database/migrations/rollback/0006_lyrixis_voices_down.sql`.
 ## 2026-10-04 6:55 PM (CT) — Grok: PR #14 footer branch brought up to date with main (not merged)
 - What: merged `main` (`450c577`) into `grok/ixis-footer` with a normal merge commit (no force-push). Conflicts in `NOTES/GROK.md` and `AI_CHANGELOG.md` resolved by keeping both sides' entries; `WORKBOARD.md` merged cleanly with both sides' lines. `lib/ixis-companies.ts` stays the footer's single list (11 sites). Its header comment now says Ominix (formerly Nexxis/Omnixis) is still excluded, matching the brief. No site added or removed.
 - Where: branch `grok/ixis-footer` (PR #14): `lib/ixis-companies.ts` (comment only), `NOTES/GROK.md`, `AI_CHANGELOG.md`.

@@ -1,12 +1,11 @@
-# Lyrixis Voice Floor
+# Lyrixis Voice market → Lyrixis Voices
 
-Public: /voices and GET /api/voices
+The 9/22 "Voice Floor" skeleton (house shelf, XP pricing, `lib/voiceMarket.ts`, `components/VoiceFloor.tsx`) was
+removed from the UI because a page that does nothing is a bug for a paying stranger (commit e308665).
 
-Rules
-- 1,000 XP per voice license ($10). Wallet only.
-- Featured listing rotates every 6 hours.
-- Creator split later: 70% XP to lister, 30% house (TBD in Wallet ledger).
-- Cixy native id is never a SKU.
-- Consent required. No celebrity clones.
+On 2026-10-04 it was replaced by **Lyrixis Voices** — see [`docs/voices/README.md`](voices/README.md). Reusing
+`/voices` is OK now because it does real work end to end (licensing, payments, consent, receipts), it is
+**invite-only**, and production shows "Opening soon" until `VOICES_LIVE=true`.
 
-House shelf ships first. Creator upload is next slice (clip + attestation).
+Rules carried over: Wallet only (now Ixis, 100 = $1, not XP); Cixy's native voice is never a SKU; consent required;
+no celebrity/public-figure clones.
