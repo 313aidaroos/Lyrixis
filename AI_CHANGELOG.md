@@ -51,3 +51,6 @@ Entry format:
 - Changed: merged main into `grok/ixis-footer`; `lib/ixis-companies.ts` comment says Ominix (formerly Nexxis) stays excluded from the footer. Notes kept from both sides.
 - Why: bring the footer PR up to date for Awad's review; no list change.
 
+## 2026-10-04 (CT) — Grok (Claude-audit lock fixes, PR from `grok/claude-audit-fixes`)
+- Changed: `/tracks/[id]` no longer shows the dead Stripe checkout (404 `/api/checkout`) or a USD price; removed "As-salamu alaykum" from the magic-link screen and the support auto-reply; Ominix link on `/companies` → `ominix-app.vercel.app`; 1,000 Ixis wording names Apixis.dev; `NOTES/GROK.md` Claude #27 entry + hub decision (uploads will reuse `lyrixis.track.unlock`, not built yet).
+- Why: Awad's locks (no Stripe/card checkout, no religious content outside Halaxis, Apixis.dev grants the 1,000 Ixis) and notes for every Claude change.

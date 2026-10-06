@@ -11,10 +11,7 @@ export function TrackView({ publicId }: { publicId: string }) {
   const [track, setTrack] = useState<TrackDetail | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [checkoutNotice, setCheckoutNotice] = useState<string | null>(null);
-  const [paying, setPaying] = useState(false);
   const [tab, setTab] = useState<"synced" | "edit" | "exports">("synced");
-  const [quoteLabel, setQuoteLabel] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const response = await fetch(`/api/tracks/${publicId}`);
@@ -37,15 +34,6 @@ export function TrackView({ publicId }: { publicId: string }) {
           const payload = (await audio.json()) as { url?: string };
           if (payload.url && !cancelled) setAudioUrl(payload.url);
         }
-        if (!current.paid && (current.status === "completed" || current.status === "manual_review")) {
-          const quoteRes = await fetch("/api/quote?songs=1");
-          if (quoteRes.ok) {
-            const quote = (await quoteRes.json()) as { amountCents?: number };
-            if (typeof quote.amountCents === "number" && !cancelled) {
-              setQuoteLabel(`$${(quote.amountCents / 100).toFixed(2)}`);
-            }
-          }
-        }
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : "Load failed.");
       }
@@ -62,36 +50,6 @@ export function TrackView({ publicId }: { publicId: string }) {
     }, 3000);
     return () => window.clearInterval(timer);
   }, [track, load]);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("checkout") === "success") {
-      setCheckoutNotice("Payment received. Unlocking as soon as Stripe confirms the webhook.");
-    }
-    if (params.get("checkout") === "cancelled") {
-      setCheckoutNotice("Checkout cancelled. Your preview is still here.");
-    }
-  }, []);
-
-  async function pay() {
-    setPaying(true);
-    setError(null);
-    try {
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ trackId: publicId }),
-      });
-      const json = (await response.json()) as { url?: string; error?: { message: string } };
-      if (!response.ok || !json.url) {
-        throw new Error(json.error?.message ?? "Could not start checkout.");
-      }
-      window.location.href = json.url;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Checkout failed.");
-      setPaying(false);
-    }
-  }
 
   async function saveLine(lineIndex: number, text: string) {
     const response = await fetch(`/api/tracks/${publicId}/corrections`, {
@@ -163,14 +121,12 @@ export function TrackView({ publicId }: { publicId: string }) {
           </div>
         </dl>
         {track.errorMessage && <p className="mt-4 text-sm text-rose-300">{track.errorMessage}</p>}
-        {checkoutNotice && <p className="mt-4 text-sm text-cyan-300">{checkoutNotice}</p>}
         {error && <p className="mt-4 text-sm text-rose-300">{error}</p>}
         {ready && !track.paid && (
-          <button className="btn-primary mt-6" type="button" disabled={paying} onClick={() => void pay()}>
-            {paying
-              ? "Redirecting…"
-              : `Unlock full lyrics — pay ${quoteLabel ?? "the listed price"}`}
-          </button>
+          <p className="mt-6 text-sm text-ink-2">
+            Full lyrics and exports for your own uploads will unlock through your Apixis Wallet. That unlock isn&apos;t
+            live yet, so nothing is charged here.
+          </p>
         )}
       </header>
 
@@ -229,7 +185,7 @@ export function TrackView({ publicId }: { publicId: string }) {
               </div>
             </>
           ) : (
-            <p className="text-ink-2">Exports unlock after payment. TXT, SRT, LRC, and JSON.</p>
+            <p className="text-ink-2">Exports unlock with the full track (Apixis Wallet). TXT, SRT, LRC, and JSON.</p>
           )}
         </div>
       )}

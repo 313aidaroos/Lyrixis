@@ -195,6 +195,29 @@ The entries below record the day's observed commits and merged PRs. Existing det
 - Who: Grok (Developer Bot executor), at the hub's request. Not merged; Awad confirms merges.
 - Undo: on the branch, `git revert -m 1` the commit "Merge main into grok/ixis-footer" (it carries the merge, the comment change and these notes).
 - Preview check (7:00 PM CT, Vercel preview `dpl_Bb4cB9ZeVUPprdeB9i5qbCccqR3E`, merge commit `fcfa751`, CI and Vercel green): the footer shows the "Other Ixis companies" column with 11 links (new tab, `noopener noreferrer`) at 1280 and 390 px, with no sideways scroll and no page errors. Compared with live `lyrixis.vercel.app`, the homepage above the footer is pixel-identical at both widths, and the footer link font and colors are the same. Theme unchanged apart from the new column. Screenshots on the box: `/workspace/lyrixis-footer/v2/`.
+## 2026-10-04 6:01 PM / 6:31 PM (CT) — Claude: full-portfolio review notes (PR #27, merged)
+- What: notes only. New `NOTES/CLAUDE.md` (this repo's slice of Claude's 24-repo review: what is live, what is open, who owns it, drift found) and a 2026-10-04 entry in `AI_CHANGELOG.md`. No code, env, database or deploy changes.
+- Where: branch `claude/great-fermi-6brq7a` (commit `39882db`, 6:01 PM CT, author Claude <noreply@anthropic.com>) → PR #27, squash commit `8cf8429` on `main`, merged 6:31 PM CT by 313aidaroos (body says Awad approved). Vercel production `dpl_GRPjDqkXsrSGsLfS9Tcb1Pq7Fhrn` built from `8cf8429`, READY (auto-deploy from main; notes only, so the site output did not change).
+- Who: Claude (Claude Code), merged from the 313aidaroos account.
+- Accuracy: `NOTES/CLAUDE.md` says "`main` @ `3fd1b9d` … code unchanged since 10-02", but #26 (owner allowlist, code) had already merged at 6:14 PM CT. The Ominix link drift it lists is fixed in `grok/claude-audit-fixes`.
+- Undo: `git revert 8cf8429` (removes `NOTES/CLAUDE.md` and the AI_CHANGELOG lines). The branch `claude/great-fermi-6brq7a` can be deleted once nobody needs it.
+
+## 2026-10-04 6:51 PM (CT) — Grok: Claude-audit lock fixes (PR #29, branch `grok/claude-audit-fixes`, open, not merged)
+- What: audit of everything since `3fd1b9d` against Awad's locks; fixed the lock breaks found on `main`:
+  - `components/TrackView.tsx` (`/tracks/[id]`, own uploads): removed the dead Stripe checkout button (it POSTed to `/api/checkout`, which is gone and returns 404), the "Stripe confirms the webhook" notice and the USD price from `/api/quote`. It now says plainly that upload unlocks will go through the Apixis Wallet and are not live yet. No charge path added.
+  - `components/AuthForm.tsx` and `app/api/support/intake/route.ts`: removed the "As-salamu alaykum" greetings (religious wording belongs only on Halaxis). The support email now opens with "Hi,".
+  - `app/companies/page.tsx`: Ominix link `nexxis-tau.vercel.app` (retired host) → `https://ominix-app.vercel.app`.
+  - `components/LoginForm.tsx`, `components/ApixisWorldWelcome.tsx`: the 1,000 Ixis wording now says Apixis.dev gives it.
+- Not touched: `lib/cixy-prompt.ts` (Cixy prompt, flagged to Awad: it still has Muslim identity, halal and prayer/Ramadan instructions), footer (PR #14), env, database, deploys.
+- Who: Grok (Developer Bot executor).
+- Undo: close the PR without merging, or after a merge `git revert <squash sha>`.
+
+## 2026-10-04 6:57 PM (CT) — Hub decision + PR #29 refresh (notes only)
+- Decision (Developer Bot hub, 2026-10-04): own uploads on `/tracks/[id]` will reuse the existing Wallet product `lyrixis.track.unlock` (300 Ixis), the same SKU as catalog unlocks. **Not built yet.** PR #29 only removes the dead Stripe checkout and shows an honest "not live yet" note. A later PR will add the Wallet redeem path for uploads (today `app/api/redeem/route.ts` only looks up `catalog_recordings`).
+- Cixy prompt: `lib/cixy-prompt.ts` is not changed in #29. Developer Bot will sync it after #29.
+- Refresh: merged `main` (`450c577`, which had already restored this file's intro line and fixed the 10-04 summary) into `grok/claude-audit-fixes` with a normal merge commit. Kept main's summary lines in the one conflict.
+- Who: Grok (Developer Bot executor). Undo: `git revert -m 1` the "Merge main into grok/claude-audit-fixes" commit; this entry goes with it.
+
 ## 2026-10-04 (CT) — Grok (Developer Bot hub): Cixy persona v2 sync + Ominix link
 - What: lib/cixy-prompt.ts now builds on the v2 kit (new lib/apixis-cixy.ts, same text as the other TS sites); removed 'Muslim AI operator' identity, salaam/Insha'Allah/alhamdulillah, 'NOT a scholar', HALAL-CONSCIOUS (alcohol/pork/gambling/riba/haram lyrics) and PRAYER/RAMADAN AWARE blocks. Added lib/__tests__/cixy-prompt.test.ts (religious-terms guard). The Ominix link and the AuthForm/support-email salam greetings are left to lead PR #29 to avoid conflicting with it.
 - Files: lib/cixy-prompt.ts lib/__tests__/cixy-prompt.test.ts lib/apixis-cixy.ts 
