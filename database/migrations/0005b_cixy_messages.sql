@@ -1,3 +1,5 @@
+-- Renumbered 2026-10-05 (was 0005_cixy_messages.sql, a duplicate 0005; 0005_id_backed_public_domain
+-- was committed first). File name only: the SQL is unchanged and already applied in production.
 -- Cixy conversation log. Anonymous session id only — no email, name, or IP.
 
 create table if not exists public.cixy_messages (

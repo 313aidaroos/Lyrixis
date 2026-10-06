@@ -1,20 +1,17 @@
 // GET  /api/apixis/world-agent  → the signed-in person's Apixis world agent state. For a NEW account
 //      (created after the rollout, verified email) the first call asks Apixis.dev to create their own
 //      agent (default Apixis body, 1,000 in-world Ixis once) and records it on the auth user.
+//      (Since 2026-10-05 the Apixis ID sign-in callback also does this right after sign-in.)
 // POST /api/apixis/world-agent { action: "enter" | "dismiss" } → hides the one-time welcome card.
 // Grok Developer Bot, 2026-09-28. Shared flow: Apixis.dev docs/APIXIS_ENTER.md "Automatic agent on signup".
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { provisionApixisWorldAgent } from "@/lib/apixis-world-provision";
-import { ensureWorldAgent, welcomeSeenMetadata } from "@/lib/apixis-world-agent";
+import { welcomeSeenMetadata } from "@/lib/apixis-world-agent";
 import { enterApixisUrl } from "@/lib/apixis-world";
+import { ensureLyrixisWorldAgent, LYRIXIS_WORLD_CLIENT, saveAppMetadataWith } from "@/lib/lyrixis-world-agent";
 
 export const dynamic = "force-dynamic";
-
-const CLIENT = "lyrixis";
-// Accounts created before Lyrixis shipped this are not auto-provisioned (no backfill).
-const ROLLOUT_AT = "2026-09-28T07:30:00.000Z";
 
 async function currentUser() {
   const sb = await createServerSupabaseClient();
@@ -22,24 +19,11 @@ async function currentUser() {
   return data.user ?? null;
 }
 
-async function saveAppMetadata(userId: string, appMetadata: Record<string, unknown>) {
-  const { error } = await createAdminClient().auth.admin.updateUserById(userId, { app_metadata: appMetadata });
-  if (error) throw error;
-}
-
 export async function GET() {
   const user = await currentUser().catch(() => null);
   if (!user) return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
-  const view = await ensureWorldAgent(
-    user,
-    {
-      client: CLIENT,
-      provision: (input) => provisionApixisWorldAgent({ ...input, emailVerified: true, timeoutMs: 6000 }),
-      saveAppMetadata,
-    },
-    ROLLOUT_AT,
-  );
-  return NextResponse.json({ ok: true, ...view, enterUrl: enterApixisUrl(CLIENT) }, { headers: { "cache-control": "no-store" } });
+  const view = await ensureLyrixisWorldAgent(user, createAdminClient());
+  return NextResponse.json({ ok: true, ...view, enterUrl: enterApixisUrl(LYRIXIS_WORLD_CLIENT) }, { headers: { "cache-control": "no-store" } });
 }
 
 export async function POST(request: Request) {
@@ -48,7 +32,7 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
   const action = body?.action === "enter" ? "enter" : "dismiss";
   try {
-    await saveAppMetadata(user.id, welcomeSeenMetadata(user.app_metadata, action));
+    await saveAppMetadataWith(createAdminClient())(user.id, welcomeSeenMetadata(user.app_metadata, action));
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ ok: false, error: "save_failed" }, { status: 500 });

@@ -356,7 +356,7 @@ create index on audit_logs (entity_type, entity_id, created_at desc);
 
 -- ---------- seed pricing (editable from admin, never hardcoded in app) ----------
 insert into pricing_tiers (min_songs,max_songs,rate_cents) values
-  (1,99,299),(100,999,149),(1000,9999,75),(10000,99999,40),(100000,999999,20),(1000000,null,20);
+  (1,99,300),(100,999,149),(1000,9999,75),(10000,99999,40),(100000,999999,20),(1000000,null,20);
 
 insert into feature_prices (key,price_cents) values
   ('translation',99),('transliteration',49),('human_verification',999),('priority',199);

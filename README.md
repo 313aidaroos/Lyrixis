@@ -23,7 +23,7 @@ Deferred (schema only): public API keys UI, batch upload, org admin, translation
 | Queue | Redis |
 | Transcription | Env-selected provider (`TRANSCRIPTION_PROVIDER=whisper_v3`) |
 
-Pricing is read from `pricing_tiers` on the server. The frontend never calculates a charged price. Single-track jobs use job size = 1 (the $2.99 tier unless an org `custom_rate_cents` is set).
+Pricing is read from `pricing_tiers` on the server. The frontend never calculates a charged price. Single-track jobs use job size = 1 (the 300 Ixis tier, same as the Wallet product `lyrixis.track.unlock`, unless an org `custom_rate_cents` is set).
 
 ## Local setup
 

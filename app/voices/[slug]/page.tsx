@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Audition } from "@/components/voices/Audition";
 import { ActionForm, SaveCompare, TrackRecent } from "@/components/voices/ui";
 import { Pill, VerificationBadge } from "@/components/voices/server";
-import { getActor, getVoices } from "@/lib/voices/context";
+import { getActor, getVoices, voicesOpen } from "@/lib/voices/context";
 import { USES, dialectLabel } from "@/lib/voices/config";
 import { VoicesError } from "@/lib/voices/errors";
 
@@ -13,6 +13,7 @@ async function load(slug: string) {
 }
 
 export default async function VoicePage({ params }: { params: Promise<{ slug: string }> }) {
+  if (!voicesOpen()) return null; // Voices closed: the layout shows "Opening soon"; skip DB reads.
   const { slug } = await params;
   const { d } = await load(slug);
   const { voice: v, creator: c, permissions: p, samples, pricing } = d;

@@ -19,7 +19,7 @@ export async function GET() {
     const ixisTiers = (tiers ?? []).map((t) => ({
       min_songs: t.min_songs,
       max_songs: t.max_songs,
-      rate_ixis: t.rate_cents, // 299 cents = 299 Ixis = $2.99
+      rate_ixis: t.rate_cents, // 300 cents = 300 Ixis = $3.00 (lyrixis.track.unlock)
     }));
     
     return Response.json({ tiers: ixisTiers });

@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LicenseFlow } from "@/components/voices/LicenseFlow";
-import { getActor, getVoices } from "@/lib/voices/context";
+import { getActor, getVoices, voicesOpen } from "@/lib/voices/context";
 import { CHANNELS, LEGAL_REVIEW_NOTE, TERRITORIES, USES } from "@/lib/voices/config";
 import { VoicesError } from "@/lib/voices/errors";
 
 export default async function LicensePage({ params }: { params: Promise<{ slug: string }> }) {
+  if (!voicesOpen()) return null; // Voices closed: the layout shows "Opening soon"; skip DB reads.
   const { slug } = await params;
   const [svc, actor] = await Promise.all([getVoices(), getActor()]);
   let d;

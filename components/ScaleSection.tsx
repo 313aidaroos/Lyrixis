@@ -9,7 +9,7 @@ const MILESTONES = [
     suffix: " track",
     headline: "The Independent Artist",
     copy: "Single-song unlock with line-level karaoke timings, translation, and distribution-ready TXT / SRT / LRC / JSON.",
-    badge: "$2.99 once",
+    badge: "300 Ixis once",
   },
   {
     count: 100,
