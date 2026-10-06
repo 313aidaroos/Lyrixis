@@ -438,3 +438,28 @@ Recorded by Grok (Developer Bot, notes and status sync at 12:25 AM CT on Oct 5).
   - **/enterprise:** serves the new Monoton/Manrope/Martian Mono font link.
 - **Screenshot:** `/workspace/lyrixis-font-preview/live-home.png` (1280, background animation paused).
 - **Rollback:** revert `a8aea56`, or promote the previous production deployment in Vercel.
+
+## 2026-10-05 ~10:15 PM (CT): Grok (Developer Bot), nav overflow fix MERGED (PR #38)
+- **Problem (existed before this, visible on production):**
+  - At 1024px the app nav pushed "Get early access" to x=1132. That clipped the button, made the page scroll sideways and squashed the LYRIXIS wordmark.
+  - At 768px the /enterprise nav pushed "Talk to Lyrixis" to x=805.
+- **App fix (`components/SiteNav.tsx`):**
+  - 1280px and up: unchanged.
+  - 1024–1279px: the full bar stays with slightly tighter gaps.
+    - Apixis Companies, Feed and Wallet move into the existing Menu panel. Wallet duplicates Buy Ixis.
+    - The Menu button now shows up to 1279px.
+    - When signed in, the Buy Ixis button also moves into Menu, to leave room for the wallet chip, Dashboard and Sign out.
+  - The logo and the right-hand group no longer shrink.
+- **/enterprise fix (`public/index.html`):**
+  - 961–1100px: tighter tab padding and nav gap.
+  - 960px and below: the tabs collapse into the existing Menu button (was 720px).
+  - 721–960px: "Talk to Lyrixis" stays visible next to Menu. It is hidden at 720px and below, as before.
+- **Shipped:**
+  - Checks green: node-ci ×2, Vercel and Vercel Preview Comments.
+  - Squash-merged as `6907db6`. The production deploy is Ready (https://lyrixis-gbauf52ua-313aidaroos-projects.vercel.app).
+- **Live smoke test on lyrixis.vercel.app:**
+  - All 12 main pages return 200.
+  - Home, pricing and /enterprise at 1280, 1024, 900, 768 and 390: no sideways scroll and no clipped header buttons. Header height is unchanged.
+- **Screenshots:** `/workspace/lyrixis-font-preview/nav-before-1024.png` and `nav-after-1024.png`.
+- **Not verified:** the signed-in layout at 1024–1279px, which was checked by reasoning only (no test account was used).
+- **Rollback:** revert `6907db6`.
