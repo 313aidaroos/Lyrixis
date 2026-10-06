@@ -84,12 +84,12 @@ export function SiteNav() {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-3">
-        <Link href="/" className="flex items-center gap-2.5" aria-label="Lyrixis home">
+        <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="Lyrixis home">
           <img src="/lyrixis-mark.png" alt="" className="mark-glow h-9 w-9 object-contain" />
           <span className="font-display text-sm font-semibold tracking-[0.24em]">LYRIXIS</span>
         </Link>
 
-        <nav className="hidden items-center gap-6 whitespace-nowrap text-sm lg:flex" onMouseLeave={scheduleClose}>
+        <nav className="hidden items-center gap-5 whitespace-nowrap text-sm lg:flex xl:gap-6" onMouseLeave={scheduleClose}>
           {Object.keys(MENUS).map((name) => (
             <div key={name} className="relative" onMouseEnter={() => openMenu(name)}>
               <button
@@ -126,18 +126,19 @@ export function SiteNav() {
           <Link href="/#api" className="nav-link text-ink-2 hover:text-ink">
             API
           </Link>
-          <Link href="/companies" className="nav-link text-ink-2 hover:text-ink" data-active={active("/companies")}>Apixis Companies</Link>
-          <Link href="/feed" className="nav-link text-ink-2 hover:text-ink" data-active={active("/feed")}>Feed</Link>
+          {/* 1024–1279px: Apixis Companies, Feed and Wallet move into the Menu panel so the bar never overflows. */}
+          <Link href="/companies" className="nav-link hidden text-ink-2 hover:text-ink xl:inline" data-active={active("/companies")}>Apixis Companies</Link>
+          <Link href="/feed" className="nav-link hidden text-ink-2 hover:text-ink xl:inline" data-active={active("/feed")}>Feed</Link>
           <Link href="/pricing" className="nav-link text-ink-2 hover:text-ink" data-active={active("/pricing")}>
             Pricing
           </Link>
-          <a href={WALLET_BUY_URL} className="nav-link text-ink-2 hover:text-ink">
+          <a href={WALLET_BUY_URL} className="nav-link hidden text-ink-2 hover:text-ink xl:inline">
             Wallet
           </a>
         </nav>
 
-        <div className="hidden items-center gap-4 whitespace-nowrap text-sm lg:flex">
-          <a href={WALLET_BUY_URL} className="btn-secondary px-4 py-2 text-sm">
+        <div className="hidden shrink-0 items-center gap-3 whitespace-nowrap text-sm lg:flex xl:gap-4">
+          <a href={WALLET_BUY_URL} className={`btn-secondary px-4 py-2 text-sm ${email ? "hidden xl:inline-flex" : ""}`}>
             Buy Ixis
           </a>
           {email ? (
@@ -169,7 +170,7 @@ export function SiteNav() {
         )}
         <button
           type="button"
-          className="btn-secondary px-3 py-1.5 text-sm lg:hidden"
+          className="btn-secondary shrink-0 px-3 py-1.5 text-sm xl:hidden"
           aria-label="Menu"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -179,7 +180,7 @@ export function SiteNav() {
       </div>
 
       {open && (
-        <div className="glass mx-4 mb-4 rounded-2xl p-4 lg:hidden">
+        <div className="glass mx-4 mb-4 rounded-2xl p-4 xl:hidden">
           {Object.entries(MENUS).map(([name, items]) => (
             <div key={name} className="mb-3">
               <p className="mb-1 font-mono text-[11px] uppercase tracking-widest text-ink-3">{name}</p>
