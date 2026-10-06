@@ -20,6 +20,10 @@ Entry format:
 - Changed: added .github/workflows/ci.yml (shared CI caller)
 - Why: automated build/test gate via the family reusable workflow
 
+## 2026-09-29 — Grok (Lyrixis Lead)
+- Changed: `lib/ixis-companies.ts` (new), `components/SiteFooter.tsx`, `WORKBOARD.md`, `NOTES/GROK.md`
+- Why: Awad-approved footer section linking to the other Ixis companies; URLs kept in one data file
+- 2026-09-29 follow-up: removed Qahwah World and Nursery Toons from `lib/ixis-companies.ts` (Awad-approved via hub); 11 sites remain
 
 ## 2026-09-30 — Codex — Tester readiness: shared-login redirects
 
@@ -42,6 +46,10 @@ Entry format:
 ## 2026-10-04 — Claude (Claude Code, full-portfolio review)
 - Changed: `NOTES/CLAUDE.md` — this repo's slice of the 24-repo review (what is live, what is open, who owns each item, drift found). No code, env, database or deploy changes.
 - Why: Awad asked for every repo to be read twice with a done / to-do / owner status, and for the notes in each repo to be updated. Notes only; Awad approved the merge on 2026-10-04.
+
+## 2026-10-04 (CT) — Grok (PR #14 refresh)
+- Changed: merged main into `grok/ixis-footer`; `lib/ixis-companies.ts` comment says Ominix (formerly Nexxis) stays excluded from the footer. Notes kept from both sides.
+- Why: bring the footer PR up to date for Awad's review; no list change.
 
 ## 2026-10-04 (CT) — Grok (Claude-audit lock fixes, PR from `grok/claude-audit-fixes`)
 - Changed: `/tracks/[id]` no longer shows the dead Stripe checkout (404 `/api/checkout`) or a USD price; removed "As-salamu alaykum" from the magic-link screen and the support auto-reply; Ominix link on `/companies` → `ominix-app.vercel.app`; 1,000 Ixis wording names Apixis.dev; `NOTES/GROK.md` Claude #27 entry + hub decision (uploads will reuse `lyrixis.track.unlock`, not built yet).
