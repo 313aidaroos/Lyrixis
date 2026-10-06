@@ -47,13 +47,19 @@ export async function POST(request: NextRequest) {
     const { error } = await auth.auth.signInWithOtp({
       email,
       options: {
-        shouldCreateUser: true,
+        shouldCreateUser: false, // 2026-10-04 (Grok): existing accounts only; new accounts use Apixis ID
         emailRedirectTo: `${appUrl}/auth/callback?next=${encodeURIComponent('/dashboard')}`,
       },
     });
     if (error) {
       console.error('signInWithOtp failed:', error.message);
       // Supabase rate-limits repeat sends to the same address; say so honestly.
+      if (/signups? not allowed|otp_disabled|user not found/i.test(`${error.code ?? ''} ${error.message}`)) {
+        return NextResponse.json({
+          error: 'No Lyrixis account uses this email yet. New here? Use Log in with Apixis ID to create your account.',
+          apixis_id_url: '/auth/apixis/start?next=%2Fdashboard',
+        }, { status: 404 });
+      }
       const status = /rate|seconds/i.test(error.message) ? 429 : 500;
       return NextResponse.json({ error: error.message }, { status });
     }
