@@ -13,7 +13,8 @@ export function SiteFooter() {
             <p className="font-display text-sm tracking-[0.24em]">LYRIXIS</p>
           </div>
           <p className="mt-4 max-w-sm text-sm text-ink-3">
-            The intelligence layer for music catalogs. Music. Understood.
+            The intelligence layer for music catalogs. Music. Understood. All-Access is $30 a month, or $3 a song.
+            Labels and companies: contact sales.
           </p>
         </div>
         <div className="flex flex-col gap-2 text-sm text-ink-2">
@@ -21,7 +22,9 @@ export function SiteFooter() {
           <Link href="/catalog" className="hover:text-ink">Catalog</Link>
           <Link href="/#demo" className="hover:text-ink">Live demo</Link>
           <Link href="/#api" className="hover:text-ink">API</Link>
+          <Link href="/how-to" className="hover:text-ink">How to use</Link>
           <Link href="/pricing" className="hover:text-ink">Pricing</Link>
+          <Link href="/team" className="hover:text-ink">Team</Link>
           <a href={WALLET_BUY_URL} className="hover:text-ink">Buy Ixis</a>
           <Link href="/cixy" className="hover:text-ink">◈ Cixy</Link>
         </div>

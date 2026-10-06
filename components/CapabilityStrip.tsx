@@ -6,7 +6,7 @@ import { GlowCard, Reveal } from "@/components/Motion";
 const CAPS = [
   { icon: "≋", label: "Transcribe & Sync", what: "Word-level synchronized lyrics from your recording." },
   { icon: "◎", label: "Detect Language & Dialect", what: "Language and regional dialect with a confidence score." },
-  { icon: "⇄", label: "Translate & Transliterate", what: "Line-aligned translations and phonetic transliterations." },
+  { icon: "⇄", label: "Translations · Coming soon", what: "Line-aligned translations are not available yet." },
   { icon: "▤", label: "Identify Structure", what: "Verse, chorus, bridge, and hook — mapped to time." },
   { icon: "◐", label: "Detect Explicit Content", what: "Clean / explicit flags with per-line evidence." },
   { icon: "◈", label: "Enrich Metadata", what: "ISRC, ISWC, UPC, writers, and splits validated." },

@@ -1,3 +1,5 @@
+import { PlanFaq } from "@/components/PlanFaq";
+
 const FAQS = [
   {
     q: "What is Lyrixis?",
@@ -17,7 +19,7 @@ const FAQS = [
   },
   {
     q: "Is search free?",
-    a: "The public catalog on this site is free to search. Unlocking a song\u2019s full synced lyrics and exports is 300 Ixis, paid from your Apixis Wallet.",
+    a: "The public catalog on this site is free to search. Unlocking one song is $3 (300 Ixis). Lyrixis All-Access is $30 a month (3,000 Ixis). Pay by card or with Ixis. Card checkout is not open yet. Ixis top-ups are in the Apixis Wallet.",
   },
   {
     q: "Why is the background karaoke?",
@@ -28,8 +30,8 @@ const FAQS = [
 export function FaqPanel() {
   return (
     <div className="grid gap-4">
-      <p className="font-mono text-xs uppercase tracking-[0.22em] text-gold">FAQ</p>
-      <h2 className="font-display text-3xl font-bold">Questions</h2>
+      <PlanFaq />
+      <h2 className="mt-6 font-display text-3xl font-bold">More questions</h2>
       {FAQS.map((item) => (
         <details key={item.q} className="card group">
           <summary className="cursor-pointer list-none font-display text-lg font-semibold">

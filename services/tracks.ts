@@ -17,6 +17,8 @@ import { STUCK_MESSAGE, canRetry, isStuck, processingMode, startTrackProcessing 
 import { extensionFromFilename } from "@/lib/utils";
 import type { AppUser, TrackStatus, TrackSummary } from "@/types";
 import { confidenceToBand } from "@/lib/utils";
+import { canAccessTrack, enterpriseOrgIds } from "@/lib/enterprise-access";
+import { enterpriseOrganizationIdForUpload, membershipsForUser } from "@/services/enterprise";
 
 interface TrackRow {
   id: string;
@@ -36,11 +38,12 @@ interface TrackRow {
   dialect: string | null;
   language_confidence: number | string | null;
   audio_path: string | null;
+  organization_id: string | null;
   updated_at?: string | null;
 }
 
 const TRACK_COLUMNS =
-  "id, public_id, title, artist, status, duration_seconds, language, paid, transcription_confidence, error_message, created_at, updated_at, user_id, rights_confirmed, rights_confirmed_at, dialect, language_confidence, audio_path";
+  "id, public_id, title, artist, status, duration_seconds, language, paid, transcription_confidence, error_message, created_at, updated_at, user_id, rights_confirmed, rights_confirmed_at, dialect, language_confidence, audio_path, organization_id";
 
 const PREVIEW_MS = 30_000;
 
@@ -76,11 +79,11 @@ export function toSummary(row: TrackRow): TrackSummary {
 
 export async function listTracks(user: AppUser): Promise<TrackSummary[]> {
   const admin = createAdminClient();
-  const { data, error } = await admin
-    .from("tracks")
-    .select(TRACK_COLUMNS)
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+  const memberships = await membershipsForUser(user).catch(() => []);
+  const orgIds = enterpriseOrgIds(memberships).filter((id) => /^[0-9a-f-]{36}$/i.test(id));
+  let request = admin.from("tracks").select(TRACK_COLUMNS).order("created_at", { ascending: false });
+  request = orgIds.length === 0 ? request.eq("user_id", user.id) : request.or(`user_id.eq.${user.id},organization_id.in.(${orgIds.join(",")})`);
+  const { data, error } = await request;
 
   if (error) {
     throw new HttpError(500, "list_failed", error.message);
@@ -110,12 +113,7 @@ export async function sweepIfStuck(row: TrackRow): Promise<TrackRow> {
 
 export async function getOwnedTrack(user: AppUser, publicId: string): Promise<TrackRow> {
   const admin = createAdminClient();
-  const { data, error } = await admin
-    .from("tracks")
-    .select(TRACK_COLUMNS)
-    .eq("public_id", publicId)
-    .eq("user_id", user.id)
-    .maybeSingle();
+  const { data, error } = await admin.from("tracks").select(TRACK_COLUMNS).eq("public_id", publicId).maybeSingle();
 
   if (error) {
     throw new HttpError(500, "track_lookup_failed", error.message);
@@ -123,7 +121,19 @@ export async function getOwnedTrack(user: AppUser, publicId: string): Promise<Tr
   if (!data) {
     throw new HttpError(404, "not_found", "Track not found.");
   }
-  return sweepIfStuck(data as TrackRow);
+  const row = data as TrackRow;
+  const memberships = await membershipsForUser(user).catch(() => []);
+  if (
+    !canAccessTrack({
+      userId: user.id,
+      memberships,
+      trackUserId: row.user_id,
+      trackOrganizationId: row.organization_id ?? null,
+    })
+  ) {
+    throw new HttpError(404, "not_found", "Track not found.");
+  }
+  return sweepIfStuck(row);
 }
 
 function assertRightsConfirmed(rightsConfirmed: boolean): void {
@@ -193,11 +203,13 @@ export async function createAndEnqueueTrack(input: {
   const sha256 = createHash("sha256").update(input.bytes).digest("hex");
   const admin = createAdminClient();
   const rightsConfirmedAt = new Date().toISOString();
+  const organizationId = await enterpriseOrganizationIdForUpload(input.user).catch(() => null);
 
   const { data: track, error: insertError } = await admin
     .from("tracks")
     .insert({
       user_id: input.user.id,
+      organization_id: organizationId,
       title,
       artist,
       original_filename: input.filename,
@@ -431,12 +443,14 @@ export async function finalizeDirectUpload(input: {
     // best-effort
   }
   if (!title) title = filename.replace(/\.[^.]+$/, "") || "Untitled";
+  const organizationId = await enterpriseOrganizationIdForUpload(input.user).catch(() => null);
 
   const { data: track, error: insertError } = await admin
     .from("tracks")
     .insert({
       id: input.uploadId,
       user_id: input.user.id,
+      organization_id: organizationId,
       title,
       artist,
       original_filename: filename,

@@ -9,7 +9,9 @@ export async function updateSession(request: NextRequest) {
   const isProtected =
     path.startsWith("/dashboard") ||
     path.startsWith("/upload") ||
-    path.startsWith("/tracks");
+    path.startsWith("/tracks") ||
+    path.startsWith("/team") ||
+    path.startsWith("/admin");
 
   if (!url || !anonKey) {
     if (isProtected) {

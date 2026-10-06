@@ -6,6 +6,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { CIXY_ASK_EVENT, CIXY_AVATAR_SRC, helpForPath, type CixyAskDetail } from "@/lib/cixy-page-help";
+import { PLAN_FAQ } from "@/lib/ixis-pricing";
 
 export function CixyHelpAvatar({ size = 36 }: { size?: number }) {
   return (
@@ -110,6 +111,15 @@ export function CixyPageHelp() {
               ))}
             </ul>
           )}
+          <div className="mt-4 space-y-2 border-t border-line pt-3">
+            <p className="font-mono text-[11px] uppercase tracking-widest text-ink-3">FAQ</p>
+            {PLAN_FAQ.map((item) => (
+              <details key={item.q} className="text-sm">
+                <summary className="cursor-pointer text-ink">{item.q}</summary>
+                <p className="mt-1 text-xs leading-relaxed text-ink-3">{item.a}</p>
+              </details>
+            ))}
+          </div>
           <div className="mt-4 flex flex-wrap gap-2">
             {entry.suggestions.map((question) => (
               <button

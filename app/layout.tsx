@@ -15,11 +15,11 @@ const mono = Martian_Mono({ subsets: ["latin"], variable: "--font-mono", display
 export const metadata: Metadata = {
   title: "Lyrixis — The intelligence layer for music catalogs",
   description:
-    "Lyrixis turns music into structured, synchronized, distribution-ready intelligence — one song or millions at a time.",
+    "Lyrixis All-Access is $30 a month, or $3 per song for synced lyrics. Pay by card or with Ixis. Labels and companies contact sales.",
   icons: { icon: "/favicon.png" },
   openGraph: {
     title: "Lyrixis — Music. Understood.",
-    description: "Search lyrics, metadata, ISRC/ISWC, and synced intelligence for any catalog.",
+    description: "All-Access is $30 a month (3,000 Ixis), or $3 (300 Ixis) per song. Lyric video, translations, and Voices are coming soon.",
     images: ["/lyrixis-logo.png"],
   },
 };
