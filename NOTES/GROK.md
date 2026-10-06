@@ -35,6 +35,13 @@ Claude activity was present; the earlier “no Claude activity” line was incor
 - Not touched: login/signup pages, Wallet pill/balance route, Stripe/payments, existing accounts.
 - Undo: revert the PR's squash commit; optionally remove Vercel env `APIXIS_WORLD_KEY` (the route then does nothing). Agents already created live in Apixis.dev (`apixis.agents`) and are not deleted by reverting.
 
+## 2026-09-29 (CT) — Grok (Lyrixis Lead): footer "Other Ixis companies"
+- What: added an "Other Ixis companies" column to the site footer with plain text links (new tab, `rel="noopener noreferrer"`) to the 13 approved Ixis sites (Lyrixis itself excluded; Nexxis/Omnixis, Launchixis, PersonalContentBot, AwadBot, COMMAND intentionally left out). Existing footer classes reused; the footer grid went from `sm:grid-cols-4` to `sm:grid-cols-5` to fit the third column. Approved by Awad via the Developer Bot hub as a one-time exception to the credit pause.
+- Where: `lib/ixis-companies.ts` (single list — swap URLs here when custom domains arrive), `components/SiteFooter.tsx`.
+- Who: Lyrixis Lead / Grok. PR against main, not merged, not deployed to production.
+- Undo: revert the PR (or its merge/squash commit).
+- 2026-09-29 (CT) follow-up: removed Qahwah World and Nursery Toons from `lib/ixis-companies.ts` (Awad-approved via hub); footer now lists 11 sites. Same undo.
+
 ---
 _Backfill below (written 2026-10-02 ~17:30 CT by Grok Developer Bot, notes only, Awad-approved via Developer Bot hub 2026-10-02 17:28 CT). Facts are from git and the GitHub REST API. All PRs in this repo are opened and merged under the `313aidaroos` GitHub account; "who" below comes from branch prefix, PR body, AI_CHANGELOG.md and Co-authored-by lines. Times are America/Chicago._
 
@@ -190,6 +197,12 @@ The entries below record the day's observed commits and merged PRs. Existing det
 ### Merged PRs
 - PR #26, merge `bfac9cc`, `grok/owner-allowlist` → `main`, merged 2026-10-04 CT by 313aidaroos: Owner allowlist: proven owner session skips unlock gates. Undo: `git revert bfac9cc`.
 
+## 2026-10-04 6:55 PM (CT) — Grok: PR #14 footer branch brought up to date with main (not merged)
+- What: merged `main` (`450c577`) into `grok/ixis-footer` with a normal merge commit (no force-push). Conflicts in `NOTES/GROK.md` and `AI_CHANGELOG.md` resolved by keeping both sides' entries; `WORKBOARD.md` merged cleanly with both sides' lines. `lib/ixis-companies.ts` stays the footer's single list (11 sites). Its header comment now says Ominix (formerly Nexxis/Omnixis) is still excluded, matching the brief. No site added or removed.
+- Where: branch `grok/ixis-footer` (PR #14): `lib/ixis-companies.ts` (comment only), `NOTES/GROK.md`, `AI_CHANGELOG.md`.
+- Who: Grok (Developer Bot executor), at the hub's request. Not merged; Awad confirms merges.
+- Undo: on the branch, `git revert -m 1` the commit "Merge main into grok/ixis-footer" (it carries the merge, the comment change and these notes).
+- Preview check (7:00 PM CT, Vercel preview `dpl_Bb4cB9ZeVUPprdeB9i5qbCccqR3E`, merge commit `fcfa751`, CI and Vercel green): the footer shows the "Other Ixis companies" column with 11 links (new tab, `noopener noreferrer`) at 1280 and 390 px, with no sideways scroll and no page errors. Compared with live `lyrixis.vercel.app`, the homepage above the footer is pixel-identical at both widths, and the footer link font and colors are the same. Theme unchanged apart from the new column. Screenshots on the box: `/workspace/lyrixis-footer/v2/`.
 ## 2026-10-04 6:01 PM / 6:31 PM (CT) — Claude: full-portfolio review notes (PR #27, merged)
 - What: notes only. New `NOTES/CLAUDE.md` (this repo's slice of Claude's 24-repo review: what is live, what is open, who owns it, drift found) and a 2026-10-04 entry in `AI_CHANGELOG.md`. No code, env, database or deploy changes.
 - Where: branch `claude/great-fermi-6brq7a` (commit `39882db`, 6:01 PM CT, author Claude <noreply@anthropic.com>) → PR #27, squash commit `8cf8429` on `main`, merged 6:31 PM CT by 313aidaroos (body says Awad approved). Vercel production `dpl_GRPjDqkXsrSGsLfS9Tcb1Pq7Fhrn` built from `8cf8429`, READY (auto-deploy from main; notes only, so the site output did not change).
