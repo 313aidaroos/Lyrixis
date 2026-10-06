@@ -463,3 +463,6 @@ Recorded by Grok (Developer Bot, notes and status sync at 12:25 AM CT on Oct 5).
 - **Screenshots:** `/workspace/lyrixis-font-preview/nav-before-1024.png` and `nav-after-1024.png`.
 - **Not verified:** the signed-in layout at 1024–1279px, which was checked by reasoning only (no test account was used).
 - **Rollback:** revert `6907db6`.
+## 2026-10-06 — Pricing locked
+- Prices for Lyrixis were locked by Awad. See NOTES/PRICING.md.
+- The site/code still needs updating to match NOTES/PRICING.md where it does not.
