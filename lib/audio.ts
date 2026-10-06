@@ -18,6 +18,9 @@ const ALLOWED_MIME = new Set([
   "application/octet-stream",
 ]);
 
+/** File extensions the upload form accepts (matches the `accept` list on /upload). */
+export const ALLOWED_EXTENSIONS = new Set(["mp3", "wav", "flac", "m4a", "mp4", "aac", "ogg", "opus"]);
+
 export interface DetectedAudio {
   mime: string;
   extension: string;
@@ -48,15 +51,11 @@ export function detectAudioMagic(bytes: Buffer): DetectedAudio | null {
   return null;
 }
 
-export function validateUpload(input: {
-  filename: string;
-  declaredMime: string;
-  bytes: Buffer;
-}): DetectedAudio {
-  if (input.bytes.length === 0) {
+function assertSizeAndMime(size: number, declaredMime: string): void {
+  if (!Number.isFinite(size) || size <= 0) {
     throw new HttpError(400, "empty_file", "The audio file is empty.");
   }
-  if (input.bytes.length > getMaxUploadBytes()) {
+  if (size > getMaxUploadBytes()) {
     throw new HttpError(
       413,
       "file_too_large",
@@ -64,14 +63,45 @@ export function validateUpload(input: {
     );
   }
 
-  const declared = input.declaredMime.toLowerCase();
+  const declared = declaredMime.toLowerCase();
   if (declared && !ALLOWED_MIME.has(declared)) {
     throw new HttpError(
       415,
       "unsupported_media_type",
-      `Unsupported MIME type: ${input.declaredMime}. Use MP3, WAV, FLAC, M4A, or OGG.`
+      `Unsupported MIME type: ${declaredMime}. Use MP3, WAV, FLAC, M4A, or OGG.`
     );
   }
+}
+
+/**
+ * Checks done BEFORE the browser uploads straight to Storage (no bytes yet):
+ * size cap, declared MIME, and file extension. Magic bytes are checked after the upload
+ * by reading the first bytes of the stored object (see services/tracks.ts finalizeDirectUpload).
+ */
+export function validateUploadRequest(input: {
+  filename: string;
+  declaredMime: string;
+  size: number;
+}): { extension: string } {
+  assertSizeAndMime(input.size, input.declaredMime);
+  const match = /\.([a-z0-9]+)$/i.exec(input.filename.trim());
+  const extension = match ? match[1].toLowerCase() : "";
+  if (!ALLOWED_EXTENSIONS.has(extension)) {
+    throw new HttpError(
+      415,
+      "unsupported_media_type",
+      "Unsupported file type. Use MP3, WAV, FLAC, M4A, or OGG."
+    );
+  }
+  return { extension };
+}
+
+export function validateUpload(input: {
+  filename: string;
+  declaredMime: string;
+  bytes: Buffer;
+}): DetectedAudio {
+  assertSizeAndMime(input.bytes.length, input.declaredMime);
 
   const detected = detectAudioMagic(input.bytes);
   if (!detected) {
