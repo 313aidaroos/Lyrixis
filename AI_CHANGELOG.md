@@ -77,3 +77,7 @@ Entry format:
 ## 2026-10-05 — Grok (Developer Bot): lyrics pipeline runs inside Vercel (Option B)
 - Changed: `lib/processing.ts`, `lib/ffmpeg.ts`, `app/api/tracks/[id]/retry/route.ts` (new); `services/tracks.ts`, `workers/pipeline.ts`, `providers/transcription/whisper-v3.ts`, `lib/storage.ts`, `lib/rate-limit.ts`, `app/api/tracks/route.ts`, `components/TrackView.tsx`, `components/PricingCalculator.tsx`, `next.config.ts`, `vercel.json`, `package.json` (`ffmpeg-static`), docs, tests
 - Why: Awad chose Option B (fewest accounts): no Redis, no Railway. Uploads run the pipeline via `after()`, audio goes to OpenAI whisper-1 as 16 kHz mono MP3, a DB count replaces the Redis upload limit, and failed or stuck tracks get Retry. The 100–999 calculator default is now 149, matching the DB.
+
+## 2026-10-06 — Claude (family lead): AI Receptionist notes (D18)
+- Changed: AI Receptionist section in the family notes (see `docs/AI_RECEPTIONIST.md` in ApixisWallet); notes only, no code.
+- Why: Awad approved an AI Receptionist add-on at $100/month for every customer-facing family site and asked every bot and agent to follow one plan.
