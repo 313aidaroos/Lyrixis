@@ -268,3 +268,10 @@ Recorded by Grok (Developer Bot, notes and status sync at 12:25 AM CT on Oct 5).
 - Vercel `lyrixis`: no env changes (no GROQ/TRANSCRIPTION/REDIS vars there).
 - Who: Grok (Lyrixis Lead), with Awad's approval.
 - Undo: Railway: delete project `lyrixis-worker` (`b40a5741-…`) in the dashboard or with `projectDelete`. Nothing else changed outside git. PR #24: revert merge commit `8a7a54a` and doc commit `5b90e5a` on the branch, or close the PR.
+
+## 2026-10-05 8:15 PM (CT): Grok (Lyrixis Lead), PR #24 squash-merged (Awad approved at 8:12 PM CT)
+- What: squash-merged PR #24 "Upload worker hosting: Dockerfile.worker + Railway config + docs" as **`aea9928`** (`aea9928066e83c21ee4dff9c5d9c5274beeb1f3a`) on `main`. It adds `Dockerfile.worker`, `.dockerignore`, `railway.json`, `worker:build`/`worker:start` scripts, the opt-in `WORKER_*` polling knobs in `workers/index.ts`, `docs/WORKER_HOSTING.md` and `.env.example` lines. The branch was up to date with main (`ba67a21`, after #14). CI (node-ci ×2) and the Vercel preview were green before the merge. #28 (Voices) was still open and untouched.
+- Prod: Vercel deployment `dpl_75HXXyYkaWtbBUkZVd2BXVryLcv3` is READY and aliased to lyrixis.vercel.app. `/` 200, `/pricing` 200, `/tracks` → `/login?next=%2Ftracks` 200 (the expected auth redirect). The web app's runtime is unchanged: nothing it runs changed, only worker files, docs and scripts.
+- Not done (not approved yet): Upstash `upstash-kv-teal-marble` is still connected to 0 projects. The Railway service `worker` (`653f58ed-e1fd-4596-81f0-aa3ca8e22dce`) still has no source and zero deployments, so the merge triggered no Railway build. The Railway subscription and the $20 cap are still pending.
+- Who: Grok (Lyrixis Lead), with Awad's approval.
+- Undo: `git revert aea9928` on `main` and push (Vercel redeploys automatically), or promote the previous prod deployment `dpl_CjTzhwEVwUcTdsoKEsn77H9AztpU` (`ba67a21`) in Vercel. No Railway or Upstash undo needed.
