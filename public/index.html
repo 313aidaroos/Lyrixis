@@ -290,7 +290,13 @@ footer{border-top:1px solid var(--line-soft);padding:52px 0 40px;margin-top:60px
   .side{border-left:none;border-top:1px solid var(--line-soft);display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
   .g4,.g3{grid-template-columns:repeat(2,1fr)}
 }
-@media(max-width:720px){
+/* Nav: tighten between 961px and 1100px, collapse to the Menu button at 960px and below
+   (7 tabs + "Talk to Lyrixis" overflowed at 768px). */
+@media(max-width:1100px){
+  .nav{gap:18px}
+  .tab{padding:7px 10px}
+}
+@media(max-width:960px){
   .tabs{
     display:none;position:absolute;top:66px;left:0;right:0;flex-direction:column;gap:0;
     background:var(--bg-2);border-bottom:1px solid var(--line);padding:10px;
@@ -298,6 +304,8 @@ footer{border-top:1px solid var(--line-soft);padding:52px 0 40px;margin-top:60px
   .tabs.open{display:flex}
   .tab{padding:13px;border-radius:8px;text-align:left}
   .burger{display:block}
+}
+@media(max-width:720px){
   .navcta{display:none}
   .g4,.g3,.g2,.f2{grid-template-columns:1fr}
   .sec{padding:56px 0}
