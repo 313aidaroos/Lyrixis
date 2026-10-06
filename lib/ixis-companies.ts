@@ -1,8 +1,9 @@
 /**
  * Other Ixis companies shown in the site footer.
  * Single source of truth: swap URLs here when custom domains arrive.
- * Lyrixis itself is intentionally left out. Ominix (formerly Nexxis/Omnixis) stays
- * excluded per the footer brief, as do Launchixis, PersonalContentBot, AwadBot and COMMAND.
+ * Lyrixis itself is intentionally left out, as are Launchixis, PersonalContentBot, AwadBot
+ * and COMMAND. Ominix (formerly Nexxis/Omnixis) is listed at its live host
+ * ominix-app.vercel.app (the retired nexxis-tau host must not be used).
  * (The /companies page has its own full directory; this list is only the footer's.)
  */
 export type IxisCompany = { name: string; url: string };
@@ -18,5 +19,6 @@ export const OTHER_IXIS_COMPANIES: readonly IxisCompany[] = [
   { name: "Recovra", url: "https://recovra-three.vercel.app" },
   { name: "Deduxis", url: "https://deduxis.vercel.app" },
   { name: "Geoxis", url: "https://spatial-dashboard-xi.vercel.app" },
+  { name: "Ominix", url: "https://ominix-app.vercel.app" },
   { name: "Wattixis", url: "https://wattixis.vercel.app" },
 ];
