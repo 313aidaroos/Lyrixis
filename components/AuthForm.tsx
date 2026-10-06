@@ -46,7 +46,7 @@ export function AuthForm() {
           <p className="font-mono text-xs uppercase tracking-widest text-ink-2">Lyrixis</p>
           <h1 className="mt-3 font-display text-3xl font-bold">Check your email</h1>
           <p className="mt-2 text-sm text-ink-2">
-            As-salamu alaykum. We sent a sign-in link to <strong>{email}</strong>.
+            We sent a sign-in link to <strong>{email}</strong>.
           </p>
           <p className="mt-4 text-sm text-ink-3">
             The link expires in 24 hours. If you don&apos;t see it, check spam.

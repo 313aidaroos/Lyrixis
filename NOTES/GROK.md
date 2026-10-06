@@ -190,6 +190,29 @@ The entries below record the day's observed commits and merged PRs. Existing det
 ### Merged PRs
 - PR #26, merge `bfac9cc`, `grok/owner-allowlist` → `main`, merged 2026-10-04 CT by 313aidaroos: Owner allowlist: proven owner session skips unlock gates. Undo: `git revert bfac9cc`.
 
+## 2026-10-04 6:01 PM / 6:31 PM (CT) — Claude: full-portfolio review notes (PR #27, merged)
+- What: notes only. New `NOTES/CLAUDE.md` (this repo's slice of Claude's 24-repo review: what is live, what is open, who owns it, drift found) and a 2026-10-04 entry in `AI_CHANGELOG.md`. No code, env, database or deploy changes.
+- Where: branch `claude/great-fermi-6brq7a` (commit `39882db`, 6:01 PM CT, author Claude <noreply@anthropic.com>) → PR #27, squash commit `8cf8429` on `main`, merged 6:31 PM CT by 313aidaroos (body says Awad approved). Vercel production `dpl_GRPjDqkXsrSGsLfS9Tcb1Pq7Fhrn` built from `8cf8429`, READY (auto-deploy from main; notes only, so the site output did not change).
+- Who: Claude (Claude Code), merged from the 313aidaroos account.
+- Accuracy: `NOTES/CLAUDE.md` says "`main` @ `3fd1b9d` … code unchanged since 10-02", but #26 (owner allowlist, code) had already merged at 6:14 PM CT. The Ominix link drift it lists is fixed in `grok/claude-audit-fixes`.
+- Undo: `git revert 8cf8429` (removes `NOTES/CLAUDE.md` and the AI_CHANGELOG lines). The branch `claude/great-fermi-6brq7a` can be deleted once nobody needs it.
+
+## 2026-10-04 6:51 PM (CT) — Grok: Claude-audit lock fixes (PR #29, branch `grok/claude-audit-fixes`, open, not merged)
+- What: audit of everything since `3fd1b9d` against Awad's locks; fixed the lock breaks found on `main`:
+  - `components/TrackView.tsx` (`/tracks/[id]`, own uploads): removed the dead Stripe checkout button (it POSTed to `/api/checkout`, which is gone and returns 404), the "Stripe confirms the webhook" notice and the USD price from `/api/quote`. It now says plainly that upload unlocks will go through the Apixis Wallet and are not live yet. No charge path added.
+  - `components/AuthForm.tsx` and `app/api/support/intake/route.ts`: removed the "As-salamu alaykum" greetings (religious wording belongs only on Halaxis). The support email now opens with "Hi,".
+  - `app/companies/page.tsx`: Ominix link `nexxis-tau.vercel.app` (retired host) → `https://ominix-app.vercel.app`.
+  - `components/LoginForm.tsx`, `components/ApixisWorldWelcome.tsx`: the 1,000 Ixis wording now says Apixis.dev gives it.
+- Not touched: `lib/cixy-prompt.ts` (Cixy prompt, flagged to Awad: it still has Muslim identity, halal and prayer/Ramadan instructions), footer (PR #14), env, database, deploys.
+- Who: Grok (Developer Bot executor).
+- Undo: close the PR without merging, or after a merge `git revert <squash sha>`.
+
+## 2026-10-04 6:57 PM (CT) — Hub decision + PR #29 refresh (notes only)
+- Decision (Developer Bot hub, 2026-10-04): own uploads on `/tracks/[id]` will reuse the existing Wallet product `lyrixis.track.unlock` (300 Ixis), the same SKU as catalog unlocks. **Not built yet.** PR #29 only removes the dead Stripe checkout and shows an honest "not live yet" note. A later PR will add the Wallet redeem path for uploads (today `app/api/redeem/route.ts` only looks up `catalog_recordings`).
+- Cixy prompt: `lib/cixy-prompt.ts` is not changed in #29. Developer Bot will sync it after #29.
+- Refresh: merged `main` (`450c577`, which had already restored this file's intro line and fixed the 10-04 summary) into `grok/claude-audit-fixes` with a normal merge commit. Kept main's summary lines in the one conflict.
+- Who: Grok (Developer Bot executor). Undo: `git revert -m 1` the "Merge main into grok/claude-audit-fixes" commit; this entry goes with it.
+
 ## 2026-10-04 (CT) — Grok (Developer Bot hub): Cixy persona v2 sync + Ominix link
 - What: lib/cixy-prompt.ts now builds on the v2 kit (new lib/apixis-cixy.ts, same text as the other TS sites); removed 'Muslim AI operator' identity, salaam/Insha'Allah/alhamdulillah, 'NOT a scholar', HALAL-CONSCIOUS (alcohol/pork/gambling/riba/haram lyrics) and PRAYER/RAMADAN AWARE blocks. Added lib/__tests__/cixy-prompt.test.ts (religious-terms guard). The Ominix link and the AuthForm/support-email salam greetings are left to lead PR #29 to avoid conflicting with it.
 - Files: lib/cixy-prompt.ts lib/__tests__/cixy-prompt.test.ts lib/apixis-cixy.ts 
@@ -221,3 +244,14 @@ Recorded by Grok (Developer Bot, notes and status sync at 9:25 PM CT). Every cha
 Recorded by Grok (Developer Bot, notes and status sync at 12:25 AM CT on Oct 5). Each change below either has its own detailed entry earlier in this file (written by whoever made it) or is described here. Commits under the shared `313aidaroos` account were made by the bot or lead named in the detailed entry. Every production deployment for this repo was Ready at the time of this sync. Text only, no code or settings changed.
 
 - Oct 4 10:29 PM, PR #31, `3db2e58`: Apixis ID is the only way to create a Lyrixis account. Undo: `git revert 3db2e58` on `main`, then redeploy production.
+
+## 2026-10-05 8:30 PM (CT): Grok (Lyrixis Lead), upload worker provisioning, part 1 (Awad approved at 8:00 PM CT)
+- Approval: at 8:00 PM CT on Oct 5, 2026, Awad approved hosting the upload worker on his existing Railway account with a hard $20/month cap, Redis on Upstash Free, and Groq for transcription.
+- Railway (workspace "313aidaroos's Projects" `f59787d4-de34-4d4c-b384-68826490794b`): created project **`lyrixis-worker`** `b40a5741-8d83-40e1-bb43-2dd464866304`, env `production` `61c39fc8-2c24-415e-87bf-f347e832c43a`, and service **`worker`** `653f58ed-e1fd-4596-81f0-aa3ca8e22dce`. No source is connected and nothing is deployed, so it costs $0. Service settings: dockerfilePath `Dockerfile.worker`, the watch patterns from `railway.json`, restart ON_FAILURE ×10, 1 replica, no sleep, limits 1 vCPU / 1 GB. Railway's API now rejects `railwayConfigFile` (Config as Code is deprecated), so these are set at the service level instead.
+- Railway variables set (skipDeploys): NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY (copied from Vercel `lyrixis` Production), STORAGE_BUCKET, TRANSCRIPTION_PROVIDER/API_BASE_URL (Groq)/MODEL/CENTS_PER_MINUTE, LANGUAGE_PROVIDER, MAX_UPLOAD_MB=100, MAX_DURATION_SECONDS=720, WORKER_CONCURRENCY=2, WORKER_DRAIN_DELAY_SEC=60, WORKER_STALLED_INTERVAL_MS=300000, NODE_ENV. **Still missing:** REDIS_URL and TRANSCRIPTION_API_KEY (the Groq key).
+- $20 cap: **NOT set.** `usageLimitSet` (soft $15 / hard $20) returned "Usage limits require an active subscription". The workspace is on the Hobby trial (4 days left on Oct 5), with no subscription and no payment method, and $2.83 of trial credit remaining. With no card on file nothing can be charged. Set the cap right after Awad subscribes, before the first deploy. The limit covers the whole workspace, including awad-command (about $1.66 used this period).
+- Redis: nothing changed. The Vercel team already has an unused Upstash for Redis **Free** store `upstash-kv-teal-marble` (`store_PP9Mt0uHl6hab9zV`, iad1, eviction off, connected to 0 projects). Free allows one database per account, so this is the store to connect to `lyrixis`. It isn't connected yet on purpose: REDIS_URL on Vercel production without a running worker would let uploads enqueue and then sit unprocessed.
+- PR #24 (`grok/upload-worker-hosting`): merged main into it (resolved a NOTES/GROK.md conflict by keeping both sides) and added a status paragraph to docs/WORKER_HOSTING.md. CI is green. Not merged.
+- Vercel `lyrixis`: no env changes (no GROQ/TRANSCRIPTION/REDIS vars there).
+- Who: Grok (Lyrixis Lead), with Awad's approval.
+- Undo: Railway: delete project `lyrixis-worker` (`b40a5741-…`) in the dashboard or with `projectDelete`. Nothing else changed outside git. PR #24: revert merge commit `8a7a54a` and doc commit `5b90e5a` on the branch, or close the PR.

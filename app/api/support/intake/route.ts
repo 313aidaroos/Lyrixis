@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
         from: process.env.EMAIL_FROM || 'Lyrixis <lyrixis@apixis.dev>',
         to: email,
         subject: 'We received your support request',
-        text: `As-salamu alaykum,\n\nWe received your support request (Ticket ${ticket.id}).\n\nYour message:\n${message}\n\nAwad will review it shortly.\n\n— Lyrixis Team`,
+        text: `Hi,\n\nWe received your support request (Ticket ${ticket.id}).\n\nYour message:\n${message}\n\nAwad will review it shortly.\n\n— Lyrixis Team`,
       });
 
       // Send notification to Awad
