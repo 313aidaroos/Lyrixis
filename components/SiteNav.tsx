@@ -130,7 +130,8 @@ export function SiteNav() {
           {/* 1024–1279px: Apixis Companies, Feed and Wallet move into the Menu panel so the bar never overflows. */}
           <Link href="/companies" className="nav-link hidden text-ink-2 hover:text-ink xl:inline" data-active={active("/companies")}>Apixis Companies</Link>
           <Link href="/feed" className="nav-link hidden text-ink-2 hover:text-ink xl:inline" data-active={active("/feed")}>Feed</Link>
-          <Link href="/how-to" className="nav-link text-ink-2 hover:text-ink" data-active={active("/how-to")}>
+          {/* Same mid-width rule as Companies and Feed: the Product menu and the Menu panel still list it. */}
+          <Link href="/how-to" className="nav-link hidden text-ink-2 hover:text-ink xl:inline" data-active={active("/how-to")}>
             How to use
           </Link>
           <Link href="/pricing" className="nav-link text-ink-2 hover:text-ink" data-active={active("/pricing")}>

@@ -23,12 +23,12 @@ export function AppNav({ email }: { email?: string | null }) {
 
   return (
     <header className="border-b border-line/80 bg-white/75 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-y-3 px-6 py-4">
         <Link href="/" className="flex items-center gap-3">
           <img src="/lyrixis-mark.png" alt="" className="h-11 w-11 rounded-xl object-cover ring-1 ring-black/10" />
           <span className="font-display text-lg font-semibold tracking-[0.18em]">LYRIXIS</span>
         </Link>
-        <nav className="flex items-center gap-6">
+        <nav className="flex flex-wrap items-center justify-end gap-x-5 gap-y-2">
           <Link href="/" className={linkClass("/")}>
             Catalog
           </Link>
