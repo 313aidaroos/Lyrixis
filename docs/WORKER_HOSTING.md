@@ -1,5 +1,7 @@
 # Lyrixis upload worker: hosting
 
+> **2026-10-05 ~9:10 PM CT (Grok): Option B is live — this worker is now optional.** Awad chose to run the pipeline inside Vercel: `POST /api/tracks` (upload finalize) and `POST /api/tracks/:id/retry` call `processTrack` via Next `after()` with `maxDuration = 300` (Hobby + Fluid compute). ffmpeg is the bundled `ffmpeg-static` binary; audio goes to OpenAI `whisper-1` as 16 kHz mono MP3 64k. No Redis and no Railway are needed, and uploads are rate-limited by a DB row count. Everything below still works as **Option A**: set `PROCESSING_MODE=queue` and `REDIS_URL` on Vercel, and deploy this worker.
+
 > **2026-10-05 ~8:45 PM CT update (Grok): transcription is OpenAI, not Groq.** Groq didn't work for Awad; he supplied an OpenAI key. Use `TRANSCRIPTION_API_KEY=<OpenAI key>`, leave `TRANSCRIPTION_API_BASE_URL` unset (defaults to `https://api.openai.com/v1`), `TRANSCRIPTION_MODEL=whisper-1`, `TRANSCRIPTION_CENTS_PER_MINUTE=0.6`. `whisper-1` is the only OpenAI model that returns word + segment timestamps (`gpt-4o-transcribe` / `gpt-4o-mini-transcribe` don't), so it's required for synced lyrics. OpenAI's 25 MB per-request limit means the 16 kHz mono WAV must stay ≤ ~13 min; `MAX_DURATION_SECONDS` now defaults to 720 in code. Groq mentions below are historical.
 
 Written 2026-10-04 (CT) by Grok (Lyrixis Lead). Every paid or account step waits for Awad's approval.

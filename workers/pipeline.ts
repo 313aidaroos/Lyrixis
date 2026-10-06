@@ -1,5 +1,3 @@
-import { execFile } from "child_process";
-import { promisify } from "util";
 import { mkdtemp, readFile, rm, writeFile } from "fs/promises";
 import { tmpdir } from "os";
 import path from "path";
@@ -7,6 +5,7 @@ import { parseBuffer } from "music-metadata";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getMaxDurationSeconds, getMaxUploadBytes } from "@/lib/env";
 import { detectAudioMagic } from "@/lib/audio";
+import { compressArgs, runFfmpeg, WHISPER_MAX_BYTES } from "@/lib/ffmpeg";
 import {
   downloadPrivateObject,
   normalizedAudioPath,
@@ -20,8 +19,6 @@ import {
 import type { TranscriptionResult, WordTiming } from "@/providers/types";
 import { loadCurrentLyrics } from "@/services/corrections";
 import { mean } from "@/lib/utils";
-
-const execFileAsync = promisify(execFile);
 
 const STEPS = ["validate", "store", "normalize", "transcribe", "language", "align", "costs", "complete"] as const;
 type StepName = (typeof STEPS)[number];
@@ -132,25 +129,16 @@ async function runStep(trackId: string, step: StepName, fn: () => Promise<void>,
   throw lastError ?? new Error(`${step} failed`);
 }
 
+/**
+ * 2026-10-05 (Grok): normalize to compressed 16 kHz mono MP3 (was 16 kHz PCM WAV). Whisper's
+ * request limit is 25 MB; WAV is ~1.9 MB/min (a 12-minute song was ~23 MB), MP3 64k is ~0.48
+ * MB/min, so no chunking is needed for any song under the duration cap.
+ */
 async function ffmpegNormalize(inputPath: string, outputPath: string): Promise<void> {
   try {
-    await execFileAsync("ffmpeg", [
-      "-y",
-      "-i",
-      inputPath,
-      "-ac",
-      "1",
-      "-ar",
-      "16000",
-      "-c:a",
-      "pcm_s16le",
-      outputPath,
-    ]);
+    await runFfmpeg(compressArgs(inputPath, outputPath));
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    if (message.includes("ENOENT")) {
-      throw new Error("ffmpeg is not installed on the worker host. Install ffmpeg to normalize audio.");
-    }
     throw new Error(`ffmpeg normalize failed: ${message}`);
   }
 }
@@ -252,6 +240,26 @@ async function persistTranscription(trackId: string, result: TranscriptionResult
   }
 }
 
+/**
+ * Retries skip steps that already succeeded, so a re-run can reach "transcribe" without the
+ * local files from "validate"/"normalize". Rebuild them in the temp dir when missing.
+ */
+async function ensureLocalAudio(ctx: JobContext): Promise<string> {
+  if (ctx.normalizedLocalPath) return ctx.normalizedLocalPath;
+  if (!ctx.originalLocalPath) {
+    if (!ctx.track.audio_path) throw new Error("Track has no audio_path in private storage.");
+    const bytes = await downloadPrivateObject(ctx.track.audio_path);
+    const ext = path.extname(ctx.track.audio_path) || ".bin";
+    const localPath = path.join(ctx.workDir, `original${ext}`);
+    await writeFile(localPath, bytes);
+    ctx.originalLocalPath = localPath;
+  }
+  const output = path.join(ctx.workDir, "normalized.mp3");
+  await ffmpegNormalize(ctx.originalLocalPath, output);
+  ctx.normalizedLocalPath = output;
+  return output;
+}
+
 export async function processTrack(trackId: string): Promise<void> {
   const admin = createAdminClient();
   const { data: track, error } = await admin
@@ -315,30 +323,41 @@ export async function processTrack(trackId: string): Promise<void> {
 
     await runStep(trackId, "normalize", async () => {
       if (!ctx.originalLocalPath) throw new Error("No original audio to normalize.");
-      const output = path.join(workDir, "normalized.wav");
-      await ffmpegNormalize(ctx.originalLocalPath, output);
-      ctx.normalizedLocalPath = output;
+      const output = await ensureLocalAudio(ctx);
+      const compressed = await readFile(output);
+      if (compressed.length > WHISPER_MAX_BYTES) {
+        throw new Error(
+          `Compressed audio is ${(compressed.length / 1048576).toFixed(1)} MB, over the 24 MB transcription limit. Upload a shorter song.`
+        );
+      }
       const storagePath = normalizedAudioPath(ctx.track.user_id, trackId);
-      const wav = await readFile(output);
       await uploadPrivateObject({
         path: storagePath,
-        body: wav,
-        contentType: "audio/wav",
+        body: compressed,
+        contentType: "audio/mpeg",
       });
-      await admin.from("track_files").insert({
-        track_id: trackId,
-        kind: "normalized",
-        storage_path: storagePath,
-        mime_type: "audio/wav",
-        bytes: wav.length,
-      });
+      const { data: existingFile } = await admin
+        .from("track_files")
+        .select("id")
+        .eq("track_id", trackId)
+        .eq("kind", "normalized")
+        .maybeSingle();
+      if (!existingFile) {
+        await admin.from("track_files").insert({
+          track_id: trackId,
+          kind: "normalized",
+          storage_path: storagePath,
+          mime_type: "audio/mpeg",
+          bytes: compressed.length,
+        });
+      }
     });
 
     await runStep(trackId, "transcribe", async () => {
-      if (!ctx.normalizedLocalPath) throw new Error("Normalize must succeed before transcription.");
+      const audioPath = await ensureLocalAudio(ctx);
       await setTrackStatus(trackId, "transcribing");
       const provider = getTranscriptionProvider();
-      const result = await provider.transcribe({ audioPath: ctx.normalizedLocalPath });
+      const result = await provider.transcribe({ audioPath });
       ctx.transcription = result;
       ctx.words = result.words;
       ctx.transcriptionCostCents = result.costCents;

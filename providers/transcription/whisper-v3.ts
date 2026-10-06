@@ -99,8 +99,9 @@ export class WhisperV3Provider implements TranscriptionProvider {
     }
 
     const form = new FormData();
-    const blob = await fileToBlob(input.audioPath);
-    form.append("file", blob, "audio.wav");
+    const { filename, mime } = uploadNameFor(input.audioPath);
+    const blob = await fileToBlob(input.audioPath, mime);
+    form.append("file", blob, filename);
     form.append("model", getTranscriptionModel());
     form.append("response_format", "verbose_json");
     form.append("timestamp_granularities[]", "word");
@@ -162,7 +163,21 @@ export class WhisperV3Provider implements TranscriptionProvider {
   }
 }
 
-async function fileToBlob(path: string): Promise<Blob> {
+/** Whisper infers the format from the file name, so send the real extension (mp3 since 2026-10-05). */
+export function uploadNameFor(audioPath: string): { filename: string; mime: string } {
+  const ext = (/\.([a-z0-9]+)$/i.exec(audioPath)?.[1] ?? "wav").toLowerCase();
+  const mimes: Record<string, string> = {
+    mp3: "audio/mpeg",
+    flac: "audio/flac",
+    wav: "audio/wav",
+    m4a: "audio/mp4",
+    ogg: "audio/ogg",
+    webm: "audio/webm",
+  };
+  return { filename: `audio.${ext}`, mime: mimes[ext] ?? "application/octet-stream" };
+}
+
+async function fileToBlob(path: string, mime: string): Promise<Blob> {
   const stream = createReadStream(path);
   const chunks: Buffer[] = [];
   for await (const chunk of stream) {
@@ -170,5 +185,5 @@ async function fileToBlob(path: string): Promise<Blob> {
   }
   const buffer = Buffer.concat(chunks);
   const bytes = new Uint8Array(buffer);
-  return new Blob([bytes], { type: "audio/wav" });
+  return new Blob([bytes], { type: mime });
 }

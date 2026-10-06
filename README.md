@@ -18,9 +18,10 @@ Deferred (schema only): public API keys UI, batch upload, org admin, translation
 |---|---|
 | Marketing (`public/index.html`) | Static, rewritten to `/` |
 | Next.js App Router | Vercel (or `npm run dev`) — auth, dashboard, upload, Wallet redeem, APIs |
-| BullMQ worker (`npm run worker`) | **Separate long-running process** (Railway / Fly / Render / local). Not Vercel serverless. |
+| Lyrixis pipeline (`workers/pipeline.ts`) | **Default (2026-10-05): inside Vercel.** Finalizing an upload (`POST /api/tracks`) or pressing Retry (`POST /api/tracks/:id/retry`) runs `processTrack` via Next `after()` in that function (maxDuration 300 s, Hobby). ffmpeg comes from `ffmpeg-static`. |
+| BullMQ worker (`npm run worker`) | Optional (Option A): set `PROCESSING_MODE=queue` + `REDIS_URL` and run the worker on Railway / Fly / Render. |
 | Postgres + Auth + private Storage | Supabase |
-| Queue | Redis |
+| Queue | Redis, only when `PROCESSING_MODE=queue` |
 | Transcription | Env-selected provider (`TRANSCRIPTION_PROVIDER=whisper_v3`) |
 
 Pricing is read from `pricing_tiers` on the server. The frontend never calculates a charged price. Single-track jobs use job size = 1 (the 300 Ixis tier, same as the Wallet product `lyrixis.track.unlock`, unless an org `custom_rate_cents` is set).
@@ -111,14 +112,14 @@ Nothing in this repo talks to live vendors without keys. Before a paying-custome
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Browser + SSR auth |
 | `SUPABASE_SERVICE_ROLE_KEY` | Worker + privileged API (never expose to the browser) |
 | `WALLET_API_KEY` | Apixis Wallet key for track unlocks (from `npm run family-keys`) |
-| `REDIS_URL` | Queue + upload rate limit |
+| `REDIS_URL` | Only for `PROCESSING_MODE=queue` (Option A); uploads are rate-limited by a DB row count |
 | `TRANSCRIPTION_API_KEY` | Whisper (or OpenAI-compatible) transcription |
-| Worker host with **ffmpeg** | Audio normalize to 16 kHz mono WAV |
+| ffmpeg | Bundled (`ffmpeg-static`); `FFMPEG_PATH` overrides. Normalizes to 16 kHz mono MP3 64k (a 12-min song is ~6 MB, under Whisper's 25 MB limit) |
 | `APP_URL` | Public URL for links and OAuth redirects |
 
 Google OAuth also needs the client ID/secret configured **inside the Supabase dashboard**, not in this repo.
 
-Deploy the Next.js app to Vercel. Deploy `npm run worker` on a VM/container platform. Do not run the audio pipeline on Vercel Functions.
+Deploy the Next.js app to Vercel; lyrics processing runs there too (no Redis, no worker). A track left processing past the 300 s limit is marked failed on the next view and gets a **Retry processing** button. For songs that need more time, move to Vercel Pro (raise `maxDuration` to 800 in `app/api/tracks/route.ts` and `app/api/tracks/[id]/retry/route.ts`) or switch to Option A (`PROCESSING_MODE=queue`, `REDIS_URL`, `npm run worker`).
 
 ## Docs
 

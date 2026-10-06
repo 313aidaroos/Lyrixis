@@ -344,3 +344,24 @@ Recorded by Grok (Developer Bot, notes and status sync at 12:25 AM CT on Oct 5).
 - Database: nothing applied by me. `20261005_restrict_rls_helper_execute.sql` (re-scope the 21 "own …" policies to authenticated) is NOT applied. Its revoke half is already live from #34.
 - Env: `TRANSCRIPTION_API_KEY` (OpenAI) was added to Vercel Production and Preview earlier this evening; there was no separate redeploy for it, but these merges redeployed prod. Lyrics still do not run: there is no REDIS_URL and no worker.
 - Undo: `git revert 1058522`, `git revert 18b2656`, `git revert 11c0ef2` (newest first), or promote the #34 prod deployment in Vercel.
+
+## 2026-10-05 ~9:10 PM (CT): Grok (Developer Bot), lyrics run inside Vercel, Option B (PR from `grok/inline-processing`)
+- **What:** Awad chose Option B (fewest accounts and clicks): no Redis, no Railway worker.
+  - **Trigger:** finalizing an upload (`POST /api/tracks`) schedules `processTrack` with Next `after()`, so the pipeline runs in the same function after the response.
+  - **Time limit:** `maxDuration = 300`, the Vercel Hobby + Fluid compute maximum. The plan was checked via the Vercel connector: `hobby`. `vercel.json` sets `"fluid": true`.
+  - **ffmpeg:** comes from `ffmpeg-static`. The binary is traced into the function via `outputFileTracingIncludes`, and `FFMPEG_PATH` overrides it.
+  - **Audio format:** normalized audio is now 16 kHz mono MP3 64k (`normalized.mp3`, about 0.48 MB/min) instead of WAV, sent to OpenAI `whisper-1` with word and segment timestamps. A 12-minute song is about 6 MB, under the 25 MB limit, so no chunking is needed.
+  - **Upload rate limit:** now a DB count (20 tracks per user per rolling hour) instead of Redis. Minting signed URLs also has a light limit (per instance).
+  - **Retry:** new `POST /api/tracks/:id/retry` (owner only, maxDuration 300) plus a "Retry processing" button on the track page. It claims the row with a conditional update, so double clicks can't double-process. It resets steps that didn't succeed; steps that already succeeded are skipped, so a finished transcription isn't paid for twice.
+  - **Lazy sweep:** a track still "processing" more than 390 s after its last update (the run was killed) is marked failed with a Retry hint when the track or the list is next loaded.
+  - **Pipeline fix:** retries can now rebuild local audio if earlier steps were skipped (`ensureLocalAudio`).
+  - **Pricing:** the calculator's built-in default for 100–999 is now 149, matching DB `pricing_tiers`.
+- **Option A is still available:** set `PROCESSING_MODE=queue` + `REDIS_URL` and run `npm run worker`. `workers/index.ts` and `lib/queue.ts` are unchanged. `next/server` is imported lazily, so the worker bundle (`npm run worker:build`) still builds without Next.
+- **Pre-merge E2E against prod infrastructure:** I used the service role from a production `vercel env pull` file in /tmp (mode 600, never printed) and the box OpenAI key. A test user `grok-e2e-…@lyrixis.test` got a 7.6 s TTS clip of "Amazing Grace" (public domain). `processTrack` finished in 6.1 s with all 8 steps succeeded:
+  - 2 lyric lines with word timings (for example `Amazing@0-440 grace@440-740 …`).
+  - `normalized.mp3` was 61 KB.
+  - Cost 0.075¢.
+  - Status `manual_review`, because confidence 0.76 is under 0.8.
+  - The test rows and files are cleaned up after the prod E2E (see the next entry).
+- **Who:** Grok / Developer Bot, for Awad. Awad approved Option B and the merge.
+- **Undo:** `git revert <squash sha>`. Then either set nothing (uploads fail at processing) or switch to Option A. No database migration, no env change.

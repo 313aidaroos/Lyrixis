@@ -13,7 +13,7 @@ interface Tier {
 // 100 Ixis = $1
 const DEFAULT_TIERS: Tier[] = [
   { min_songs: 1, max_songs: 99, rate_ixis: 300 }, // Wallet SKU lyrixis.track.unlock = 300 Ixis ($3)
-  { min_songs: 100, max_songs: 999, rate_ixis: 150 }, // $1.49 → 150 Ixis
+  { min_songs: 100, max_songs: 999, rate_ixis: 149 }, // DB pricing_tiers 100–999 = 149 Ixis ($1.49)
   { min_songs: 1000, max_songs: 9999, rate_ixis: 75 }, // $0.75 → 75 Ixis
   { min_songs: 10000, max_songs: 99999, rate_ixis: 40 }, // $0.40 → 40 Ixis
   { min_songs: 100000, max_songs: 999999, rate_ixis: 20 }, // $0.20 → 20 Ixis

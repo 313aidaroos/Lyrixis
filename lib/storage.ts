@@ -8,7 +8,7 @@ export function originalAudioPath(userId: string, trackId: string, extension: st
 }
 
 export function normalizedAudioPath(userId: string, trackId: string): string {
-  return `${userId}/${trackId}/normalized.wav`;
+  return `${userId}/${trackId}/normalized.mp3`;
 }
 
 export function exportStoragePath(

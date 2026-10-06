@@ -5,7 +5,9 @@ import { HttpError } from "@/lib/errors";
 import { createAndEnqueueTrack, finalizeDirectUpload, listTracks } from "@/services/tracks";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+// 300 = Vercel Hobby + Fluid compute max (PROCESSING_MAX_DURATION_SECONDS in lib/processing.ts).
+// Finalizing an upload schedules the lyrics pipeline with after(); it runs in this invocation.
+export const maxDuration = 300;
 
 export async function GET() {
   try {

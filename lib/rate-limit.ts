@@ -31,18 +31,8 @@ function assertMemoryWaitlistLimit(ip: string): void {
   if (current.count > WAITLIST_MAX) throwWaitlistLimited();
 }
 
-export async function assertUploadRateLimit(userId: string): Promise<void> {
-  const key = `rl:upload:${userId}`;
-  const count = await getRedis().incr(key);
-  if (count === 1) {
-    await getRedis().expire(key, 60 * 60);
-  }
-  if (count > 20) {
-    const error = new Error("Upload rate limit reached. Try again in an hour.");
-    (error as Error & { status?: number }).status = 429;
-    throw error;
-  }
-}
+// assertUploadRateLimit (Redis) was removed 2026-10-05: uploads are capped by a DB row count in
+// services/tracks.ts (checkUploadRateLimit), so uploads work without REDIS_URL.
 
 const INGEST_WINDOW_SEC = 10 * 60;
 const INGEST_MAX = 6;
