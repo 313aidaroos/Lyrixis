@@ -365,3 +365,20 @@ Recorded by Grok (Developer Bot, notes and status sync at 12:25 AM CT on Oct 5).
   - The test rows and files are cleaned up after the prod E2E (see the next entry).
 - **Who:** Grok / Developer Bot, for Awad. Awad approved Option B and the merge.
 - **Undo:** `git revert <squash sha>`. Then either set nothing (uploads fail at processing) or switch to Option A. No database migration, no env change.
+
+## 2026-10-05 ~9:15 PM (CT): Grok (Developer Bot), #36 merged, prod E2E passed (Option B live)
+- **Merge:** PR #36 was squash-merged at 9:05 PM CT as `f06695f`. CI and the Vercel preview were green on `3ad8bd3`. Production deployment `lyrixis-7gob4n75c` went Ready about a minute later.
+- **Real end-to-end on production (lyrixis.vercel.app).** Test user `grok-e2e-…@lyrixis.test` was created with the service role. Its session came from a generated magic link (no email sent). Audio was a 7.6 s TTS clip of "Amazing Grace" (public domain).
+  - The upload flow:
+    - `/upload` signed in returned 200.
+    - `POST /api/tracks/upload-url` returned 200.
+    - The browser-style PUT to the signed Storage URL returned 200.
+    - `POST /api/tracks` returned 201 with `trx_4610aad722cae903`.
+  - The Vercel function processed the track in about 8 s and reached `manual_review` (confidence 0.76 is under 0.8).
+  - Result: `whisper_v3:whisper-1`, 2 lines with word timings: "Amazing grace, how sweet the sound that saved a wretch like me." [0–3160 ms] and "I once was lost, but now am found, was blind, but now I see." [3640–7260 ms]. `normalized.mp3` was 61 KB. This proves `ffmpeg-static` runs on Vercel and the Vercel `TRANSCRIPTION_API_KEY` works.
+  - Retry on a finished track returned 409.
+  - Retry on a simulated failed-after-normalize track returned 202, and a second click returned 409. It re-ran only transcribe through complete (transcription v2), finished in about 4 s, and wrote audit `retry`.
+- **Cleanup:**
+  - Both test tracks deleted (cascade), plus 4 Storage objects, the audit rows, the app user and the auth user. Verified 0 left.
+  - The /tmp env pull file is deleted.
+- **Not exercised live:** the 390 s stuck sweep, because the `tracks_set_updated_at` trigger prevents back-dating. It's covered by unit tests.
