@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
-import { Special_Elite } from "next/font/google";
+import { Manrope, Martian_Mono, Unbounded } from "next/font/google";
 import "./globals.css";
 import { CixyWidget } from "@/components/CixyWidget";
 import { CixyPageHelp } from "@/components/CixyPageHelp";
 
-const specialElite = Special_Elite({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-special-elite",
-});
+// 2026-10-05 font refresh preview (Grok, DO NOT MERGE until Awad approves):
+// display = Unbounded (wide geometric, neon-sign energy), body = Manrope (very readable),
+// mono = Martian Mono (wide mono that rhymes with Unbounded). Was Special Elite everywhere.
+const display = Unbounded({ subsets: ["latin"], variable: "--font-display", display: "swap" });
+const body = Manrope({ subsets: ["latin"], variable: "--font-body", display: "swap" });
+const mono = Martian_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Lyrixis — The intelligence layer for music catalogs",
@@ -33,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${specialElite.variable} font-special-elite antialiased`}>
+      <body className={`${display.variable} ${body.variable} ${mono.variable} font-body antialiased`}>
         <div className="site-stage" aria-hidden="true" />
         {children}
         <CixyWidget />

@@ -74,7 +74,7 @@ export function PricingCalculator() {
         </div>
         <div className="text-right">
           <span className="font-mono text-xs uppercase tracking-widest text-ink-3">Rate per track</span>
-          <p className="grad-text font-display text-4xl font-extrabold">{quote.rateFormatted}</p>
+          <p className="grad-text font-body text-4xl font-extrabold tabular-nums">{quote.rateFormatted}</p>
         </div>
       </div>
 
@@ -122,17 +122,17 @@ export function PricingCalculator() {
       <div className="mt-8 grid grid-cols-1 gap-4 border-t border-line pt-6 sm:grid-cols-3">
         <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4 text-center">
           <p className="text-xs text-ink-3">Volume tier</p>
-          <p className="mt-1 font-display text-lg font-bold">
+          <p className="mt-1 font-body text-lg font-extrabold tabular-nums">
             {quote.tier.max_songs ? `${quote.tier.min_songs.toLocaleString()} – ${quote.tier.max_songs.toLocaleString()}` : "1M+ Enterprise"}
           </p>
         </div>
         <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4 text-center">
           <p className="text-xs text-ink-3">Unit rate</p>
-          <p className="mt-1 font-display text-lg font-bold text-cyan">{quote.rateFormatted} / track</p>
+          <p className="mt-1 font-body text-lg font-extrabold tabular-nums text-cyan">{quote.rateFormatted} / track</p>
         </div>
         <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4 text-center">
           <p className="text-xs text-ink-3">Estimated total</p>
-          <p className="grad-text mt-1 font-display text-lg font-bold">{quote.totalFormatted}</p>
+          <p className="grad-text mt-1 font-body text-lg font-extrabold tabular-nums">{quote.totalFormatted}</p>
         </div>
       </div>
 

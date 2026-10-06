@@ -382,3 +382,16 @@ Recorded by Grok (Developer Bot, notes and status sync at 12:25 AM CT on Oct 5).
   - Both test tracks deleted (cascade), plus 4 Storage objects, the audit rows, the app user and the auth user. Verified 0 left.
   - The /tmp env pull file is deleted.
 - **Not exercised live:** the 390 s stuck sweep, because the `tracks_set_updated_at` trigger prevents back-dating. It's covered by unit tests.
+
+## 2026-10-05 ~9:30 PM (CT): Grok (Developer Bot), font refresh PREVIEW (draft PR, DO NOT MERGE)
+- **What:** Awad asked for new fonts ("surprise me, but show me the design first"). Only the fonts change; colors, layout, header and footer stay the same.
+  - **Display:** Unbounded (was Special Elite in the app and Familjen Grotesk on /enterprise).
+  - **Body:** Manrope (was Special Elite in the app and Inter on /enterprise).
+  - **Mono:** Martian Mono (was Special Elite in the app and JetBrains Mono on /enterprise).
+  - **App wiring:** the app loads the fonts with `next/font` as `--font-display`, `--font-body` and `--font-mono`, the variables `tailwind.config.ts` already expects. This removes the global `Special Elite !important` rule.
+  - **/enterprise:** `public/index.html` swaps the Google Fonts link and its CSS variables. IBM Plex Sans Arabic is kept.
+  - **Pricing calculator:** its four number readouts use Manrope extra-bold with tabular figures, because Unbounded 800 is wide enough to wrap "40 Ixis · $0.40".
+- **Alternate display fonts shown to Awad:** Syne 800 and Bricolage Grotesque 800 (condensed).
+- **Where:** `app/layout.tsx`, `app/globals.css`, `components/PricingCalculator.tsx`, `public/index.html`. Screenshots are in `/workspace/lyrixis-font-preview/` on the box.
+- **Not merged, not deployed to production.** Wait for Awad's approval or edits.
+- **Undo:** close the PR.

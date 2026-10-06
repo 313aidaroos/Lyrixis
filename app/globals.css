@@ -24,8 +24,15 @@ html {
   scroll-behavior: smooth;
 }
 
-body, body * {
-  font-family: 'Special Elite', monospace !important;
+/* 2026-10-05 font refresh preview: Unbounded (display) / Manrope (body) / Martian Mono (mono).
+   Tailwind font-display / font-body / font-mono read these variables (tailwind.config.ts). */
+body {
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display), system-ui, sans-serif;
+  letter-spacing: -0.02em;
 }
 
 body {
