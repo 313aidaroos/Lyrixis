@@ -1,7 +1,8 @@
 import { Filters, VoiceCard } from "@/components/voices/server";
-import { getVoices } from "@/lib/voices/context";
+import { getVoices, voicesOpen } from "@/lib/voices/context";
 
 export default async function VoicesHome({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
+  if (!voicesOpen()) return null; // Voices closed: the layout shows "Opening soon"; skip DB reads.
   const q = await searchParams;
   const svc = await getVoices();
   const [voices, cfg] = await Promise.all([svc.catalog({ q: q.q, language: q.language || undefined, dialect: q.dialect || undefined, use: q.use || undefined }), svc.pricing()]);

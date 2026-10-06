@@ -3,10 +3,11 @@ import { notFound, redirect } from "next/navigation";
 import { DownloadButton } from "@/components/voices/LicenseFlow";
 import { ActionButton } from "@/components/voices/ui";
 import { Pill } from "@/components/voices/server";
-import { getActor, getVoices } from "@/lib/voices/context";
+import { getActor, getVoices, voicesOpen } from "@/lib/voices/context";
 import { VoicesError } from "@/lib/voices/errors";
 
 export default async function ReceiptPage({ params }: { params: Promise<{ id: string }> }) {
+  if (!voicesOpen()) return null; // Voices closed: the layout shows "Opening soon"; skip DB reads.
   const { id } = await params;
   const [svc, actor] = await Promise.all([getVoices(), getActor()]);
   if (!actor) redirect(`/login?next=/voices/receipts/${id}`);

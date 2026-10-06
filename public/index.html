@@ -485,7 +485,7 @@ footer{border-top:1px solid var(--line-soft);padding:52px 0 40px;margin-top:60px
       <h2>Same engine, whatever the scale.</h2>
     </div>
     <div class="grid g4">
-      <div class="card"><h3>Artists</h3><p>Get synced lyrics and clean metadata for a release without hiring anyone. One song, $2.99.</p></div>
+      <div class="card"><h3>Artists</h3><p>Get synced lyrics and clean metadata for a release without hiring anyone. One song, 300 Ixis ($3).</p></div>
       <div class="card"><h3>Catalog owners</h3><p>Enrich a back catalog that has never had timed lyrics, translations or structure data attached.</p></div>
       <div class="card"><h3>Music companies</h3><p>Labels, distributors and publishers processing releases in bulk with QA and confidence reporting.</p></div>
       <div class="card"><h3>Developers</h3><p>One REST API. Upload a track, poll a job, pull structured JSON into your own product.</p></div>
@@ -513,16 +513,16 @@ footer{border-top:1px solid var(--line-soft);padding:52px 0 40px;margin-top:60px
       <table class="ptable">
         <thead><tr><th>Songs processed</th><th style="text-align:right">Per song</th></tr></thead>
         <tbody>
-          <tr><td>1 – 99</td><td>$2.99</td></tr>
-          <tr><td>100 – 999</td><td>$1.49</td></tr>
-          <tr><td>1,000 – 9,999</td><td>$0.75</td></tr>
-          <tr><td>10,000 – 99,999</td><td>$0.40</td></tr>
-          <tr><td>100,000 – 999,999</td><td>$0.20</td></tr>
+          <tr><td>1 – 99</td><td>300 Ixis</td></tr>
+          <tr><td>100 – 999</td><td>149 Ixis</td></tr>
+          <tr><td>1,000 – 9,999</td><td>75 Ixis</td></tr>
+          <tr><td>10,000 – 99,999</td><td>40 Ixis</td></tr>
+          <tr><td>100,000 – 999,999</td><td>20 Ixis</td></tr>
           <tr><td>1,000,000+</td><td style="font-size:.95rem;color:var(--cyan)">Custom</td></tr>
         </tbody>
       </table>
       <p style="color:var(--ink-3);font-size:.85rem;margin-top:18px">Processing millions of songs? <a href="mailto:Lyrixis@Apixis.dev?subject=Lyrixis%20enterprise%20pricing" style="color:var(--violet)">Contact Enterprise →</a></p>
-      <div class="note" style="margin-top:26px">Introductory rates for early customers. Pricing is confirmed in writing before any catalog job runs.</div>
+      <div class="note" style="margin-top:26px">Prices are in Ixis (100 Ixis = $1), paid through the Apixis Wallet. Introductory rates for early customers. Pricing is confirmed in writing before any catalog job runs.</div>
     </div>
 
     <div class="calc">
@@ -533,8 +533,8 @@ footer{border-top:1px solid var(--line-soft);padding:52px 0 40px;margin-top:60px
         <span>1</span><span>1M+</span>
       </div>
       <div class="calc-out">
-        <div class="calc-box"><span>Rate</span><strong id="outRate">$0.40</strong></div>
-        <div class="calc-box"><span>Estimated total</span><strong class="grad" id="outTotal">$4,000</strong></div>
+        <div class="calc-box"><span>Rate</span><strong id="outRate">40 Ixis</strong></div>
+        <div class="calc-box"><span>Estimated total</span><strong class="grad" id="outTotal">400,000 Ixis</strong></div>
       </div>
       <p style="color:var(--ink-3);font-size:.8rem;margin-top:18px">Estimate only. Final pricing is calculated server-side at checkout. Add-ons such as translation and human verification are priced separately.</p>
     </div>
@@ -679,7 +679,7 @@ curl -X POST https://api.lyrixis.com/v1/tracks \
 
   <details class="faq" open><summary>What exactly do I get for one song?</summary><p>A full transcription with word-level and line-level timestamps, detected song structure, language and dialect identification, explicit content screening, a vocal/instrumental map, your metadata carried through, and exports in TXT, JSON, CSV, SRT, LRC, VTT and TTML. Every automated result carries a confidence score.</p></details>
 
-  <details class="faq"><summary>Do I need a subscription?</summary><p>No. Lyrixis is pay-per-song. Process one track for $2.99 without any commitment, or preload a balance if you're processing regularly. Volume rates apply automatically as your count grows.</p></details>
+  <details class="faq"><summary>Do I need a subscription?</summary><p>No. Lyrixis is pay-per-song. Process one track for 300 Ixis ($3) without any commitment, paid from your Apixis Wallet (100 Ixis = $1). Ixis is the only way to pay. Volume rates apply automatically as your count grows.</p></details>
 
   <details class="faq"><summary>Is there a different plan for labels?</summary><p>No. Labels, artists, distributors and developers all use the same engine and the same volume price list. Enterprise agreements add throughput, SLA, integration support and negotiated rates above a million tracks — not a different product.</p></details>
 
@@ -786,11 +786,11 @@ window.addEventListener("hashchange",()=>go((location.hash||"#home").slice(1)));
 
 /* ---------- pricing calculator ---------- */
 const TIERS=[
-  {min:1,max:99,rate:2.99},
-  {min:100,max:999,rate:1.49},
-  {min:1000,max:9999,rate:0.75},
-  {min:10000,max:99999,rate:0.40},
-  {min:100000,max:999999,rate:0.20},
+  {min:1,max:99,rate:300},
+  {min:100,max:999,rate:149},
+  {min:1000,max:9999,rate:75},
+  {min:10000,max:99999,rate:40},
+  {min:100000,max:999999,rate:20},
   {min:1000000,max:Infinity,rate:null}
 ];
 const rateFor=n=>TIERS.find(t=>n>=t.min&&n<=t.max);
@@ -810,8 +810,8 @@ function updateCalc(){
     document.getElementById("outRate").textContent="Custom";
     document.getElementById("outTotal").textContent="Contact us";
   }else{
-    document.getElementById("outRate").textContent="$"+t.rate.toFixed(2);
-    document.getElementById("outTotal").textContent="$"+(n*t.rate).toLocaleString(undefined,{maximumFractionDigits:0});
+    document.getElementById("outRate").textContent=t.rate.toLocaleString()+" Ixis";
+    document.getElementById("outTotal").textContent=(n*t.rate).toLocaleString()+" Ixis";
   }
 }
 slider.addEventListener("input",updateCalc);updateCalc();

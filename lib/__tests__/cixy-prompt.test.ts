@@ -13,4 +13,11 @@ describe("Lyrixis Cixy prompt", () => {
       /salaam|salam|insha|alhamdulillah|bismillah|halal|haram|prayer|ramadan|hijri|\beid\b|jumu|suhoor|iftar|mawlid|muslim|islam|scholar|riba|alcohol|pork|gambl/i,
     );
   });
+
+  it("prices in Ixis through the Apixis Wallet only (2026-10-05)", () => {
+    expect(CIXY_SYSTEM_PROMPT).toContain("300 Ixis per song");
+    expect(CIXY_SYSTEM_PROMPT).toContain("Apixis Wallet");
+    expect(CIXY_SYSTEM_PROMPT).toContain("1,000 free Ixis in the shared Apixis Wallet");
+    expect(CIXY_SYSTEM_PROMPT).not.toMatch(/\$2\.99|test mode|stripe/i);
+  });
 });

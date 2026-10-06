@@ -44,8 +44,8 @@ export function getMaxUploadBytes(): number {
 }
 
 export function getMaxDurationSeconds(): number {
-  const seconds = Number.parseInt(optional("MAX_DURATION_SECONDS") ?? "900", 10);
-  return Number.isFinite(seconds) && seconds > 0 ? seconds : 900;
+  const seconds = Number.parseInt(optional("MAX_DURATION_SECONDS") ?? "720", 10);
+  return Number.isFinite(seconds) && seconds > 0 ? seconds : 720;
 }
 
 export function getRedisUrl(): string {

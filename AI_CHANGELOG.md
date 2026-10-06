@@ -12,6 +12,10 @@ Entry format:
 
 ---
 
+## 2026-10-05 — Grok (Developer Bot): 300 Ixis pricing, Cixy wording, RLS-helper migration
+- Changed: `lib/ixis-pricing.ts`, pricing route/service, price copy (home, FAQ, Listen, /enterprise), `lib/cixy-prompt.ts`, `LoginForm`, `ApixisWorldWelcome`, `schema.sql`, two new migration files (not applied), tests, `NOTES/GROK.md`.
+- Why: table said 299 vs Wallet SKU 300; Cixy said "$2.99 test mode / no live Stripe"; 1,000 Ixis grant is the shared Wallet's, not Apixis.dev's; Supabase advisor flagged anon-executable SECURITY DEFINER helpers.
+
 ## 2026-09-28 — JunoAI
 - Changed: created this file
 - Why: owner's standing rule — every AI that touches this repo must log its changes here
@@ -65,3 +69,7 @@ Entry format:
 ## 2026-10-05 (CT) — Grok (Lyrixis Lead): merged #29, #14, #28 (Awad approved)
 - Changed: #29 `03df856` (no Stripe checkout on /tracks, no salam greetings, Apixis.dev 1,000 Ixis wording); #14 `ba67a21` (footer "Other Ixis companies", 12 sites incl. Ominix at ominix-app.vercel.app); #28 `acf2978` (Lyrixis Voices, closed in production, migration 0006 not applied). Details and undo in NOTES/GROK.md.
 - Why: Awad approved the merges on 2026-10-05 (7:54 PM and 8:08 PM CT).
+
+## 2026-10-05 — Grok (Developer Bot): direct-to-Storage upload + own-upload unlock
+- Changed: `app/api/tracks/upload-url/route.ts` (new), `app/api/tracks/route.ts`, `services/tracks.ts`, `lib/storage.ts`, `lib/audio.ts`, `lib/env.ts`, `components/UploadForm.tsx`, `app/api/redeem/route.ts`, `components/RedeemButton.tsx`, `components/TrackView.tsx`, tests, `.env.example`, `README.md`, `docs/WORKER_HOSTING.md`, `NOTES/GROK.md`.
+- Why: Vercel 413 on uploads over 4.5 MB; let users pay 300 Ixis (Wallet SKU `lyrixis.track.unlock`) to unlock their own uploaded track; transcription provider is now OpenAI.
