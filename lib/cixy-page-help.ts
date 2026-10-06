@@ -203,7 +203,10 @@ export const PAGE_HELP: Record<string, CixyPageHelpEntry> = {
       "After unlocking, use Correct to fix any line (it saves when you click away) and Exports for TXT, SRT, LRC or JSON.",
       "Amber marks show low-confidence lines and words worth checking.",
     ],
-    tips: ["If your Wallet is short, you're sent to buy Ixis and brought back to this track."],
+    tips: [
+      "If your Wallet is short, you're sent to buy Ixis and brought back to this track.",
+      "If processing failed or stopped, press Retry processing. It picks up where it stopped and costs nothing.",
+    ],
     suggestions: ["What do the amber marks mean?", "Which export do I need for Spotify or Apple Music?"],
   },
   "/voices": {

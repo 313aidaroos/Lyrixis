@@ -13,6 +13,7 @@ export function TrackView({ publicId }: { publicId: string }) {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<"synced" | "edit" | "exports">("synced");
+  const [retrying, setRetrying] = useState(false);
 
   const load = useCallback(async () => {
     const response = await fetch(`/api/tracks/${publicId}`);
@@ -51,6 +52,21 @@ export function TrackView({ publicId }: { publicId: string }) {
     }, 3000);
     return () => window.clearInterval(timer);
   }, [track, load]);
+
+  async function retry() {
+    setRetrying(true);
+    setError(null);
+    try {
+      const response = await fetch(`/api/tracks/${publicId}/retry`, { method: "POST" });
+      const json = (await response.json().catch(() => ({}))) as { error?: { message: string } };
+      if (!response.ok) throw new Error(json.error?.message ?? "Retry failed.");
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Retry failed.");
+    } finally {
+      setRetrying(false);
+    }
+  }
 
   async function saveLine(lineIndex: number, text: string) {
     const response = await fetch(`/api/tracks/${publicId}/corrections`, {
@@ -132,6 +148,14 @@ export function TrackView({ publicId }: { publicId: string }) {
               await load();
             }}
           />
+        )}
+        {track.status === "failed" && (
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <button type="button" className="btn-primary" disabled={retrying} onClick={() => void retry()}>
+              {retrying ? "Restarting…" : "Retry processing"}
+            </button>
+            <p className="text-sm text-ink-3">Runs the lyrics again from where it stopped. No charge until you unlock.</p>
+          </div>
         )}
         {!ready && track.status !== "failed" && (
           <p className="mt-6 text-sm text-ink-3">

@@ -12,8 +12,8 @@ import {
   removePrivateObjects,
   uploadPrivateObject,
 } from "@/lib/storage";
-import { enqueueTrackProcessing } from "@/lib/queue";
-import { assertUploadRateLimit } from "@/lib/rate-limit";
+import { assertRateLimit } from "@/lib/rate-limit";
+import { STUCK_MESSAGE, canRetry, isStuck, processingMode, startTrackProcessing } from "@/lib/processing";
 import { extensionFromFilename } from "@/lib/utils";
 import type { AppUser, TrackStatus, TrackSummary } from "@/types";
 import { confidenceToBand } from "@/lib/utils";
@@ -36,9 +36,15 @@ interface TrackRow {
   dialect: string | null;
   language_confidence: number | string | null;
   audio_path: string | null;
+  updated_at?: string | null;
 }
 
+const TRACK_COLUMNS =
+  "id, public_id, title, artist, status, duration_seconds, language, paid, transcription_confidence, error_message, created_at, updated_at, user_id, rights_confirmed, rights_confirmed_at, dialect, language_confidence, audio_path";
+
 const PREVIEW_MS = 30_000;
+
+const PIPELINE_STEPS = ["validate", "store", "normalize", "transcribe", "language", "align", "costs", "complete"];
 
 export function previewWindowMs(): number {
   return PREVIEW_MS;
@@ -72,9 +78,7 @@ export async function listTracks(user: AppUser): Promise<TrackSummary[]> {
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("tracks")
-    .select(
-      "id, public_id, title, artist, status, duration_seconds, language, paid, transcription_confidence, error_message, created_at, user_id, rights_confirmed, rights_confirmed_at, dialect, language_confidence, audio_path"
-    )
+    .select(TRACK_COLUMNS)
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -82,16 +86,33 @@ export async function listTracks(user: AppUser): Promise<TrackSummary[]> {
     throw new HttpError(500, "list_failed", error.message);
   }
 
-  return ((data as TrackRow[] | null) ?? []).map(toSummary);
+  const rows = await Promise.all(((data as TrackRow[] | null) ?? []).map(sweepIfStuck));
+  return rows.map(toSummary);
+}
+
+/**
+ * Lazy sweep (2026-10-05): a track left "processing" past the function time limit (the run was
+ * killed) is flipped to failed with a Retry hint. Conditional on updated_at so a live run that
+ * just wrote a status is never overwritten.
+ */
+export async function sweepIfStuck(row: TrackRow): Promise<TrackRow> {
+  if (!isStuck(row)) return row;
+  const admin = createAdminClient();
+  const { data } = await admin
+    .from("tracks")
+    .update({ status: "failed", error_message: STUCK_MESSAGE })
+    .eq("id", row.id)
+    .eq("updated_at", row.updated_at as string)
+    .select("status, error_message, updated_at")
+    .maybeSingle();
+  return data ? { ...row, ...(data as Partial<TrackRow>) } : row;
 }
 
 export async function getOwnedTrack(user: AppUser, publicId: string): Promise<TrackRow> {
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("tracks")
-    .select(
-      "id, public_id, title, artist, status, duration_seconds, language, paid, transcription_confidence, error_message, created_at, user_id, rights_confirmed, rights_confirmed_at, dialect, language_confidence, audio_path"
-    )
+    .select(TRACK_COLUMNS)
     .eq("public_id", publicId)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -102,7 +123,7 @@ export async function getOwnedTrack(user: AppUser, publicId: string): Promise<Tr
   if (!data) {
     throw new HttpError(404, "not_found", "Track not found.");
   }
-  return data as TrackRow;
+  return sweepIfStuck(data as TrackRow);
 }
 
 function assertRightsConfirmed(rightsConfirmed: boolean): void {
@@ -115,18 +136,21 @@ function assertRightsConfirmed(rightsConfirmed: boolean): void {
   }
 }
 
+/** Uploads per user per rolling hour (was a Redis counter; Option B counts rows instead). */
+export const UPLOADS_PER_HOUR = 20;
+
 async function checkUploadRateLimit(userId: string): Promise<void> {
-  try {
-    await assertUploadRateLimit(userId);
-  } catch (error) {
-    if (error instanceof Error && "status" in error && (error as { status?: number }).status === 429) {
-      throw new HttpError(429, "rate_limited", error.message);
-    }
-    throw new HttpError(
-      503,
-      "queue_unavailable",
-      "REDIS_URL is required for rate limiting and the job queue. Start Redis and the worker."
-    );
+  const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const { count, error } = await createAdminClient()
+    .from("tracks")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .gte("created_at", since);
+  if (error) {
+    throw new HttpError(503, "rate_limit_unavailable", "Could not check the upload limit. Try again.");
+  }
+  if ((count ?? 0) >= UPLOADS_PER_HOUR) {
+    throw new HttpError(429, "rate_limited", `Upload limit reached (${UPLOADS_PER_HOUR} per hour). Try again later.`);
   }
 }
 
@@ -247,30 +271,9 @@ async function queueStoredTrack(input: {
     throw new HttpError(500, "update_failed", updateError.message);
   }
 
-  let queueJobId: string;
-  try {
-    queueJobId = await enqueueTrackProcessing(input.trackId);
-  } catch (error) {
-    await admin
-      .from("tracks")
-      .update({
-        status: "failed",
-        error_message:
-          "Job queue is unavailable. Set REDIS_URL and run `npm run worker` as a separate process.",
-      })
-      .eq("id", input.trackId);
-    throw new HttpError(
-      503,
-      "queue_unavailable",
-      error instanceof Error
-        ? error.message
-        : "REDIS_URL is required. The worker is a separate process, not Vercel serverless."
-    );
-  }
-
-  const steps = ["validate", "store", "normalize", "transcribe", "language", "align", "costs", "complete"];
+  const queueJobId = processingMode() === "queue" ? `track-${input.trackId}` : "inline";
   const { error: jobsError } = await admin.from("processing_jobs").insert(
-    steps.map((step) => ({
+    PIPELINE_STEPS.map((step) => ({
       track_id: input.trackId,
       step,
       state: "pending",
@@ -279,6 +282,23 @@ async function queueStoredTrack(input: {
   );
   if (jobsError) {
     console.error("processing_jobs insert failed", jobsError.message);
+  }
+
+  try {
+    await startTrackProcessing(input.trackId);
+  } catch (error) {
+    await admin
+      .from("tracks")
+      .update({
+        status: "failed",
+        error_message: "Processing could not start. Press Retry.",
+      })
+      .eq("id", input.trackId);
+    throw new HttpError(
+      503,
+      "processing_unavailable",
+      error instanceof Error ? error.message : "Processing could not start."
+    );
   }
 
   await writeAudit({
@@ -329,6 +349,8 @@ export async function prepareDirectUpload(input: {
     size: input.size,
   });
   await checkUploadRateLimit(input.user.id);
+  // Signed upload URLs don't create rows, so also cap how fast they can be minted.
+  await assertRateLimit("upload-url", input.user.id, 40, 60 * 60);
 
   const uploadId = randomUUID();
   const path = originalAudioPath(input.user.id, uploadId, extension);
@@ -442,6 +464,62 @@ export async function finalizeDirectUpload(input: {
     ip: input.ip ?? null,
     source: "direct",
   });
+}
+
+/**
+ * Retry (2026-10-05): the owner presses Retry on a failed, stuck or never-started track. Claims
+ * the row with a conditional update (so two clicks or a live run can't double-process), resets the
+ * steps that didn't succeed, and starts the pipeline again. Steps that already succeeded are
+ * skipped by the pipeline, so a finished transcription is not paid for twice.
+ */
+export async function retryTrack(input: { user: AppUser; publicId: string; ip?: string | null }): Promise<{ publicId: string; status: TrackStatus }> {
+  await assertRateLimit("track-retry", input.user.id, 12, 60 * 60);
+  const track = await getOwnedTrack(input.user, input.publicId);
+  if (!canRetry(track)) {
+    throw new HttpError(409, "not_retryable", "This track is processing or already finished.");
+  }
+  const admin = createAdminClient();
+  const { data: claimed, error } = await admin
+    .from("tracks")
+    .update({ status: "queued", error_message: null })
+    .eq("id", track.id)
+    .eq("status", track.status)
+    .eq("updated_at", track.updated_at as string)
+    .select("id")
+    .maybeSingle();
+  if (error) throw new HttpError(500, "retry_failed", error.message);
+  if (!claimed) throw new HttpError(409, "retry_conflict", "This track is already restarting.");
+
+  const { data: jobs } = await admin.from("processing_jobs").select("step").eq("track_id", track.id);
+  const have = new Set(((jobs as { step: string }[] | null) ?? []).map((job) => job.step));
+  await admin
+    .from("processing_jobs")
+    .update({ state: "pending", error: null })
+    .eq("track_id", track.id)
+    .neq("state", "succeeded");
+  const missing = PIPELINE_STEPS.filter((step) => !have.has(step));
+  if (missing.length > 0) {
+    await admin.from("processing_jobs").insert(
+      missing.map((step) => ({ track_id: track.id, step, state: "pending", queue_job_id: "inline" }))
+    );
+  }
+
+  try {
+    await startTrackProcessing(track.id);
+  } catch (startError) {
+    await admin.from("tracks").update({ status: "failed", error_message: "Processing could not start. Press Retry." }).eq("id", track.id);
+    throw new HttpError(503, "processing_unavailable", startError instanceof Error ? startError.message : "Processing could not start.");
+  }
+
+  await writeAudit({
+    actorUserId: input.user.id,
+    action: "retry",
+    entityType: "track",
+    entityId: track.id,
+    metadata: { public_id: track.public_id, previous_status: track.status },
+    ip: input.ip ?? null,
+  });
+  return { publicId: track.public_id, status: "queued" };
 }
 
 export type { TrackRow };

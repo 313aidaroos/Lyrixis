@@ -73,3 +73,7 @@ Entry format:
 ## 2026-10-05 — Grok (Developer Bot): direct-to-Storage upload + own-upload unlock
 - Changed: `app/api/tracks/upload-url/route.ts` (new), `app/api/tracks/route.ts`, `services/tracks.ts`, `lib/storage.ts`, `lib/audio.ts`, `lib/env.ts`, `components/UploadForm.tsx`, `app/api/redeem/route.ts`, `components/RedeemButton.tsx`, `components/TrackView.tsx`, tests, `.env.example`, `README.md`, `docs/WORKER_HOSTING.md`, `NOTES/GROK.md`.
 - Why: Vercel 413 on uploads over 4.5 MB; let users pay 300 Ixis (Wallet SKU `lyrixis.track.unlock`) to unlock their own uploaded track; transcription provider is now OpenAI.
+
+## 2026-10-05 — Grok (Developer Bot): lyrics pipeline runs inside Vercel (Option B)
+- Changed: `lib/processing.ts`, `lib/ffmpeg.ts`, `app/api/tracks/[id]/retry/route.ts` (new); `services/tracks.ts`, `workers/pipeline.ts`, `providers/transcription/whisper-v3.ts`, `lib/storage.ts`, `lib/rate-limit.ts`, `app/api/tracks/route.ts`, `components/TrackView.tsx`, `components/PricingCalculator.tsx`, `next.config.ts`, `vercel.json`, `package.json` (`ffmpeg-static`), docs, tests
+- Why: Awad chose Option B (fewest accounts): no Redis, no Railway. Uploads run the pipeline via `after()`, audio goes to OpenAI whisper-1 as 16 kHz mono MP3, a DB count replaces the Redis upload limit, and failed or stuck tracks get Retry. The 100–999 calculator default is now 149, matching the DB.
