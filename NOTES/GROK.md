@@ -158,6 +158,14 @@ _Backfill below (written 2026-10-02 ~17:30 CT by Grok Developer Bot, notes only,
 - Who: Codex (branch prefix); deploy is the Vercel Git integration (creator `313aidaroos`).
 - Undo: `git revert 475f737`; or promote/roll back to the previous production deployment `dpl_EbmtyMLb7RRfKS9pcxHcmLKjjEwn` (c413496).
 
+## 2026-10-04 17:55 (CT) — Grok (Lyrixis Lead): upload worker hosting plan (PR, not merged; nothing provisioned)
+- What: Awad approved (2026-10-04) getting upload processing running. This PR adds `Dockerfile.worker` (Node 22 + ffmpeg, esbuild ESM bundle), `.dockerignore`, `railway.json` (Railway Docker service, watchPatterns limited to worker code), `worker:build` / `worker:start` scripts, opt-in `WORKER_CONCURRENCY` / `WORKER_DRAIN_DELAY_SEC` / `WORKER_STALLED_INTERVAL_MS` knobs in `workers/index.ts` (unset = previous behavior), `docs/WORKER_HOSTING.md`, `.env.example` lines.
+- Found: `npm run worker` (tsx) crashes at startup with ERR_PACKAGE_PATH_NOT_EXPORTED (`file-type` is ESM-only via `music-metadata`), so it's replaced by the ESM bundle. The normalized WAV goes over the 25 MB transcription limit past ~13 min, so use MAX_DURATION_SECONDS=720. Default BullMQ polling is ~1.1M Upstash commands/month (over the free 500K); the tuning knobs bring it to ~95K.
+- Recommended (awaiting Awad): Upstash for Redis Free via Vercel Marketplace, a worker service on Railway (already used for awad-command), Groq whisper-large-v3 (free tier, then $0.111/audio-hr).
+- Not done: no sign-ups, no Marketplace install, no env vars, no deploys. Branch `grok/lyrixis-voices` not touched.
+- Who: Lyrixis Lead / Grok.
+- Undo: close the PR, or revert its squash commit if merged. Nothing external to undo.
+
 ## 2026-10-04 (CT) — Grok Bot: Feed tab on Lyrixis (PR open, NOT merged)
 - Why: Awad asked for the Socixis Social family feed as a Feed tab on every Ixis site. Awad put feed changes on hold, so this PR is for preview review only; do not merge until Awad says so.
 - What: new public `/feed` page in Lyrixis's own shell (same header, footer, fonts, colors and buttons). For You is the unfiltered mixed feed from every Apixis company with source-site badges and AI labels; Following, Search · Trending and You tabs; video/photo/text posts, like, comment, follow, save, share, report, tips and boosts in Ixis. Signed-out visitors can browse; the 4th tab says "You" and shows a sign-in card (Apixis ID). Text-only posts use the site's body font, wrap long words and size to their content; media posts keep the full-height layout; feed modals sit above everything.
@@ -265,3 +273,10 @@ Recorded by Grok (Developer Bot, notes and status sync at 12:25 AM CT on Oct 5).
 - Vercel `lyrixis`: no env changes (no GROQ/TRANSCRIPTION/REDIS vars there).
 - Who: Grok (Lyrixis Lead), with Awad's approval.
 - Undo: Railway: delete project `lyrixis-worker` (`b40a5741-…`) in the dashboard or with `projectDelete`. Nothing else changed outside git. PR #24: revert merge commit `8a7a54a` and doc commit `5b90e5a` on the branch, or close the PR.
+
+## 2026-10-05 8:15 PM (CT): Grok (Lyrixis Lead), PR #24 squash-merged (Awad approved at 8:12 PM CT)
+- What: squash-merged PR #24 "Upload worker hosting: Dockerfile.worker + Railway config + docs" as **`aea9928`** (`aea9928066e83c21ee4dff9c5d9c5274beeb1f3a`) on `main`. It adds `Dockerfile.worker`, `.dockerignore`, `railway.json`, `worker:build`/`worker:start` scripts, the opt-in `WORKER_*` polling knobs in `workers/index.ts`, `docs/WORKER_HOSTING.md` and `.env.example` lines. The branch was up to date with main (`ba67a21`, after #14). CI (node-ci ×2) and the Vercel preview were green before the merge. #28 (Voices) was still open and untouched.
+- Prod: Vercel deployment `dpl_75HXXyYkaWtbBUkZVd2BXVryLcv3` is READY and aliased to lyrixis.vercel.app. `/` 200, `/pricing` 200, `/tracks` → `/login?next=%2Ftracks` 200 (the expected auth redirect). The web app's runtime is unchanged: nothing it runs changed, only worker files, docs and scripts.
+- Not done (not approved yet): Upstash `upstash-kv-teal-marble` is still connected to 0 projects. The Railway service `worker` (`653f58ed-e1fd-4596-81f0-aa3ca8e22dce`) still has no source and zero deployments, so the merge triggered no Railway build. The Railway subscription and the $20 cap are still pending.
+- Who: Grok (Lyrixis Lead), with Awad's approval.
+- Undo: `git revert aea9928` on `main` and push (Vercel redeploys automatically), or promote the previous prod deployment `dpl_CjTzhwEVwUcTdsoKEsn77H9AztpU` (`ba67a21`) in Vercel. No Railway or Upstash undo needed.
