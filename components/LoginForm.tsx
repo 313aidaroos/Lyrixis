@@ -130,7 +130,7 @@ export function LoginForm({ variant = "login" }: { variant?: "login" | "signup" 
           {sent.kind === "reset" ? (
             <>If <strong className="text-ink">{sent.email}</strong> has a Lyrixis account, a link to choose a new password is on its way. It works once and expires in an hour.</>
           ) : (
-            <>We sent a sign-in link to <strong className="text-ink">{sent.email}</strong>. Open it on this device. First time? You&apos;ll choose a password after it opens.</>
+            <>We sent a sign-in link to <strong className="text-ink">{sent.email}</strong>. Open it on this device.</>
           )}
         </p>
         <p className="mt-3 text-xs text-ink-3">No email after a few minutes? Check spam, or try again.</p>
@@ -181,6 +181,17 @@ export function LoginForm({ variant = "login" }: { variant?: "login" | "signup" 
         </a>
         <p className="mt-2 text-center text-xs text-ink-3">Already use Apixis, Socixis, Renoxis or the Wallet? Same account.</p>
 
+        {/* 2026-10-04 (Grok, Apixis ID only): new accounts are created with Apixis ID only. /signup shows only
+            the Apixis button; the email link and password below are for existing accounts (on /login). */}
+        {variant === "signup" ? (
+          <p className="mt-6 text-center text-sm text-ink-2">
+            Already have an account?{" "}
+            <a href={`/login?next=${encodeURIComponent(next)}`} className="text-cyan underline-offset-4 hover:underline">Sign in</a>
+          </p>
+        ) : (
+        <>
+        <p className="mt-2 text-center text-xs text-ink-3">New to Lyrixis? Create your account with Apixis ID. Email link and password are for existing accounts.</p>
+
         <div className="my-6 flex items-center gap-3 font-mono text-[11px] uppercase tracking-widest text-ink-3">
           <span className="h-px flex-1 bg-line" /> or use your email <span className="h-px flex-1 bg-line" />
         </div>
@@ -224,6 +235,8 @@ export function LoginForm({ variant = "login" }: { variant?: "login" | "signup" 
               {busy ? "Signing in…" : "Sign in with password"}
             </button>
           </form>
+        )}
+        </>
         )}
 
         <p className="mt-6 text-center text-xs text-ink-3">100 Ixis = $1. Paid Ixis never expires.</p>
