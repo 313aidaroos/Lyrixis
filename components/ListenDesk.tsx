@@ -77,7 +77,7 @@ export function ListenDesk() {
         <a href="https://apixis-wallet.vercel.app" style={{ color: "#c8ff63" }}>
           Apixis Wallet
         </a>
-        . Listen hours will burn XP after Stripe is live.
+        . Payments are Ixis only, through the Apixis Wallet.
       </p>
     </main>
   );

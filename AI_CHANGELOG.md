@@ -12,6 +12,10 @@ Entry format:
 
 ---
 
+## 2026-10-05 — Grok (Developer Bot): 300 Ixis pricing, Cixy wording, RLS-helper migration
+- Changed: `lib/ixis-pricing.ts`, pricing route/service, price copy (home, FAQ, Listen, /enterprise), `lib/cixy-prompt.ts`, `LoginForm`, `ApixisWorldWelcome`, `schema.sql`, two new migration files (not applied), tests, `NOTES/GROK.md`.
+- Why: table said 299 vs Wallet SKU 300; Cixy said "$2.99 test mode / no live Stripe"; 1,000 Ixis grant is the shared Wallet's, not Apixis.dev's; Supabase advisor flagged anon-executable SECURITY DEFINER helpers.
+
 ## 2026-09-28 — JunoAI
 - Changed: created this file
 - Why: owner's standing rule — every AI that touches this repo must log its changes here
