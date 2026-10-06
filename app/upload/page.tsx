@@ -12,7 +12,7 @@ export default async function UploadPage() {
       <AppNav email={user.email} />
       <main className="mx-auto max-w-2xl px-6 py-10">
         <p className="font-mono text-xs uppercase tracking-widest text-ink-2">Single track</p>
-        <h1 className="mt-2 font-display text-4xl font-bold">Upload</h1>
+        <h1 className="mt-2 font-display text-4xl font-bold sm:font-marquee sm:text-5xl">Upload</h1>
         <p className="mt-3 text-ink-2">
           One file, rights confirmation required. Lyrics start processing as soon as the file is stored, usually in
           about a minute; the track page updates by itself.

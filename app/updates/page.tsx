@@ -6,7 +6,7 @@ export default function UpdatesPage() {
     <div>
       <SiteNav />
       <main className="mx-auto max-w-2xl px-6 py-16">
-        <h1 className="font-display text-4xl font-bold">Updates</h1>
+        <h1 className="font-display text-4xl font-bold sm:font-marquee sm:text-5xl">Updates</h1>
         <p className="mt-3 text-ink-2">A public changelog will live here. For now, the catalog is the news.</p>
         <article className="card mt-8">
           <p className="text-xs text-ink-3">Now</p>

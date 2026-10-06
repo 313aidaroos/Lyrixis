@@ -44,7 +44,7 @@ export function ApiSection() {
           <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.24em] text-cyan">
             <span>●</span> Developer First
           </div>
-          <h2 className="mt-3 font-display text-4xl font-bold leading-tight sm:text-5xl">
+          <h2 className="mt-3 font-display text-4xl font-bold leading-tight sm:font-marquee sm:text-5xl">
             Music intelligence <br />
             <span className="grad-text">through one API.</span>
           </h2>

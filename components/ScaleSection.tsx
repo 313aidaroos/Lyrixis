@@ -39,7 +39,7 @@ export function ScaleSection() {
     <div id="scale" className="mx-auto max-w-7xl px-6">
       <Reveal className="text-center">
         <p className="font-mono text-xs uppercase tracking-[0.28em] text-cyan">Scalable Infrastructure</p>
-        <h2 className="mt-3 font-display text-4xl font-bold sm:text-5xl">
+        <h2 className="mt-3 font-display text-4xl font-bold sm:font-marquee sm:text-5xl">
           One engine. <span className="grad-text">Any catalog size.</span>
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-ink-2">

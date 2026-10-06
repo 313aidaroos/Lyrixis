@@ -11,7 +11,7 @@ export function BeforeAfter() {
   return (
     <div className="mx-auto max-w-7xl px-6">
       <Reveal className="text-center">
-        <h2 className="font-display text-3xl font-bold sm:text-4xl">
+        <h2 className="font-display text-3xl font-bold sm:font-marquee sm:text-5xl">
           Turn catalog chaos into <span className="grad-text">structured intelligence.</span>
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-ink-2">Drag to compare an unprocessed catalog with the same catalog after Lyrixis.</p>

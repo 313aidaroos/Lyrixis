@@ -28,7 +28,7 @@ export default function CixyPage() {
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-violet">
               <span className="grad-text">◈</span> A Apixis Company
             </p>
-            <h1 className="mt-3 font-display text-5xl font-bold leading-tight">
+            <h1 className="mt-3 font-display text-5xl font-bold leading-tight sm:font-marquee">
               Cixy <span className="grad-text">— Lyrixis native AI</span>
             </h1>
             <p className="mt-4 text-lg text-ink-2">

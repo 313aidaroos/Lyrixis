@@ -10,7 +10,7 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&family=Martian+Mono:wght@400;500;700&family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Monoton&family=Manrope:wght@400;500;600;700;800&family=Martian+Mono:wght@400;500;700&family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2307060B'/><path d='M12 7v13.5' stroke='%23A855F7' stroke-width='3' stroke-linecap='round'/><path d='M12 20.5h9' stroke='%2322D3EE' stroke-width='3' stroke-linecap='round'/><circle cx='9.5' cy='21.5' r='3.5' fill='%23E040A0'/></svg>">
 <style>
 :root{
@@ -29,8 +29,10 @@
   --blue:#4F7DFB;
   --gold:#E6B450;
   --spectrum:linear-gradient(90deg,var(--violet) 0%,var(--magenta) 38%,var(--blue) 72%,var(--cyan) 100%);
-  /* 2026-10-05 font refresh preview (was Familjen Grotesk / Inter / JetBrains Mono) */
-  --display:"Unbounded",system-ui,sans-serif;
+  /* 2026-10-05 font refresh preview (was Familjen Grotesk / Inter / JetBrains Mono).
+     Awad picked Monoton: --marquee only for big headlines (~40px+), Manrope 800 for the rest. */
+  --marquee:"Monoton","Manrope",system-ui,sans-serif;
+  --display:"Manrope",system-ui,sans-serif;
   --body:"Manrope",system-ui,sans-serif;
   --mono:"Martian Mono",ui-monospace,monospace;
   --arabic:"IBM Plex Sans Arabic","Manrope",sans-serif;
@@ -57,6 +59,11 @@ a{color:inherit;text-decoration:none}
 
 h1,h2,h3,h4{font-family:var(--display);font-weight:700;letter-spacing:-.025em;line-height:1.06;margin:0}
 h1{font-size:clamp(3rem,8.5vw,6.2rem)}
+/* Monoton (one weight): hero h1 always (48px+); section h2s only once they are ~40px+. */
+h1{font-family:var(--marquee);font-weight:400;font-synthesis:none;font-kerning:none;letter-spacing:.01em;line-height:1.04}
+/* Monoton is very wide: shrink the hero h1 on phones so "Understood." fits on one line. */
+@media (max-width:600px){h1{font-size:clamp(2.25rem,10.4vw,3rem)}}
+@media (min-width:910px){h2:not([style]):not(#cxHelpTitle){font-family:var(--marquee);font-weight:400;font-synthesis:none;font-kerning:none;letter-spacing:.01em;line-height:1.1}}
 h2{font-size:clamp(2rem,4.4vw,3.1rem)}
 h3{font-size:1.28rem;letter-spacing:-.015em}
 p{margin:0}
