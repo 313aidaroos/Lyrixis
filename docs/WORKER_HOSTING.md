@@ -1,5 +1,7 @@
 # Lyrixis upload worker: hosting
 
+> **2026-10-05 ~8:45 PM CT update (Grok): transcription is OpenAI, not Groq.** Groq didn't work for Awad; he supplied an OpenAI key. Use `TRANSCRIPTION_API_KEY=<OpenAI key>`, leave `TRANSCRIPTION_API_BASE_URL` unset (defaults to `https://api.openai.com/v1`), `TRANSCRIPTION_MODEL=whisper-1`, `TRANSCRIPTION_CENTS_PER_MINUTE=0.6`. `whisper-1` is the only OpenAI model that returns word + segment timestamps (`gpt-4o-transcribe` / `gpt-4o-mini-transcribe` don't), so it's required for synced lyrics. OpenAI's 25 MB per-request limit means the 16 kHz mono WAV must stay ≤ ~13 min; `MAX_DURATION_SECONDS` now defaults to 720 in code. Groq mentions below are historical.
+
 Written 2026-10-04 (CT) by Grok (Lyrixis Lead). Every paid or account step waits for Awad's approval.
 
 **Status 2026-10-05 8:30 PM CT (Awad approved Railway + Upstash Free + Groq at 8:00 PM CT):** Railway project `lyrixis-worker` (`b40a5741-8d83-40e1-bb43-2dd464866304`), env `production` (`61c39fc8-2c24-415e-87bf-f347e832c43a`), service `worker` (`653f58ed-e1fd-4596-81f0-aa3ca8e22dce`) exist with **no source connected and no deployment**. Service settings mirror `railway.json` (Dockerfile path, watch patterns, restart ON_FAILURE ×10, 1 replica) plus a 1 vCPU / 1 GB limit, because Railway's API now rejects `railwayConfigFile` (Config as Code is deprecated). Supabase + non-secret worker vars are set; `REDIS_URL` and `TRANSCRIPTION_API_KEY` are not. The Railway workspace is still on a trial with no subscription, so the $20 hard usage limit can't be set yet ("Usage limits require an active subscription"). Redis: the team already has an unused **Upstash for Redis Free** store `upstash-kv-teal-marble` (`store_PP9Mt0uHl6hab9zV`, iad1, eviction off) on Vercel. The Free plan allows one database per account, so use that store (connect it to `lyrixis`). Don't create a new one.
@@ -50,10 +52,9 @@ SUPABASE_SERVICE_ROLE_KEY=<same as Vercel>
 STORAGE_BUCKET=lyrixis-audio-private
 REDIS_URL=rediss://default:<password>@<host>.upstash.io:6379
 TRANSCRIPTION_PROVIDER=whisper_v3
-TRANSCRIPTION_API_KEY=<groq key>
-TRANSCRIPTION_API_BASE_URL=https://api.groq.com/openai/v1
-TRANSCRIPTION_MODEL=whisper-large-v3
-TRANSCRIPTION_CENTS_PER_MINUTE=0.185
+TRANSCRIPTION_API_KEY=<OpenAI key>
+TRANSCRIPTION_MODEL=whisper-1
+TRANSCRIPTION_CENTS_PER_MINUTE=0.6
 LANGUAGE_PROVIDER=whisper
 MAX_UPLOAD_MB=100
 MAX_DURATION_SECONDS=720
@@ -78,7 +79,7 @@ The Upstash Marketplace integration injects its own variables (`KV_URL`, `KV_RES
 ## Deploy steps (after Awad approves)
 
 1. **Upstash** (Awad / Developer Bot hub): Vercel dashboard → Storage / Marketplace → Upstash for Redis → Free plan → region us-east-1 → connect to project `lyrixis` (Production). Confirm `REDIS_URL` (or copy from `KV_URL`). Turn eviction off (Upstash default).
-2. **Groq** (Awad): create a console.groq.com account → API key. Free tier needs no card.
+2. **OpenAI** (done 2026-10-05): Awad supplied an OpenAI API key (replaces the Groq plan).
 3. **Railway** (Awad / hub): in the existing Railway workspace, New Service → GitHub repo `313aidaroos/Lyrixis`, branch `main`. Railway reads `railway.json` and builds `Dockerfile.worker`. Set the worker env vars above. Resource limit 1 vCPU / 1 GB. No public domain. The service only redeploys when `watchPatterns` paths change, so UI-only commits don't rebuild it.
 4. Redeploy Vercel production so `REDIS_URL` takes effect.
 5. **Smoke test:** Railway logs show `[worker] listening on queue "track-processing"`. Upload a short MP3 on lyrixis.vercel.app. In Supabase `processing_jobs`, each step for the track should go `succeeded`, and the track should end `completed` or `manual_review`.

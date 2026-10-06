@@ -3,10 +3,23 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export function RedeemButton({ trackId, isUnlocked }: { trackId: string; isUnlocked: boolean }) {
+export function RedeemButton({
+  trackId,
+  isUnlocked,
+  kind = 'catalog',
+  onUnlocked,
+}: {
+  trackId: string;
+  isUnlocked: boolean;
+  /** "upload" = the user's own uploaded track (TrackView shows its own exports once unlocked). */
+  kind?: 'catalog' | 'upload';
+  onUnlocked?: () => void | Promise<void>;
+}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+  if (isUnlocked && kind === 'upload') return null;
 
   if (isUnlocked) {
     return (
@@ -42,7 +55,7 @@ export function RedeemButton({ trackId, isUnlocked }: { trackId: string; isUnloc
           'Content-Type': 'application/json',
           'X-Idempotency-Key': attemptId, // Retry-safe: same key for same button click
         },
-        body: JSON.stringify({ trackId }),
+        body: JSON.stringify({ trackId, kind }),
       });
 
       const data = await res.json();
@@ -70,6 +83,7 @@ export function RedeemButton({ trackId, isUnlocked }: { trackId: string; isUnloc
       }
 
       // Success - refresh to show unlocked state
+      if (onUnlocked) await onUnlocked();
       router.refresh();
     } catch (err) {
       setError('Network error. Please try again.');
@@ -85,7 +99,7 @@ export function RedeemButton({ trackId, isUnlocked }: { trackId: string; isUnloc
         disabled={loading}
         className="btn btn-primary w-full sm:w-auto disabled:opacity-50"
       >
-        {loading ? 'Redeeming...' : 'Redeem · 300 Ixis'}
+        {loading ? 'Unlocking…' : kind === 'upload' ? 'Unlock full lyrics · 300 Ixis' : 'Redeem · 300 Ixis'}
       </button>
       {error && (
         <div className="card mt-3 bg-red-500/10 border-red-500/30">
@@ -93,7 +107,10 @@ export function RedeemButton({ trackId, isUnlocked }: { trackId: string; isUnloc
         </div>
       )}
       <p className="mt-2 text-xs text-ink-3">
-        Unlock this track&apos;s exports for 300 Ixis ($3.00). Not enough? <a href="https://apixis-wallet.vercel.app/buy" className="text-cyan hover:underline">Buy Ixis</a>
+        {kind === 'upload'
+          ? 'Full synced lyrics, corrections, and TXT / SRT / LRC / JSON exports for this song. Paid from your Apixis Wallet: 300 Ixis ($3.00).'
+          : "Unlock this track's exports for 300 Ixis ($3.00)."}{' '}
+        Not enough? <a href="https://apixis-wallet.vercel.app/buy" className="text-cyan hover:underline">Buy Ixis</a>
       </p>
     </div>
   );

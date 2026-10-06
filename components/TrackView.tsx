@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ConfidenceBadge, StatusBadge } from "@/components/StatusBadge";
 import { SyncedLyrics } from "@/components/SyncedLyrics";
+import { RedeemButton } from "@/components/RedeemButton";
 import type { ExportFormat, TrackDetail } from "@/types";
 
 const TERMINAL = new Set(["completed", "failed", "manual_review"]);
@@ -123,9 +124,19 @@ export function TrackView({ publicId }: { publicId: string }) {
         {track.errorMessage && <p className="mt-4 text-sm text-rose-300">{track.errorMessage}</p>}
         {error && <p className="mt-4 text-sm text-rose-300">{error}</p>}
         {ready && !track.paid && (
-          <p className="mt-6 text-sm text-ink-2">
-            Full lyrics and exports for your own uploads will unlock through your Apixis Wallet. That unlock isn&apos;t
-            live yet, so nothing is charged here.
+          <RedeemButton
+            trackId={track.publicId}
+            isUnlocked={false}
+            kind="upload"
+            onUnlocked={async () => {
+              await load();
+            }}
+          />
+        )}
+        {!ready && track.status !== "failed" && (
+          <p className="mt-6 text-sm text-ink-3">
+            Lyrics are processing. The 300 Ixis unlock appears here when they&apos;re ready, so you only pay for a
+            finished transcription.
           </p>
         )}
       </header>
