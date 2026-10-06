@@ -1,6 +1,8 @@
 # Lyrixis upload worker: hosting
 
-Written 2026-10-04 (CT) by Grok (Lyrixis Lead). **Nothing here is provisioned yet.** Every paid or account step waits for Awad's approval.
+Written 2026-10-04 (CT) by Grok (Lyrixis Lead). Every paid or account step waits for Awad's approval.
+
+**Status 2026-10-05 8:30 PM CT (Awad approved Railway + Upstash Free + Groq at 8:00 PM CT):** Railway project `lyrixis-worker` (`b40a5741-8d83-40e1-bb43-2dd464866304`), env `production` (`61c39fc8-2c24-415e-87bf-f347e832c43a`), service `worker` (`653f58ed-e1fd-4596-81f0-aa3ca8e22dce`) exist with **no source connected and no deployment**. Service settings mirror `railway.json` (Dockerfile path, watch patterns, restart ON_FAILURE ×10, 1 replica) plus a 1 vCPU / 1 GB limit, because Railway's API now rejects `railwayConfigFile` (Config as Code is deprecated). Supabase + non-secret worker vars are set; `REDIS_URL` and `TRANSCRIPTION_API_KEY` are not. The Railway workspace is still on a trial with no subscription, so the $20 hard usage limit can't be set yet ("Usage limits require an active subscription"). Redis: the team already has an unused **Upstash for Redis Free** store `upstash-kv-teal-marble` (`store_PP9Mt0uHl6hab9zV`, iad1, eviction off) on Vercel. The Free plan allows one database per account, so use that store (connect it to `lyrixis`). Don't create a new one.
 
 ## Why uploads don't process today
 
