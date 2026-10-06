@@ -302,7 +302,7 @@ Recorded by Grok (Developer Bot, notes and status sync at 12:25 AM CT on Oct 5).
 - **Removed:** `components/ListenDesk.tsx` (nothing imported it; it said "after Stripe is live").
 - Who: Grok (Lyrixis Lead), approved by Awad.
 - Undo:
-  - Code: `git revert <squash sha of the cleanup PR>`.
+  - Code: `git revert 80a44d2` (PR #34, squash `80a44d2cde1cc3ecc2318b450c42b76717f6cd28`, merged 8:44 PM CT; prod `dpl_EPBdHvD4ntHDrUEiRY1svDPhfhwo` READY, `/`, `/pricing` 200, `/tracks` → login as expected).
   - Price: `update public.pricing_tiers set rate_cents = 299 where min_songs = 1 and max_songs = 99;`
   - Grants: `grant execute on function public.current_app_user_id(), public.current_org_ids() to public, anon;`
   - Catalog rows: re-insert from the backup JSON (recordings first, then lyrics).
