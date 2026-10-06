@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Special_Elite } from "next/font/google";
 import "./globals.css";
 import { CixyWidget } from "@/components/CixyWidget";
+import { CixyPageHelp } from "@/components/CixyPageHelp";
 
 const specialElite = Special_Elite({
   subsets: ["latin"],
@@ -36,6 +37,7 @@ export default function RootLayout({
         <div className="site-stage" aria-hidden="true" />
         {children}
         <CixyWidget />
+        <CixyPageHelp />
       </body>
     </html>
   );

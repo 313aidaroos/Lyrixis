@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/auth";
 import { AppNav } from "@/components/AppNav";
+import { SiteFooter } from "@/components/SiteFooter";
 import { TrackView } from "@/components/TrackView";
 
 export const dynamic = "force-dynamic";
@@ -17,6 +18,7 @@ export default async function TrackPage({
       <main className="mx-auto max-w-4xl px-6 py-10">
         <TrackView publicId={id} />
       </main>
+      <SiteFooter />
     </div>
   );
 }

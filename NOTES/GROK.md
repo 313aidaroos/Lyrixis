@@ -42,6 +42,13 @@ Claude activity was present; the earlier “no Claude activity” line was incor
 - Undo: revert the PR (or its merge/squash commit).
 - 2026-09-29 (CT) follow-up: removed Qahwah World and Nursery Toons from `lib/ixis-companies.ts` (Awad-approved via hub); footer now lists 11 sites. Same undo.
 
+## 2026-10-05 (CT) — Grok (Lyrixis Lead): footer on every page + Cixy page help
+- What: the shared footer (with "Other Ixis companies") now also shows on /companies, /dashboard, /upload, /tracks/[id], /add and /support. The static /enterprise page (`public/index.html`) got the same "Other Ixis companies" column (same 12 links as `lib/ixis-companies.ts`).
+- What: Cixy page help (port of Socixis `CixyPageHelp`): a "Need help?" pill bottom-left with Cixy's photo opens a panel with how-this-page-works steps, tips and suggestion chips; "Ask Cixy" opens the ◈ chat prefilled. /enterprise has a static version with per-tab steps (home, pricing, API, enterprise, FAQ); its tabs now also follow hash changes.
+- Where: `lib/cixy-page-help.ts`, `components/CixyPageHelp.tsx`, `app/layout.tsx`, `components/CixyWidget.tsx`, `components/CixyChat.tsx` (`initialInput`), the six pages above, `public/index.html`, `lib/__tests__/cixy-page-help.test.ts`.
+- Not touched: payments, Wallet, auth, database, env.
+- Undo: revert this PR's squash commit.
+
 ---
 _Backfill below (written 2026-10-02 ~17:30 CT by Grok Developer Bot, notes only, Awad-approved via Developer Bot hub 2026-10-02 17:28 CT). Facts are from git and the GitHub REST API. All PRs in this repo are opened and merged under the `313aidaroos` GitHub account; "who" below comes from branch prefix, PR body, AI_CHANGELOG.md and Co-authored-by lines. Times are America/Chicago._
 

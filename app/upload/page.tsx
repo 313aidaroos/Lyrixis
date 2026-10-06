@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/auth";
 import { AppNav } from "@/components/AppNav";
+import { SiteFooter } from "@/components/SiteFooter";
 import { UploadForm } from "@/components/UploadForm";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +21,7 @@ export default async function UploadPage() {
           <UploadForm />
         </div>
       </main>
+      <SiteFooter />
     </div>
   );
 }

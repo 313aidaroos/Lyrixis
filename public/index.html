@@ -300,6 +300,24 @@ footer{border-top:1px solid var(--line-soft);padding:52px 0 40px;margin-top:60px
 @media(prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+/* ---------- footer: other Ixis companies (2026-10-05) ---------- */
+.foot-ixis{columns:2;column-gap:28px}
+.foot-ixis h4{column-span:all}
+/* ---------- Cixy page help (2026-10-05, same pattern as the Next pages) ---------- */
+.cx-help{position:fixed;left:16px;bottom:24px;z-index:60;display:flex;flex-direction:column;align-items:flex-start;gap:12px;max-width:calc(100vw - 32px)}
+.cx-help img{border-radius:999px;border:1px solid var(--line);object-fit:cover;flex:none}
+.cx-help-toggle{display:flex;align-items:center;gap:8px;padding:6px 16px 6px 6px;border-radius:999px;border:1px solid var(--line);background:rgba(17,14,28,.85);backdrop-filter:blur(16px);color:var(--ink-2);font:500 .88rem var(--body);cursor:pointer}
+.cx-help-toggle:hover{color:var(--ink);border-color:var(--violet)}
+.cx-help-panel{width:min(380px,calc(100vw - 32px));max-height:70vh;overflow-y:auto;padding:20px;border-radius:16px;border:1px solid var(--line);background:rgba(17,14,28,.94);backdrop-filter:blur(18px);box-shadow:0 24px 60px rgba(4,3,20,.55)}
+.cx-help-panel[hidden]{display:none}
+.cx-help-head{display:flex;gap:12px;align-items:flex-start}
+.cx-help-head h2{font-size:1.1rem;margin-top:4px}
+.cx-help-close{margin-left:auto;background:none;border:0;color:var(--ink-2);font-size:1rem;cursor:pointer;padding:4px}
+.cx-help-panel ol{margin:16px 0 0;padding-left:20px;color:var(--ink-2);font-size:.88rem;line-height:1.55}
+.cx-help-panel li{margin-bottom:8px}
+.cx-help-panel li::marker{color:var(--cyan)}
+.cx-help-panel .btn{width:100%;justify-content:center;margin-top:12px}
 </style>
 </head>
 <body>
@@ -722,6 +740,22 @@ curl -X POST https://api.lyrixis.com/v1/tracks \
         <a href="mailto:Lyrixis@Apixis.dev?subject=Privacy%20request">Privacy Policy</a>
         <a href="mailto:Lyrixis@Apixis.dev?subject=DMCA%20notice">Copyright / DMCA</a>
       </div>
+      <!-- 2026-10-05 Grok: same list as lib/ixis-companies.ts (the Next footer). A test keeps them in sync. -->
+      <div class="foot-col foot-ixis">
+        <h4>Other Ixis companies</h4>
+        <a href="https://www.apixis.dev" target="_blank" rel="noopener noreferrer">Apixis</a>
+        <a href="https://apixis-wallet.vercel.app" target="_blank" rel="noopener noreferrer">Apixis Wallet</a>
+        <a href="https://socixis.dev" target="_blank" rel="noopener noreferrer">Socixis</a>
+        <a href="https://renoxis.dev" target="_blank" rel="noopener noreferrer">Renoxis</a>
+        <a href="https://rawixis.vercel.app" target="_blank" rel="noopener noreferrer">Rawixis</a>
+        <a href="https://contraxis-dev.vercel.app" target="_blank" rel="noopener noreferrer">Contraxis</a>
+        <a href="https://halaxis.vercel.app" target="_blank" rel="noopener noreferrer">Halaxis</a>
+        <a href="https://recovra-three.vercel.app" target="_blank" rel="noopener noreferrer">Recovra</a>
+        <a href="https://deduxis.vercel.app" target="_blank" rel="noopener noreferrer">Deduxis</a>
+        <a href="https://spatial-dashboard-xi.vercel.app" target="_blank" rel="noopener noreferrer">Geoxis</a>
+        <a href="https://ominix-app.vercel.app" target="_blank" rel="noopener noreferrer">Ominix</a>
+        <a href="https://wattixis.vercel.app" target="_blank" rel="noopener noreferrer">Wattixis</a>
+      </div>
     </div>
   </div>
   <div class="legal">
@@ -748,6 +782,7 @@ document.addEventListener("click",e=>{
 });
 document.getElementById("burger").onclick=()=>document.getElementById("tabs").classList.toggle("open");
 go((location.hash||"#home").slice(1));
+window.addEventListener("hashchange",()=>go((location.hash||"#home").slice(1)));
 
 /* ---------- pricing calculator ---------- */
 const TIERS=[
@@ -879,6 +914,51 @@ document.getElementById("scrub").onclick=e=>{
   t=Math.max(0,Math.min(DUR,(e.clientX-r.left)/r.width*DUR));render();
 };
 render();
+</script>
+
+<!-- 2026-10-05 Grok: Cixy page help (ported from Socixis CixyPageHelp). Real Cixy photo, steps per tab. -->
+<div class="cx-help" id="cxHelp">
+  <section class="cx-help-panel" id="cxHelpPanel" aria-labelledby="cxHelpTitle" hidden>
+    <div class="cx-help-head">
+      <img src="/cixy/cixy-combo-a-avatar.webp" alt="Cixy" width="48" height="48">
+      <div>
+        <div class="eyebrow">Cixy · How this page works</div>
+        <h2 id="cxHelpTitle">Lyrixis</h2>
+      </div>
+      <button class="cx-help-close" id="cxHelpClose" type="button" aria-label="Close help">✕</button>
+    </div>
+    <ol id="cxHelpSteps"></ol>
+    <a class="btn btn-p" href="/cixy">Ask Cixy →</a>
+  </section>
+  <button class="cx-help-toggle" id="cxHelpToggle" type="button" aria-expanded="false" aria-controls="cxHelpPanel">
+    <img src="/cixy/cixy-combo-a-avatar.webp" alt="Cixy" width="36" height="36"><span>Need help?</span>
+  </button>
+</div>
+<script>
+(function(){
+  var HELP={
+    home:["Lyrixis turns a recording into synced lyrics, language and structure data, and metadata.","Use the tabs at the top: Pricing, API, Enterprise and FAQ.","Request early access, or Explore the API, from the buttons on this page.","To try it on your own song, open lyrixis.vercel.app, sign in with Apixis ID and use Upload."],
+    pricing:["Prices are per song, in Ixis (100 Ixis = $1), paid through the Apixis Wallet.","One song is 300 Ixis. The rate drops as your song count grows.","Move the slider to estimate a catalog. 1,000,000+ songs is a custom price.","Pricing for a catalog job is confirmed in writing before it runs."],
+    api:["The API is asynchronous: upload a track, get a track id, then poll or get a webhook.","The endpoint list shows the whole surface: tracks, batches, exports, translations, usage and webhooks.","The API is in private preview. Email Lyrixis@Apixis.dev for a key."],
+    enterprise:["Fill in your name, company and work email, the number of tracks and how you want to integrate.","Add your use case and a message, then press Send to Lyrixis.","We save the request and reply from Lyrixis@Apixis.dev with a plan, a price and a sample run."],
+    faq:["Tap a question to open the answer.","Still stuck? Ask Cixy below, or email Lyrixis@Apixis.dev."]
+  };
+  var TITLES={home:"Lyrixis for business",pricing:"Pricing",api:"Developer API",enterprise:"Talk to Lyrixis",faq:"FAQ"};
+  var panel=document.getElementById("cxHelpPanel"),toggle=document.getElementById("cxHelpToggle");
+  function tab(){var t=(location.hash||"#home").slice(1);return HELP[t]?t:"home";}
+  function render(){
+    var t=tab(),ol=document.getElementById("cxHelpSteps");
+    document.getElementById("cxHelpTitle").textContent=TITLES[t];
+    ol.innerHTML="";
+    HELP[t].forEach(function(s){var li=document.createElement("li");li.textContent=s;ol.appendChild(li);});
+  }
+  function set(open){panel.hidden=!open;toggle.setAttribute("aria-expanded",String(open));toggle.querySelector("span").textContent=open?"Hide help":"Need help?";if(open)render();}
+  toggle.addEventListener("click",function(){set(panel.hidden);});
+  document.getElementById("cxHelpClose").addEventListener("click",function(){set(false);});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")set(false);});
+  document.addEventListener("click",function(e){if(e.target.closest("[data-go]"))setTimeout(function(){if(!panel.hidden)render();},0);});
+  window.addEventListener("hashchange",function(){if(!panel.hidden)render();});
+})();
 </script>
 </body>
 </html>

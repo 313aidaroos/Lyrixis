@@ -25,6 +25,10 @@ Entry format:
 - Why: Awad-approved footer section linking to the other Ixis companies; URLs kept in one data file
 - 2026-09-29 follow-up: removed Qahwah World and Nursery Toons from `lib/ixis-companies.ts` (Awad-approved via hub); 11 sites remain
 
+## 2026-10-05 (CT) — Grok (Lyrixis Lead) — footer on every page + Cixy page help
+- Changed: `lib/cixy-page-help.ts`, `components/CixyPageHelp.tsx` (new), `app/layout.tsx`, `components/CixyWidget.tsx`, `components/CixyChat.tsx`, companies/dashboard/upload/tracks/add/support pages, `public/index.html`, tests
+- Why: Awad asked for the footer on /enterprise and signed-in pages, and the Socixis-style Cixy page help
+
 ## 2026-09-30 — Codex — Tester readiness: shared-login redirects
 
 - Copied the canonical ApixisWallet local-redirect validator and used it at login start and callback. Preserved this app’s existing Supabase adapter and routes.

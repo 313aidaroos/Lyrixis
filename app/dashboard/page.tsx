@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { listTracks } from "@/services/tracks";
 import { AppNav } from "@/components/AppNav";
+import { SiteFooter } from "@/components/SiteFooter";
 import { ConfidenceBadge, StatusBadge } from "@/components/StatusBadge";
 import { ApixisWorldWelcome } from "@/components/ApixisWorldWelcome";
 
@@ -69,6 +70,7 @@ export default async function DashboardPage() {
           </div>
         )}
       </main>
+      <SiteFooter />
     </div>
   );
 }
