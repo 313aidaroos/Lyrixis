@@ -34,15 +34,18 @@ export function CixyChat({
   intro,
   placeholder = "Ask Cixy about this catalog, mix, or metadata…",
   compact = false,
+  initialInput = "",
 }: {
   tall?: boolean;
   starters?: string[];
   intro?: ReactNode;
   placeholder?: string;
   compact?: boolean;
+  /** Pre-filled question (from the page help). The person still presses send. */
+  initialInput?: string;
 }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(initialInput);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);

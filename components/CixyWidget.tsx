@@ -2,13 +2,30 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CixyChat } from "@/components/CixyChat";
+import { CIXY_ASK_EVENT, type CixyAskDetail } from "@/lib/cixy-page-help";
 
 export function CixyWidget() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const [seed, setSeed] = useState<{ text: string; n: number }>({ text: "", n: 0 });
+  const hidden =
+    pathname === "/cixy" || pathname === "/login" || pathname === "/signup" || pathname === "/set-password";
+
+  // 2026-10-05 Grok: the per-page Cixy help ("Need help?") opens this chat with its question filled in.
+  useEffect(() => {
+    if (hidden) return;
+    const onAsk = (event: Event) => {
+      const detail = (event as CustomEvent<CixyAskDetail>).detail;
+      if (detail) detail.handled = true;
+      setSeed((current) => ({ text: detail?.question ?? "", n: current.n + 1 }));
+      setOpen(true);
+    };
+    window.addEventListener(CIXY_ASK_EVENT, onAsk);
+    return () => window.removeEventListener(CIXY_ASK_EVENT, onAsk);
+  }, [hidden]);
 
   // The /cixy page is the full-size Cixy; do not show a second launcher there.
   if (pathname === "/cixy") return null;
@@ -44,7 +61,7 @@ export function CixyWidget() {
               </button>
             </div>
           </div>
-          <CixyChat />
+          <CixyChat key={seed.n} initialInput={seed.text} />
         </div>
       )}
 

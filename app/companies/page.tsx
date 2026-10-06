@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/components/SiteFooter";
 import { SiteNav } from "@/components/SiteNav";
 import type { CSSProperties } from "react";
 import "./companies.css";
@@ -54,5 +55,5 @@ function CompaniesDirectory({ host }: { host: string }) {
 }
 
 export default function CompaniesPage() {
-  return (<><SiteNav /><CompaniesDirectory host="lyrixis" /></>);
+  return (<><SiteNav /><CompaniesDirectory host="lyrixis" /><SiteFooter /></>);
 }

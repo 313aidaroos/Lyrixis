@@ -1,5 +1,6 @@
 import { AddRecordingForm } from "@/components/AddRecordingForm";
 import { BulkIngestForm } from "@/components/BulkIngestForm";
+import { SiteFooter } from "@/components/SiteFooter";
 import { SiteNav } from "@/components/SiteNav";
 
 export default function AddRecordingPage() {
@@ -23,6 +24,7 @@ export default function AddRecordingPage() {
         </p>
         <BulkIngestForm />
       </main>
+      <SiteFooter />
     </div>
   );
 }
