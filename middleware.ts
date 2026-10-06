@@ -62,6 +62,8 @@ export const config = {
     "/dashboard/:path*",
     "/upload/:path*",
     "/tracks/:path*",
+    "/team/:path*",
+    "/admin/:path*",
     "/login",
     "/signup",
   ],

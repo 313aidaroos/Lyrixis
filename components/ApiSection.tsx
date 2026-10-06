@@ -57,7 +57,7 @@ export function ApiSection() {
               "Single-track and bulk multi-part uploads with rights gating",
               "Streaming webhook events: queued → transcribing → completed",
               "Direct exports for Apple Music (TTML), Spotify (LRC/JSON), and broadcast (SRT)",
-              "Deterministic pricing: billed strictly on audio minutes processed",
+              "All-Access is $30 a month, or $3 per song. Labels and companies contact sales.",
             ].map((item) => (
               <div key={item} className="flex items-start gap-3 text-sm text-ink-2">
                 <span className="grad-text mt-0.5 text-base font-bold">✓</span>

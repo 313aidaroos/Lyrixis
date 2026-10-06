@@ -14,10 +14,15 @@ describe("Lyrixis Cixy prompt", () => {
     );
   });
 
-  it("prices in Ixis through the Apixis Wallet only (2026-10-05)", () => {
-    expect(CIXY_SYSTEM_PROMPT).toContain("300 Ixis per song");
+  it("states the 2026-10-06 plans without naming a card processor", () => {
+    expect(CIXY_SYSTEM_PROMPT).toContain("$30");
+    expect(CIXY_SYSTEM_PROMPT).toContain("3,000 Ixis");
+    expect(CIXY_SYSTEM_PROMPT).toContain("300 Ixis");
+    expect(CIXY_SYSTEM_PROMPT).toContain("Coming soon");
+    expect(CIXY_SYSTEM_PROMPT).toContain("awad@apixis.dev");
     expect(CIXY_SYSTEM_PROMPT).toContain("Apixis Wallet");
     expect(CIXY_SYSTEM_PROMPT).toContain("1,000 free Ixis in the shared Apixis Wallet");
     expect(CIXY_SYSTEM_PROMPT).not.toMatch(/\$2\.99|test mode|stripe/i);
+    expect(CIXY_SYSTEM_PROMPT).not.toMatch(/takes no card/i);
   });
 });

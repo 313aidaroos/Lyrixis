@@ -44,6 +44,11 @@ describe("Cixy page help", () => {
     expect(helpForPath("/catalog/rec_amazing_grace").route).toBe("/catalog/");
     expect(helpForPath("/catalog").route).toBe("/catalog");
     expect(helpForPath("/voices/compare").route).toBe("/voices");
+    expect(helpForPath("/how-to").entry.title).toBe("How to use Lyrixis");
+    expect(helpForPath("/team").entry.steps.join(" ")).toMatch(/Enterprise/);
+    expect(helpForPath("/admin/enterprise").entry.steps.join(" ")).toMatch(/Mark as Enterprise/);
+    expect(helpForPath("/pricing").entry.steps.join(" ")).toMatch(/\$30/);
+    expect(helpForPath("/pricing").entry.steps.join(" ")).toMatch(/Contact sales/);
     expect(helpForPath("/dashboard/").route).toBe("/dashboard");
   });
 

@@ -108,9 +108,10 @@ export function RedeemButton({
       )}
       <p className="mt-2 text-xs text-ink-3">
         {kind === 'upload'
-          ? 'Full synced lyrics, corrections, and TXT / SRT / LRC / JSON exports for this song. Paid from your Apixis Wallet: 300 Ixis ($3.00).'
-          : "Unlock this track's exports for 300 Ixis ($3.00)."}{' '}
-        Not enough? <a href="https://apixis-wallet.vercel.app/buy" className="text-cyan hover:underline">Buy Ixis</a>
+          ? 'Full synced lyrics, corrections, and TXT / SRT / LRC / JSON exports for this song. 300 Ixis ($3).'
+          : "Unlock this track's exports for 300 Ixis ($3)."}{' '}
+        All-Access is $30 a month when you are on that plan. Pay by card or with Ixis. Card checkout is not open yet.{' '}
+        Not enough Ixis? <a href="https://apixis-wallet.vercel.app/buy" className="text-cyan hover:underline">Buy Ixis</a>
       </p>
     </div>
   );

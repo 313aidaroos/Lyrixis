@@ -9,6 +9,7 @@ import { ApixisWalletChip } from "@/components/ApixisWalletChip";
 
 const MENUS: Record<string, { label: string; href: string; hint: string }[]> = {
   Product: [
+    { label: "How to use Lyrixis", href: "/how-to", hint: "Account, upload, lyrics, and plans" },
     { label: "Catalog", href: "/catalog", hint: "Search recordings, lyrics, IDs" },
     { label: "Live demo", href: "/#demo", hint: "Watch a track become intelligence" },
     { label: "Add a recording", href: "/add", hint: "Single or bulk CSV ingest" },
@@ -129,6 +130,9 @@ export function SiteNav() {
           {/* 1024–1279px: Apixis Companies, Feed and Wallet move into the Menu panel so the bar never overflows. */}
           <Link href="/companies" className="nav-link hidden text-ink-2 hover:text-ink xl:inline" data-active={active("/companies")}>Apixis Companies</Link>
           <Link href="/feed" className="nav-link hidden text-ink-2 hover:text-ink xl:inline" data-active={active("/feed")}>Feed</Link>
+          <Link href="/how-to" className="nav-link text-ink-2 hover:text-ink" data-active={active("/how-to")}>
+            How to use
+          </Link>
           <Link href="/pricing" className="nav-link text-ink-2 hover:text-ink" data-active={active("/pricing")}>
             Pricing
           </Link>
@@ -197,6 +201,9 @@ export function SiteNav() {
             </Link>
             <Link href="/companies" onClick={() => setOpen(false)}>Apixis Companies</Link>
             <Link href="/feed" onClick={() => setOpen(false)}>Feed</Link>
+            <Link href="/how-to" onClick={() => setOpen(false)}>
+              How to use
+            </Link>
             <Link href="/pricing" onClick={() => setOpen(false)}>
               Pricing
             </Link>

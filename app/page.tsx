@@ -4,7 +4,7 @@ import { BeforeAfter } from "@/components/BeforeAfter";
 import { CapabilityStrip } from "@/components/CapabilityStrip";
 import { CatalogHealth } from "@/components/CatalogHealth";
 import { Pipeline } from "@/components/Pipeline";
-import { PricingCalculator } from "@/components/PricingCalculator";
+import { PricingPlans } from "@/components/PricingPlans";
 import { Reveal } from "@/components/Motion";
 import { ScaleSection } from "@/components/ScaleSection";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -68,7 +68,7 @@ export default async function HomePage() {
 
               <Reveal delay={140}>
                 <p className="mt-6 max-w-xl text-lg sm:text-xl text-ink-2 leading-relaxed">
-                  Turn any recording into synchronized lyrics, translations, metadata, and structured music intelligence.
+                  Turn any recording into synchronized lyrics, metadata, and structured music intelligence.
                 </p>
               </Reveal>
 
@@ -219,16 +219,16 @@ export default async function HomePage() {
       <section id="pricing" className="relative py-16 sm:py-24">
         <div className="seam mb-16" />
         <Reveal className="mb-10 text-center">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-cyan">Volume Economics</p>
+          <p className="font-mono text-xs uppercase tracking-[0.28em] text-cyan">Pricing</p>
           <h2 className="mt-3 font-display text-3xl font-bold sm:font-marquee sm:text-5xl">
-            Transparent, <span className="grad-text">deterministic pricing.</span>
+            $30 a month, $3 a song, <span className="grad-text">or contact sales.</span>
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-ink-2">
-            Pricing scales down as your catalog grows. Powered by the same high-accuracy intelligence engine.
+            All-Access is $30 a month (3,000 Ixis). One song is $3 (300 Ixis). Labels and companies use Contact sales.
           </p>
         </Reveal>
         <Reveal delay={120}>
-          <PricingCalculator />
+          <PricingPlans contactHref="/pricing#contact-sales" />
         </Reveal>
       </section>
 

@@ -8,29 +8,29 @@ const MILESTONES = [
     count: 1,
     suffix: " track",
     headline: "The Independent Artist",
-    copy: "Single-song unlock with line-level karaoke timings, translation, and distribution-ready TXT / SRT / LRC / JSON.",
-    badge: "300 Ixis once",
+    copy: "Synced lyrics for one song at $3 (300 Ixis), or unlimited song lyrics on All-Access at $30 a month.",
+    badge: "$3 or $30/mo",
   },
   {
     count: 100,
     suffix: " tracks",
     headline: "The Studio EP & LP Run",
-    copy: "Batch processing for full releases. Bulk rights confirmation, unified ISRC tagging, and stems alignment.",
-    badge: "149 Ixis / track",
+    copy: "All-Access covers unlimited song lyrics for $30 a month (3,000 Ixis). It renews monthly. Cancel anytime.",
+    badge: "$30 / month",
   },
   {
     count: 10000,
     suffix: " tracks",
     headline: "The Label Catalog Ingest",
-    copy: "Complete back-catalog hydration. Automated language and dialect detection, conflict detection, and MLC splits.",
-    badge: "40 Ixis / track",
+    copy: "Labels and companies use Label / Enterprise. There is no fixed price. Contact sales and Awad will reply.",
+    badge: "Contact sales",
   },
   {
     count: 1000000,
     suffix: "+ tracks",
     headline: "The DSP & Distributor Scale",
-    copy: "Dedicated pipeline cluster, custom SLA, bespoke translation models, and direct DSP ingest connectors.",
-    badge: "Enterprise SLA",
+    copy: "Large catalogs use the same Contact sales form. Team seats and songs per month are part of that request.",
+    badge: "Contact sales",
   },
 ];
 
@@ -81,8 +81,8 @@ export function ScaleSection() {
         <Link href="/add" className="btn-primary">
           Process a song <span className="arrow">→</span>
         </Link>
-        <Link href="/waitlist" className="btn-secondary">
-          Explore Enterprise
+        <Link href="/pricing#contact-sales" className="btn-secondary">
+          Contact sales
         </Link>
       </Reveal>
     </div>
