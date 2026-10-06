@@ -327,3 +327,20 @@ Recorded by Grok (Developer Bot, notes and status sync at 12:25 AM CT on Oct 5).
 - No database migration, no env change in this PR. Processing still needs `REDIS_URL` + a running worker (unchanged).
 - Who: Grok / Developer Bot, for Awad.
 - Undo: close the PR, or after merge `git revert <squash sha>`. Objects uploaded through the new flow stay in Storage under the same path scheme as before.
+
+## 2026-10-05 ~8:55 PM (CT): Grok (Developer Bot), merged #32, #33, #35 (Awad approved merging)
+- Order, all squash merges with CI (node-ci) and the Vercel preview green on the merged head:
+  - **#32** at 8:46 PM CT as `11c0ef2` (direct-to-Storage upload + 300 Ixis own-upload unlock). Merged main (#34) first; the only conflict was in this file, and both sides were kept.
+  - **#33** at 8:49 PM CT as `18b2656` (300 Ixis wording + Cixy prompt). Conflicts with #34 were resolved to the Ixis wording, and ListenDesk stays deleted. I dropped #33's duplicate price migration, because #34's `20261005_track_unlock_price_300.sql` already set prod to 300.
+  - **#35** at 8:52 PM CT as `1058522` (footer on every page + Cixy page help). It merged cleanly.
+- Production deployment `lyrixis-qvskvrz9w` (commit `1058522`) is Ready. Smoke test results:
+  - 14 public pages return 200.
+  - /upload, /dashboard and /tracks redirect signed-out visitors to /login?next=…
+  - Signed out, POST /api/tracks/upload-url, POST /api/tracks, GET /api/tracks and POST /api/redeem return 401.
+  - /api/pricing/tiers returns 300 for 1–99.
+  - Catalog search works.
+  - /enterprise has the "Other Ixis companies" footer and the Cixy help, with no $2.99.
+  - The app pages show the footer and "Need help?".
+- Database: nothing applied by me. `20261005_restrict_rls_helper_execute.sql` (re-scope the 21 "own …" policies to authenticated) is NOT applied. Its revoke half is already live from #34.
+- Env: `TRANSCRIPTION_API_KEY` (OpenAI) was added to Vercel Production and Preview earlier this evening; there was no separate redeploy for it, but these merges redeployed prod. Lyrics still do not run: there is no REDIS_URL and no worker.
+- Undo: `git revert 1058522`, `git revert 18b2656`, `git revert 11c0ef2` (newest first), or promote the #34 prod deployment in Vercel.
