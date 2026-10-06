@@ -57,3 +57,7 @@ Entry format:
 ## 2026-10-04 (CT) — Grok (Claude-audit lock fixes, PR from `grok/claude-audit-fixes`)
 - Changed: `/tracks/[id]` no longer shows the dead Stripe checkout (404 `/api/checkout`) or a USD price; removed "As-salamu alaykum" from the magic-link screen and the support auto-reply; Ominix link on `/companies` → `ominix-app.vercel.app`; 1,000 Ixis wording names Apixis.dev; `NOTES/GROK.md` Claude #27 entry + hub decision (uploads will reuse `lyrixis.track.unlock`, not built yet).
 - Why: Awad's locks (no Stripe/card checkout, no religious content outside Halaxis, Apixis.dev grants the 1,000 Ixis) and notes for every Claude change.
+
+## 2026-10-05 (CT) — Grok (Lyrixis Lead): merged #29, #14, #28 (Awad approved)
+- Changed: #29 `03df856` (no Stripe checkout on /tracks, no salam greetings, Apixis.dev 1,000 Ixis wording); #14 `ba67a21` (footer "Other Ixis companies", 12 sites incl. Ominix at ominix-app.vercel.app); #28 `acf2978` (Lyrixis Voices, closed in production, migration 0006 not applied). Details and undo in NOTES/GROK.md.
+- Why: Awad approved the merges on 2026-10-05 (7:54 PM and 8:08 PM CT).
