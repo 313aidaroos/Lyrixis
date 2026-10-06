@@ -27,7 +27,7 @@ App `lyrixis`. Sells `lyrixis.track.unlock` (300 Ixis per track).
 
 - Public catalog 'add' page is open to anyone: keep or require sign-in (your call).
 - Host the worker (`npm run worker`) on Railway/Fly with Redis and a transcription key: uploads never process without it.
-- Price mismatch: `pricing_tiers` quotes $2.99 while the Wallet charges 300 Ixis ($3.00). Pick one.
+- Price mismatch: fixed 2026-10-05. `pricing_tiers` (1–99) is now 300, matching the Wallet product `lyrixis.track.unlock` (300 Ixis).
 
 ## What changed, file by file
 
