@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/auth";
 import { jsonError, HttpError } from "@/lib/errors";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCatalogRecording } from "@/services/catalog";
+import { currentSessionIsOwner } from "@/lib/owners";
 
 export const runtime = "nodejs";
 
@@ -26,7 +27,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       .eq("user_id", user.id)
       .eq("recording_public_id", id)
       .maybeSingle();
-    if (!unlock) {
+    // Owner bypass (lib/owners.ts): proven owner session, no unlock row needed.
+    if (!unlock && !(await currentSessionIsOwner())) {
       return NextResponse.json(
         { error: "not_unlocked", message: "Unlock this track (300 Ixis) to download exports." },
         { status: 402 }
@@ -54,7 +56,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       rec.iswc ? `ISWC: ${rec.iswc}` : null,
       rec.writers.length ? `Writers: ${rec.writers.join(", ")}` : null,
       rec.lyrics ? `Lyrics license: ${rec.lyrics.license}` : null,
-      `Exported from Lyrixis · receipt ${unlock.receipt_id ?? "n/a"}`,
+      `Exported from Lyrixis · receipt ${unlock?.receipt_id ?? "n/a"}`,
       "",
     ].filter((l): l is string => l !== null);
     const body =

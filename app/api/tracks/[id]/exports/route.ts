@@ -6,6 +6,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { loadCurrentLyrics } from "@/services/corrections";
 import { buildExport } from "@/services/exports";
 import { getOwnedTrack, toSummary } from "@/services/tracks";
+import { currentSessionIsOwner } from "@/lib/owners";
 import type { ExportFormat } from "@/types";
 
 export const runtime = "nodejs";
@@ -25,7 +26,8 @@ export async function GET(
     }
     const format = formatParam as ExportFormat;
     const track = await getOwnedTrack(user, id);
-    if (!track.paid) {
+    // Owner bypass (lib/owners.ts): proven owner session skips the unlock.
+    if (!track.paid && !(await currentSessionIsOwner())) {
       throw new HttpError(402, "payment_required", "Pay to unlock full exports.");
     }
     const lyrics = await loadCurrentLyrics(track.id);
