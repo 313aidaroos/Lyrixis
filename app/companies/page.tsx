@@ -27,7 +27,7 @@ function CompaniesDirectory({ host }: { host: string }) {
       <div className="ix-family-inner">
         <div className="ix-family-intro">
           <p className="ix-family-eyebrow">THE APIXIS FAMILY</p>
-          <h1 id="ix-family-title">Apixis Companies</h1>
+          <h1 id="ix-family-title" className="sm:font-marquee">Apixis Companies</h1>
           <p>The Ixis ecosystem • 15 companies, one platform • Explore and visit each company</p>
         </div>
         <div className="ix-family-grid">

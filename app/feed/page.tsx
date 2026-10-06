@@ -11,7 +11,7 @@ export default function FeedPage() {
       <SiteNav />
       <main className="mx-auto max-w-6xl px-6 py-16">
         <p className="font-mono text-xs uppercase tracking-[0.28em] text-cyan">Socixis Social · Every Apixis company</p>
-        <h1 className="mt-3 font-display text-4xl font-extrabold sm:text-5xl">
+        <h1 className="mt-3 font-display text-4xl font-extrabold sm:font-marquee sm:text-5xl">
           The family <span className="grad-text">feed.</span>
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-ink-2">

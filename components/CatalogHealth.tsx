@@ -51,7 +51,7 @@ export function CatalogHealth() {
           <span className="h-1.5 w-1.5 rounded-full bg-cyan animate-pulse" />
           Enterprise Demo · Example Catalog
         </div>
-        <h2 className="mt-4 font-display text-3xl font-bold sm:text-4xl">
+        <h2 className="mt-4 font-display text-3xl font-bold sm:font-marquee sm:text-5xl">
           Continuous catalog <span className="grad-text">health monitoring.</span>
         </h2>
         <p className="mx-auto mt-3 max-w-2xl text-ink-2">

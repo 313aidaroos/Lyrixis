@@ -24,14 +24,38 @@ html {
   scroll-behavior: smooth;
 }
 
-body, body * {
-  font-family: 'Special Elite', monospace !important;
+/* 2026-10-05 font refresh preview (Awad picked Monoton):
+   - Monoton (--font-marquee) only on big headlines via .font-marquee / sm:font-marquee (~40px+).
+   - Manrope 800 (--font-display = --font-body) for smaller headings, prices, numbers.
+   - Martian Mono (--font-mono) for labels. Tailwind font-* classes read these variables. */
+body {
+  --font-display: var(--font-body);
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
 body {
   background: var(--bg);
   color: var(--ink);
   min-height: 100vh;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+@layer utilities {
+  /* Monoton has one weight: never let font-bold/extrabold fake-bold it, and give the neon
+     tubes a little air instead of tracking-tight. */
+  .font-marquee {
+    font-family: var(--font-marquee), var(--font-body), system-ui, sans-serif;
+    font-weight: 400 !important;
+    font-synthesis: none;
+    letter-spacing: 0.01em !important;
+    line-height: 1.08;
+    /* Monoton's kerning table opens a visible gap in "oo" (Understood.) at large sizes. */
+    font-kerning: none;
+  }
 }
 
 /* Ambient stage: slow-drifting luminous gradients so the page never feels frozen. */

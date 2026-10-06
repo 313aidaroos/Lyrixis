@@ -60,7 +60,7 @@ export default async function HomePage() {
               </Reveal>
 
               <Reveal delay={80}>
-                <h1 className="mt-6 font-display text-5xl font-extrabold tracking-tight sm:text-7xl lg:text-8xl leading-[0.98]">
+                <h1 className="mt-6 font-marquee text-[clamp(2.25rem,10.4vw,3rem)] sm:text-7xl lg:text-8xl leading-[1.02]">
                   Music. <br />
                   <span className="grad-text">Understood.</span>
                 </h1>
@@ -161,7 +161,7 @@ export default async function HomePage() {
       <section id="demo" className="relative mx-auto max-w-7xl px-6 py-16 sm:py-24">
         <Reveal className="mb-10 text-center">
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-cyan">Interactive Intelligence Preview</p>
-          <h2 className="mt-3 font-display text-3xl font-bold sm:text-5xl">
+          <h2 className="mt-3 font-display text-3xl font-bold sm:font-marquee sm:text-5xl">
             See Lyrixis <span className="grad-text">in real time.</span>
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-ink-2">
@@ -220,7 +220,7 @@ export default async function HomePage() {
         <div className="seam mb-16" />
         <Reveal className="mb-10 text-center">
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-cyan">Volume Economics</p>
-          <h2 className="mt-3 font-display text-3xl font-bold sm:text-5xl">
+          <h2 className="mt-3 font-display text-3xl font-bold sm:font-marquee sm:text-5xl">
             Transparent, <span className="grad-text">deterministic pricing.</span>
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-ink-2">
@@ -240,7 +240,7 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-r from-violet/20 via-transparent to-cyan/20 pointer-events-none" />
           <Reveal>
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-cyan">Ready to modernize your catalog?</p>
-            <h2 className="mt-3 font-display text-3xl font-bold sm:text-5xl">
+            <h2 className="mt-3 font-display text-3xl font-bold sm:font-marquee sm:text-5xl">
               Get in touch with the <span className="grad-text">Lyrixis team.</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-ink-2">

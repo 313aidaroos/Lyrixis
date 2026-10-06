@@ -35,7 +35,7 @@ export function Pipeline() {
     <div ref={ref} className="mx-auto max-w-7xl px-6">
       <Reveal className="text-center">
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-ink-3">From audio to intelligence</p>
-        <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
+        <h2 className="mt-3 font-display text-3xl font-bold sm:font-marquee sm:text-5xl">
           One recording in. <span className="grad-text">Structured intelligence</span> out.
         </h2>
       </Reveal>

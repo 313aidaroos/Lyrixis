@@ -382,3 +382,46 @@ Recorded by Grok (Developer Bot, notes and status sync at 12:25 AM CT on Oct 5).
   - Both test tracks deleted (cascade), plus 4 Storage objects, the audit rows, the app user and the auth user. Verified 0 left.
   - The /tmp env pull file is deleted.
 - **Not exercised live:** the 390 s stuck sweep, because the `tracks_set_updated_at` trigger prevents back-dating. It's covered by unit tests.
+
+## 2026-10-05 ~9:30 PM (CT): Grok (Developer Bot), font refresh PREVIEW (draft PR, DO NOT MERGE)
+- **What:** Awad asked for new fonts ("surprise me, but show me the design first"). Only the fonts change; colors, layout, header and footer stay the same.
+  - **Display:** Unbounded (was Special Elite in the app and Familjen Grotesk on /enterprise).
+  - **Body:** Manrope (was Special Elite in the app and Inter on /enterprise).
+  - **Mono:** Martian Mono (was Special Elite in the app and JetBrains Mono on /enterprise).
+  - **App wiring:** the app loads the fonts with `next/font` as `--font-display`, `--font-body` and `--font-mono`, the variables `tailwind.config.ts` already expects. This removes the global `Special Elite !important` rule.
+  - **/enterprise:** `public/index.html` swaps the Google Fonts link and its CSS variables. IBM Plex Sans Arabic is kept.
+  - **Pricing calculator:** its four number readouts use Manrope extra-bold with tabular figures, because Unbounded 800 is wide enough to wrap "40 Ixis · $0.40".
+- **Alternate display fonts shown to Awad:** Syne 800 and Bricolage Grotesque 800 (condensed).
+- **Where:** `app/layout.tsx`, `app/globals.css`, `components/PricingCalculator.tsx`, `public/index.html`. Screenshots are in `/workspace/lyrixis-font-preview/` on the box.
+- **Not merged, not deployed to production.** Wait for Awad's approval or edits.
+- **Undo:** close the PR.
+
+## 2026-10-05 ~9:55 PM (CT): Grok (Developer Bot), font preview round 3: Awad picked Monoton (still DO NOT MERGE, PR #37)
+- **Choice:** Awad picked option 5, Monoton, from the options sheet. Monoton replaces Unbounded, but only on big display headlines, because it is unreadable at small sizes.
+- **Font roles:**
+  - **Monoton:** `--font-marquee` in the app and `--marquee` on /enterprise. It is used only around 40px and up.
+  - **Manrope 800:** every smaller heading (card h2/h3, nav, buttons, prices, numbers). `--font-display` now points at Manrope.
+  - **Unchanged:** body stays Manrope and labels stay Martian Mono.
+- **App:**
+  - New `.font-marquee` utility in `globals.css`:
+    - Monoton, weight forced to 400 with `font-synthesis:none` (no faux bold).
+    - letter-spacing .01em.
+    - `font-kerning:none`, because Monoton's kerning opens a gap in "oo" in "Understood.".
+  - **Home hero h1:** always Monoton, sized `clamp(2.25rem,10.4vw,3rem)` on phones so "Understood." fits at 360–390px wide (at 48px it overflowed the column), then 72px at sm and 96px at lg.
+  - **Section and page titles:** `sm:font-marquee` (Monoton from 640px up, Manrope on phones).
+    - **Home h2s:** Pipeline, BeforeAfter, CatalogHealth, Scale, API, pricing teaser, contact and the live demo.
+    - **Page h1s:** pricing, feed, cixy, catalog, companies, updates, upload, dashboard, add.
+    - A few `sm:text-4xl` became `sm:text-5xl` so Monoton is never below about 48px.
+  - **Left on Manrope:** dynamic titles (track/recording/voice names), and the login/support/auth/waitlist h1s.
+- **/enterprise (`public/index.html`):**
+  - The Google Fonts link now loads Monoton plus Manrope 400–800, Martian Mono and IBM Plex Sans Arabic. Unbounded is dropped.
+  - h1 is always Monoton (`clamp(2.25rem,10.4vw,3rem)` under 600px).
+  - Section h2s use Monoton only at 910px and up. The Cixy help title and the inline "Talk to Lyrixis" h2 are excluded.
+- **Checked:**
+  - Lint, typecheck, vitest (107) and build pass.
+  - No horizontal scroll at 1280 or 390 on home, pricing, enterprise, companies, catalog, feed and cixy, and no Monoton heading overflows.
+- **Pre-existing, not caused by this PR (also on production):**
+  - At 1024px the app nav's "Get early access" pokes past the right edge.
+  - At 768px the /enterprise nav "Talk to Lyrixis" does the same.
+- **Screenshots** (in `/workspace/lyrixis-font-preview/`, background animation paused): `monoton-home.png`, `monoton-pricing.png` and `monoton-enterprise.png` at 1280, and `monoton-home-mobile.png` at 390.
+- **Not merged, not deployed to production.** Undo: close the PR.

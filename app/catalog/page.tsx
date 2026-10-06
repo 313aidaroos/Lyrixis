@@ -28,7 +28,7 @@ export default async function CatalogPage({
           Public seed catalog — {results.length} recording{results.length === 1 ? "" : "s"} shown
           {q ? ` for “${q}”` : ""}. Commercial tracks stay licensed.
         </p>
-        <h1 className="mt-6 font-display text-4xl font-bold">
+        <h1 className="mt-6 font-display text-4xl font-bold sm:font-marquee sm:text-5xl">
           Catalog <span className="grad-text">intelligence</span>
         </h1>
         <form action="/catalog" method="get" className="mt-6 flex flex-col gap-3 sm:flex-row">

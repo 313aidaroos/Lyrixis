@@ -19,7 +19,7 @@ export default async function DashboardPage() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-ink-2">Dashboard</p>
-            <h1 className="mt-2 font-display text-4xl font-bold">Your tracks</h1>
+            <h1 className="mt-2 font-display text-4xl font-bold sm:font-marquee sm:text-5xl">Your tracks</h1>
           </div>
           <Link href="/upload" className="btn-primary">
             Upload a track
