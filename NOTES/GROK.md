@@ -425,3 +425,16 @@ Recorded by Grok (Developer Bot, notes and status sync at 12:25 AM CT on Oct 5).
   - At 768px the /enterprise nav "Talk to Lyrixis" does the same.
 - **Screenshots** (in `/workspace/lyrixis-font-preview/`, background animation paused): `monoton-home.png`, `monoton-pricing.png` and `monoton-enterprise.png` at 1280, and `monoton-home-mobile.png` at 390.
 - **Not merged, not deployed to production.** Undo: close the PR.
+
+## 2026-10-05 ~10:00 PM (CT): Grok (Developer Bot), MERGED PR #37: Monoton font refresh is live
+- **Approval:** Awad approved going live at about 9:56 PM CT.
+- **Before merging:** I removed "DO NOT MERGE" from the PR title and body and marked it ready for review. The branch was already up to date with main, so there were no conflicts. Checks were green: `node-ci` ×2, Vercel, and Vercel Preview Comments.
+- **Merge:** squash-merged as `a8aea56` "Font refresh: Monoton headlines + Manrope / Martian Mono (#37)".
+- **Production deploy:** Ready (GitHub deployment status `success`) at https://lyrixis-5sn3jadik-313aidaroos-projects.vercel.app, aliased to lyrixis.vercel.app.
+- **Live smoke test on lyrixis.vercel.app:**
+  - **Status codes:** 200 for `/`, `/pricing`, `/enterprise`, `/companies`, `/catalog`, `/feed`, `/cixy`, `/updates`, `/vision`, `/add`, `/login`, `/waitlist` and `/support`.
+  - **Fonts:** the hero h1 renders in Monoton (font loaded) on home and /enterprise at both 1280 and 390. Page h1s are Monoton at 1280 and Manrope on phones, as designed. Login, waitlist and support stay Manrope.
+  - **Overflow:** no horizontal scroll on any of those pages at 1280 or 390.
+  - **/enterprise:** serves the new Monoton/Manrope/Martian Mono font link.
+- **Screenshot:** `/workspace/lyrixis-font-preview/live-home.png` (1280, background animation paused).
+- **Rollback:** revert `a8aea56`, or promote the previous production deployment in Vercel.
