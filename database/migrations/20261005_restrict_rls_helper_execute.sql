@@ -1,4 +1,10 @@
--- 20261005_restrict_rls_helper_execute.sql (Grok / Developer Bot, 2026-10-05) — NOT applied by this PR.
+-- 20261005_restrict_rls_helper_execute.sql (Grok / Developer Bot, 2026-10-05) — NOT applied.
+-- Status 2026-10-05 ~8:50 PM CT: the REVOKE/GRANT half is already live in prod, applied by the
+-- cleanup work as 20261005_revoke_anon_rls_helpers.sql (#34); re-running it here is a no-op.
+-- What this file adds and is NOT applied: re-scoping the 21 policies from PUBLIC to authenticated
+-- (the DO block below), so an anon REST read of those tables returns [] instead of
+-- "permission denied for function". The app never does such reads (service role only), so this
+-- is tidy-up, not a fix.
 --
 -- Supabase advisor: public.current_app_user_id() and public.current_org_ids() are SECURITY DEFINER
 -- and executable by anon (granted explicitly in 0001_init.sql, and to PUBLIC by Postgres default).

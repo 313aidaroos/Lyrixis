@@ -23,7 +23,7 @@ Deferred (schema only): public API keys UI, batch upload, org admin, translation
 | Queue | Redis |
 | Transcription | Env-selected provider (`TRANSCRIPTION_PROVIDER=whisper_v3`) |
 
-Pricing is read from `pricing_tiers` on the server. The frontend never calculates a charged price. Single-track jobs use job size = 1 (the $2.99 tier unless an org `custom_rate_cents` is set).
+Pricing is read from `pricing_tiers` on the server. The frontend never calculates a charged price. Single-track jobs use job size = 1 (the 300 Ixis tier, same as the Wallet product `lyrixis.track.unlock`, unless an org `custom_rate_cents` is set).
 
 ## Local setup
 
@@ -61,9 +61,8 @@ Set a real key. There is no mock path.
 ```bash
 TRANSCRIPTION_PROVIDER=whisper_v3
 TRANSCRIPTION_API_KEY=sk-...
-# Optional Groq-compatible:
-# TRANSCRIPTION_API_BASE_URL=https://api.groq.com/openai/v1
-# TRANSCRIPTION_MODEL=whisper-large-v3
+# OpenAI (default base https://api.openai.com/v1). whisper-1 is required for word timestamps:
+TRANSCRIPTION_MODEL=whisper-1
 LANGUAGE_PROVIDER=whisper
 ```
 

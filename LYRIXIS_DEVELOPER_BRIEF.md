@@ -128,7 +128,7 @@ unless an org agreement says otherwise. Decide this explicitly and document it �
 it materially changes revenue and customers will ask.
 
 Payment paths:
-- **Single track:** upload → process → preview (first 30s of lyrics, watermarked) → pay $2.99 → unlock full result + exports.
+- **Single track:** upload → process → preview (first 30s of lyrics, watermarked) → unlock for 300 Ixis in the Apixis Wallet (`lyrixis.track.unlock`) → full result + exports.
 - **Balance:** top up $10/$25/$50/$100/$500/$1,000 → processing decrements `balance_cents`.
 - **Enterprise:** invoiced. `custom_rate_cents` on the organization.
 
@@ -193,7 +193,7 @@ Rate limit per API key. Log every call to `api_usage`.
 5. Synced lyric view with word timing
 6. Inline correction with versioning
 7. Exports: TXT, SRT, LRC, JSON
-8. Stripe single-track payment ($2.99)
+8. Single-track unlock: 300 Ixis via the Apixis Wallet (`lyrixis.track.unlock`; no card checkout)
 9. Dashboard: track list + status
 10. Job queue + worker
 

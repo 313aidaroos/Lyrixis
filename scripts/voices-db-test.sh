@@ -10,7 +10,7 @@ P="psql -v ON_ERROR_STOP=1 -q"
 $P -d postgres -c "drop database if exists $DB" -c "create database $DB" >/dev/null
 $P -d "$DB" -c 'create extension if not exists pgcrypto' -f database/tests/supabase_shim.sql >/dev/null 2>&1
 for f in 0001_init.sql 0002_enterprise_leads_source.sql 0003_public_catalog.sql 0004_catalog_ids.sql \
-         0005_cixy_messages.sql 0005_id_backed_public_domain.sql 20260922_track_unlocks.sql \
+         0005_id_backed_public_domain.sql 0005b_cixy_messages.sql 20260922_track_unlocks.sql \
          20260922_harden_track_unlocks.sql 20260923_lock_my_track_unlocks_view.sql 0006_lyrixis_voices.sql; do
   $P -d "$DB" -1 -f "database/migrations/$f" >/dev/null 2>&1 || { echo "migration failed: $f"; $P -d "$DB" -1 -f "database/migrations/$f"; exit 1; }
 done

@@ -2,9 +2,10 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ActionButton, ActionForm } from "@/components/voices/ui";
 import { Pill } from "@/components/voices/server";
-import { getActor, getVoices } from "@/lib/voices/context";
+import { getActor, getVoices, voicesOpen } from "@/lib/voices/context";
 
 export default async function AdminPage() {
+  if (!voicesOpen()) return null; // Voices closed: the layout shows "Opening soon"; skip DB reads.
   const [svc, actor] = await Promise.all([getVoices(), getActor()]);
   if (!actor) redirect("/login?next=/voices/admin");
   if (!svc.isAdmin(actor)) notFound();

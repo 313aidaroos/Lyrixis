@@ -2,13 +2,14 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ActionButton, ActionForm } from "@/components/voices/ui";
 import { Pill } from "@/components/voices/server";
-import { getActor, getVoices } from "@/lib/voices/context";
+import { getActor, getVoices, voicesOpen } from "@/lib/voices/context";
 import { CHANNELS, DIALECTS, LANGUAGES, LEGAL_REVIEW_NOTE, TERRITORIES, TONES, USES, dialectLabel } from "@/lib/voices/config";
 import { CLONING_CONSENT_TEXT } from "@/lib/voices/service";
 
 const opt = <T extends string>(xs: readonly T[]) => xs.map((x) => ({ value: x, label: x.replace(/_/g, " ") }));
 
 export default async function CreatorPage() {
+  if (!voicesOpen()) return null; // Voices closed: the layout shows "Opening soon"; skip DB reads.
   const [svc, actor] = await Promise.all([getVoices(), getActor()]);
   if (!actor) redirect("/login?next=/voices/creator");
   const dash = await svc.creatorDashboard(actor);
