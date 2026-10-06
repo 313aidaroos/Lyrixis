@@ -276,7 +276,7 @@ Ship in this order. Nothing else.
 9. Metadata claim ingestion (CSV) + conflict detection + completeness scoring
 10. Catalog Health report (real computed metrics, exportable PDF/CSV)
 11. Exports: TXT, SRT, LRC, JSON
-12. Stripe: single-track $2.99 + invoice for pilots
+12. Single-track unlock: 300 Ixis via the Apixis Wallet (`lyrixis.track.unlock`) + invoice for pilots (updated 2026-10-05; no Stripe)
 13. Dashboard: tracks, status, health summary
 14. Job queue + worker + retry
 15. Audit log

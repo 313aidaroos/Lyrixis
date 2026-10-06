@@ -1,8 +1,8 @@
 -- ============================================================
 -- LYRIXIS VOICES — voice licensing marketplace (Arabic–English business content)
 -- Migration: 0006_lyrixis_voices.sql
--- Numbering: 0005 is used twice (0005_cixy_messages, 0005_id_backed_public_domain); existing
--- files are NOT renumbered. 0006 is the next free number.
+-- Numbering: 0006 is the next free number. (The duplicate 0005 was fixed 2026-10-05:
+-- 0005_cixy_messages.sql is now 0005b_cixy_messages.sql; 0005_id_backed_public_domain.sql stays.)
 -- Status: written 2026-10-04 by Grok (Lyrixis Lead). NOT applied to production
 -- (mkuvgkjakxkytscfvnkf). Apply only after Awad approves; see docs/voices/DEPLOY.md.
 -- Undo: database/migrations/rollback/0006_lyrixis_voices_down.sql

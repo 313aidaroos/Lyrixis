@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Pill } from "@/components/voices/server";
-import { getVoices } from "@/lib/voices/context";
+import { getVoices, voicesOpen } from "@/lib/voices/context";
 import { VoicesError } from "@/lib/voices/errors";
 import { dialectLabel } from "@/lib/voices/config";
 
 export default async function Storefront({ params }: { params: Promise<{ handle: string }> }) {
+  if (!voicesOpen()) return null; // Voices closed: the layout shows "Opening soon"; skip DB reads.
   const { handle } = await params;
   const svc = await getVoices();
   let d;

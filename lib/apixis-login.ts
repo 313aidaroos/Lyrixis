@@ -26,7 +26,7 @@ import { safeLocalRedirect } from "./apixis-redirect";
 import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { createClient, type User } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient, type User } from "@supabase/supabase-js";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { apixisLoginUrl, exchangeLoginCode } from "./apixis-wallet";
 
@@ -62,8 +62,16 @@ export async function startApixisLogin(request: Request) {
   return response;
 }
 
-/** GET /auth/apixis/callback?code=…&state=… */
-export async function finishApixisLogin(request: Request) {
+/**
+ * GET /auth/apixis/callback?code=…&state=…
+ * `hooks.onSignedIn` (optional, Lyrixis 2026-10-05) runs after the session is set, with the auth user
+ * (fresh from Supabase, incl. apixis_sub) and the service-role client. Keep it fast or defer it
+ * with next/server `after()`; it must never block or fail the sign-in.
+ */
+export async function finishApixisLogin(
+  request: Request,
+  hooks?: { onSignedIn?: (user: User, admin: SupabaseClient) => void | Promise<void> },
+) {
   const url = new URL(request.url);
   const jar = await cookies();
   let saved: { state?: string; next?: string } = {};
@@ -115,6 +123,15 @@ export async function finishApixisLogin(request: Request) {
   // "email" accepts the magic-link token and the `signup` token GoTrue mints for a brand-new address.
   const { error } = await supabase.auth.verifyOtp({ type: "email", token_hash: tokenHash });
   if (error) return fail("session_error");
+
+  if (hooks?.onSignedIn && userId) {
+    try {
+      const fresh = await admin.auth.admin.getUserById(userId);
+      if (fresh.data.user) await hooks.onSignedIn(fresh.data.user, admin);
+    } catch {
+      // never block sign-in
+    }
+  }
 
   return NextResponse.redirect(new URL(safeLocalRedirect(saved.next ?? "/"), url.origin), 302);
 }
