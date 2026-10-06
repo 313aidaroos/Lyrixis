@@ -1,6 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { HttpError } from "@/lib/errors";
 import type { QuoteResult } from "@/types";
+import { tierRateIxis } from "@/lib/ixis-pricing";
 
 interface PricingTierRow {
   min_songs: number;
@@ -82,10 +83,12 @@ export async function quote(userId: string, songCount: number): Promise<QuoteRes
     );
   }
 
+  // 100 Ixis = $1, so cents == Ixis; the 1–99 tier equals the Wallet SKU (300 Ixis).
+  const rate = tierRateIxis(tier);
   return {
     songCount,
-    rateCents: tier.rate_cents,
-    amountCents: tier.rate_cents * songCount,
+    rateCents: rate,
+    amountCents: rate * songCount,
     source: "tier",
     basis: "job_size",
   };

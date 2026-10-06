@@ -17,7 +17,7 @@ const FAQS = [
   },
   {
     q: "Is search free?",
-    a: "The public catalog on this site is free to search. Paid unlock is only for the separate upload/transcription product, in test mode.",
+    a: "The public catalog on this site is free to search. Unlocking a song\u2019s full synced lyrics and exports is 300 Ixis, paid from your Apixis Wallet.",
   },
   {
     q: "Why is the background karaoke?",

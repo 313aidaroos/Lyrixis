@@ -16,14 +16,14 @@ const MILESTONES = [
     suffix: " tracks",
     headline: "The Studio EP & LP Run",
     copy: "Batch processing for full releases. Bulk rights confirmation, unified ISRC tagging, and stems alignment.",
-    badge: "$1.49 / track",
+    badge: "149 Ixis / track",
   },
   {
     count: 10000,
     suffix: " tracks",
     headline: "The Label Catalog Ingest",
     copy: "Complete back-catalog hydration. Automated language and dialect detection, conflict detection, and MLC splits.",
-    badge: "$0.40 / track",
+    badge: "40 Ixis / track",
   },
   {
     count: 1000000,
